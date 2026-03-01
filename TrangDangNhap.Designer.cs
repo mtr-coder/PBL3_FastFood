@@ -28,67 +28,67 @@
         /// </summary>
         private void InitializeComponent()
         {
-            roundedPanel1 = new RoundedPanel();
-            label7 = new Label();
-            label4 = new Label();
+            hcnt_KhungDangNhap = new RoundedPanel();
+            lb_hoac = new Label();
+            lb_MatKhau = new Label();
             lb_DangKi = new Label();
-            label8 = new Label();
+            lb_ChuaCoTK = new Label();
             lb_QuenMK = new Label();
-            label3 = new Label();
-            label2 = new Label();
-            roundedPanel3 = new RoundedPanel();
-            textBox2 = new TextBox();
+            lb_TaiKhoan = new Label();
+            lb_TieuDeHeThong = new Label();
+            hcnt_MatKhau = new RoundedPanel();
+            txt_MatKhau = new TextBox();
             btn_DangNhap = new RoundedPanel();
-            label6 = new Label();
-            roundedPanel2 = new RoundedPanel();
-            textBox1 = new TextBox();
-            label1 = new Label();
-            roundedPanel1.SuspendLayout();
-            roundedPanel3.SuspendLayout();
+            lb_DangNhap = new Label();
+            hcnt_TaiKhoan = new RoundedPanel();
+            txt_TaiKhoan = new TextBox();
+            lb_TieuDeDangNhap = new Label();
+            hcnt_KhungDangNhap.SuspendLayout();
+            hcnt_MatKhau.SuspendLayout();
             btn_DangNhap.SuspendLayout();
-            roundedPanel2.SuspendLayout();
+            hcnt_TaiKhoan.SuspendLayout();
             SuspendLayout();
             // 
-            // roundedPanel1
+            // hcnt_KhungDangNhap
             // 
-            roundedPanel1.BackColor = SystemColors.ButtonHighlight;
-            roundedPanel1.Controls.Add(label7);
-            roundedPanel1.Controls.Add(label4);
-            roundedPanel1.Controls.Add(lb_DangKi);
-            roundedPanel1.Controls.Add(label8);
-            roundedPanel1.Controls.Add(lb_QuenMK);
-            roundedPanel1.Controls.Add(label3);
-            roundedPanel1.Controls.Add(label2);
-            roundedPanel1.Controls.Add(roundedPanel3);
-            roundedPanel1.Controls.Add(btn_DangNhap);
-            roundedPanel1.Controls.Add(roundedPanel2);
-            roundedPanel1.Controls.Add(label1);
-            roundedPanel1.Location = new Point(315, 114);
-            roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(481, 379);
-            roundedPanel1.TabIndex = 0;
+            hcnt_KhungDangNhap.BackColor = SystemColors.ButtonHighlight;
+            hcnt_KhungDangNhap.Controls.Add(lb_hoac);
+            hcnt_KhungDangNhap.Controls.Add(lb_MatKhau);
+            hcnt_KhungDangNhap.Controls.Add(lb_DangKi);
+            hcnt_KhungDangNhap.Controls.Add(lb_ChuaCoTK);
+            hcnt_KhungDangNhap.Controls.Add(lb_QuenMK);
+            hcnt_KhungDangNhap.Controls.Add(lb_TaiKhoan);
+            hcnt_KhungDangNhap.Controls.Add(lb_TieuDeHeThong);
+            hcnt_KhungDangNhap.Controls.Add(hcnt_MatKhau);
+            hcnt_KhungDangNhap.Controls.Add(btn_DangNhap);
+            hcnt_KhungDangNhap.Controls.Add(hcnt_TaiKhoan);
+            hcnt_KhungDangNhap.Controls.Add(lb_TieuDeDangNhap);
+            hcnt_KhungDangNhap.Location = new Point(315, 114);
+            hcnt_KhungDangNhap.Name = "hcnt_KhungDangNhap";
+            hcnt_KhungDangNhap.Size = new Size(481, 379);
+            hcnt_KhungDangNhap.TabIndex = 0;
             // 
-            // label7
+            // lb_hoac
             // 
-            label7.AutoSize = true;
-            label7.ForeColor = SystemColors.ControlDarkDark;
-            label7.Location = new Point(127, 314);
-            label7.Name = "label7";
-            label7.Size = new Size(223, 15);
-            label7.TabIndex = 4;
-            label7.Text = "-------------------hoặc-------------------";
+            lb_hoac.AutoSize = true;
+            lb_hoac.ForeColor = SystemColors.ControlDarkDark;
+            lb_hoac.Location = new Point(127, 314);
+            lb_hoac.Name = "lb_hoac";
+            lb_hoac.Size = new Size(223, 15);
+            lb_hoac.TabIndex = 4;
+            lb_hoac.Text = "-------------------hoặc-------------------";
             // 
-            // label4
+            // lb_MatKhau
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            label4.ForeColor = SystemColors.ControlDarkDark;
-            label4.Location = new Point(36, 171);
-            label4.Name = "label4";
-            label4.Size = new Size(75, 19);
-            label4.TabIndex = 3;
-            label4.Text = "Mật khẩu:";
-            label4.Click += label4_Click;
+            lb_MatKhau.AutoSize = true;
+            lb_MatKhau.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lb_MatKhau.ForeColor = SystemColors.ControlDarkDark;
+            lb_MatKhau.Location = new Point(36, 171);
+            lb_MatKhau.Name = "lb_MatKhau";
+            lb_MatKhau.Size = new Size(75, 19);
+            lb_MatKhau.TabIndex = 3;
+            lb_MatKhau.Text = "Mật khẩu:";
+            lb_MatKhau.Click += label4_Click;
             // 
             // lb_DangKi
             // 
@@ -104,17 +104,17 @@
             lb_DangKi.MouseEnter += lb_DangKi_MouseEnter;
             lb_DangKi.MouseLeave += lb_DangKi_MouseLeave;
             // 
-            // label8
+            // lb_ChuaCoTK
             // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Segoe UI", 10F);
-            label8.ForeColor = SystemColors.ControlDarkDark;
-            label8.Location = new Point(127, 338);
-            label8.Name = "label8";
-            label8.Size = new Size(126, 19);
-            label8.TabIndex = 1;
-            label8.Text = "Chưa có tài khoản?";
-            label8.Click += label2_Click;
+            lb_ChuaCoTK.AutoSize = true;
+            lb_ChuaCoTK.Font = new Font("Segoe UI", 10F);
+            lb_ChuaCoTK.ForeColor = SystemColors.ControlDarkDark;
+            lb_ChuaCoTK.Location = new Point(127, 338);
+            lb_ChuaCoTK.Name = "lb_ChuaCoTK";
+            lb_ChuaCoTK.Size = new Size(126, 19);
+            lb_ChuaCoTK.TabIndex = 1;
+            lb_ChuaCoTK.Text = "Chưa có tài khoản?";
+            lb_ChuaCoTK.Click += label2_Click;
             // 
             // lb_QuenMK
             // 
@@ -130,55 +130,55 @@
             lb_QuenMK.MouseEnter += lb_QuenMK_MouseEnter;
             lb_QuenMK.MouseLeave += lb_QuenMK_MouseLeave;
             // 
-            // label3
+            // lb_TaiKhoan
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            label3.ForeColor = SystemColors.ControlDarkDark;
-            label3.Location = new Point(36, 108);
-            label3.Name = "label3";
-            label3.Size = new Size(77, 19);
-            label3.TabIndex = 1;
-            label3.Text = "Tài khoản:";
-            label3.Click += label2_Click;
+            lb_TaiKhoan.AutoSize = true;
+            lb_TaiKhoan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lb_TaiKhoan.ForeColor = SystemColors.ControlDarkDark;
+            lb_TaiKhoan.Location = new Point(36, 108);
+            lb_TaiKhoan.Name = "lb_TaiKhoan";
+            lb_TaiKhoan.Size = new Size(77, 19);
+            lb_TaiKhoan.TabIndex = 1;
+            lb_TaiKhoan.Text = "Tài khoản:";
+            lb_TaiKhoan.Click += label2_Click;
             // 
-            // label2
+            // lb_TieuDeHeThong
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(22, 61);
-            label2.Name = "label2";
-            label2.Size = new Size(282, 19);
-            label2.TabIndex = 1;
-            label2.Text = "Hệ thống quản lí cửa hàng thức ăn nhanh";
-            label2.Click += label2_Click;
+            lb_TieuDeHeThong.AutoSize = true;
+            lb_TieuDeHeThong.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lb_TieuDeHeThong.ForeColor = SystemColors.ControlDarkDark;
+            lb_TieuDeHeThong.Location = new Point(22, 61);
+            lb_TieuDeHeThong.Name = "lb_TieuDeHeThong";
+            lb_TieuDeHeThong.Size = new Size(282, 19);
+            lb_TieuDeHeThong.TabIndex = 1;
+            lb_TieuDeHeThong.Text = "Hệ thống quản lí cửa hàng thức ăn nhanh";
+            lb_TieuDeHeThong.Click += label2_Click;
             // 
-            // roundedPanel3
+            // hcnt_MatKhau
             // 
-            roundedPanel3.BackColor = SystemColors.ButtonFace;
-            roundedPanel3.Controls.Add(textBox2);
-            roundedPanel3.Location = new Point(36, 193);
-            roundedPanel3.Name = "roundedPanel3";
-            roundedPanel3.Size = new Size(408, 42);
-            roundedPanel3.TabIndex = 2;
-            roundedPanel3.Paint += roundedPanel2_Paint;
+            hcnt_MatKhau.BackColor = SystemColors.ButtonFace;
+            hcnt_MatKhau.Controls.Add(txt_MatKhau);
+            hcnt_MatKhau.Location = new Point(36, 193);
+            hcnt_MatKhau.Name = "hcnt_MatKhau";
+            hcnt_MatKhau.Size = new Size(408, 42);
+            hcnt_MatKhau.TabIndex = 2;
+            hcnt_MatKhau.Paint += roundedPanel2_Paint;
             // 
-            // textBox2
+            // txt_MatKhau
             // 
-            textBox2.BackColor = SystemColors.ButtonFace;
-            textBox2.BorderStyle = BorderStyle.None;
-            textBox2.Font = new Font("Segoe UI", 12F);
-            textBox2.ForeColor = SystemColors.ActiveCaptionText;
-            textBox2.Location = new Point(20, 9);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(369, 22);
-            textBox2.TabIndex = 0;
+            txt_MatKhau.BackColor = SystemColors.ButtonFace;
+            txt_MatKhau.BorderStyle = BorderStyle.None;
+            txt_MatKhau.Font = new Font("Segoe UI", 12F);
+            txt_MatKhau.ForeColor = SystemColors.ActiveCaptionText;
+            txt_MatKhau.Location = new Point(20, 9);
+            txt_MatKhau.Name = "txt_MatKhau";
+            txt_MatKhau.Size = new Size(369, 22);
+            txt_MatKhau.TabIndex = 0;
             // 
             // btn_DangNhap
             // 
             btn_DangNhap.BackColor = Color.LightSalmon;
-            btn_DangNhap.Controls.Add(label6);
+            btn_DangNhap.Controls.Add(lb_DangNhap);
             btn_DangNhap.Location = new Point(127, 269);
             btn_DangNhap.Name = "btn_DangNhap";
             btn_DangNhap.Size = new Size(223, 42);
@@ -187,50 +187,50 @@
             btn_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
             btn_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
             // 
-            // label6
+            // lb_DangNhap
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            label6.ForeColor = Color.White;
-            label6.Location = new Point(70, 11);
-            label6.Name = "label6";
-            label6.Size = new Size(81, 19);
-            label6.TabIndex = 1;
-            label6.Text = "Đăng nhập";
-            label6.Click += label2_Click;
-            label6.MouseEnter += btn_DangNhap_MouseEnter;
-            label6.MouseLeave += btn_DangNhap_MouseLeave;
+            lb_DangNhap.AutoSize = true;
+            lb_DangNhap.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lb_DangNhap.ForeColor = Color.White;
+            lb_DangNhap.Location = new Point(70, 11);
+            lb_DangNhap.Name = "lb_DangNhap";
+            lb_DangNhap.Size = new Size(81, 19);
+            lb_DangNhap.TabIndex = 1;
+            lb_DangNhap.Text = "Đăng nhập";
+            lb_DangNhap.Click += label2_Click;
+            lb_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
+            lb_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
             // 
-            // roundedPanel2
+            // hcnt_TaiKhoan
             // 
-            roundedPanel2.BackColor = SystemColors.ButtonFace;
-            roundedPanel2.Controls.Add(textBox1);
-            roundedPanel2.Location = new Point(36, 130);
-            roundedPanel2.Name = "roundedPanel2";
-            roundedPanel2.Size = new Size(408, 42);
-            roundedPanel2.TabIndex = 2;
-            roundedPanel2.Paint += roundedPanel2_Paint;
+            hcnt_TaiKhoan.BackColor = SystemColors.ButtonFace;
+            hcnt_TaiKhoan.Controls.Add(txt_TaiKhoan);
+            hcnt_TaiKhoan.Location = new Point(36, 130);
+            hcnt_TaiKhoan.Name = "hcnt_TaiKhoan";
+            hcnt_TaiKhoan.Size = new Size(408, 42);
+            hcnt_TaiKhoan.TabIndex = 2;
+            hcnt_TaiKhoan.Paint += roundedPanel2_Paint;
             // 
-            // textBox1
+            // txt_TaiKhoan
             // 
-            textBox1.BackColor = SystemColors.ButtonFace;
-            textBox1.BorderStyle = BorderStyle.None;
-            textBox1.Font = new Font("Segoe UI", 12F);
-            textBox1.ForeColor = SystemColors.ActiveCaptionText;
-            textBox1.Location = new Point(20, 9);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(369, 22);
-            textBox1.TabIndex = 0;
+            txt_TaiKhoan.BackColor = SystemColors.ButtonFace;
+            txt_TaiKhoan.BorderStyle = BorderStyle.None;
+            txt_TaiKhoan.Font = new Font("Segoe UI", 12F);
+            txt_TaiKhoan.ForeColor = SystemColors.ActiveCaptionText;
+            txt_TaiKhoan.Location = new Point(20, 9);
+            txt_TaiKhoan.Name = "txt_TaiKhoan";
+            txt_TaiKhoan.Size = new Size(369, 22);
+            txt_TaiKhoan.TabIndex = 0;
             // 
-            // label1
+            // lb_TieuDeDangNhap
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
-            label1.Location = new Point(22, 15);
-            label1.Name = "label1";
-            label1.Size = new Size(161, 37);
-            label1.TabIndex = 0;
-            label1.Text = "Đăng Nhập";
+            lb_TieuDeDangNhap.AutoSize = true;
+            lb_TieuDeDangNhap.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            lb_TieuDeDangNhap.Location = new Point(22, 15);
+            lb_TieuDeDangNhap.Name = "lb_TieuDeDangNhap";
+            lb_TieuDeDangNhap.Size = new Size(161, 37);
+            lb_TieuDeDangNhap.TabIndex = 0;
+            lb_TieuDeDangNhap.Text = "Đăng Nhập";
             // 
             // TrangDangNhap
             // 
@@ -239,39 +239,39 @@
             BackgroundImage = Properties.Resources.mt;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1101, 628);
-            Controls.Add(roundedPanel1);
+            Controls.Add(hcnt_KhungDangNhap);
             DoubleBuffered = true;
             Name = "TrangDangNhap";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
-            roundedPanel1.ResumeLayout(false);
-            roundedPanel1.PerformLayout();
-            roundedPanel3.ResumeLayout(false);
-            roundedPanel3.PerformLayout();
+            hcnt_KhungDangNhap.ResumeLayout(false);
+            hcnt_KhungDangNhap.PerformLayout();
+            hcnt_MatKhau.ResumeLayout(false);
+            hcnt_MatKhau.PerformLayout();
             btn_DangNhap.ResumeLayout(false);
             btn_DangNhap.PerformLayout();
-            roundedPanel2.ResumeLayout(false);
-            roundedPanel2.PerformLayout();
+            hcnt_TaiKhoan.ResumeLayout(false);
+            hcnt_TaiKhoan.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private RoundedPanel roundedPanel1;
-        private Label label1;
-        private Label label2;
-        private RoundedPanel roundedPanel2;
-        private TextBox textBox1;
-        private RoundedPanel roundedPanel3;
-        private TextBox textBox2;
-        private Label label4;
-        private Label label3;
+        private RoundedPanel hcnt_KhungDangNhap;
+        private Label lb_TieuDeDangNhap;
+        private Label lb_TieuDeHeThong;
+        private RoundedPanel hcnt_TaiKhoan;
+        private TextBox txt_TaiKhoan;
+        private RoundedPanel hcnt_MatKhau;
+        private TextBox txt_MatKhau;
+        private Label lb_MatKhau;
+        private Label lb_TaiKhoan;
         private Label label5;
         private RoundedPanel btnDangNhap;
-        private Label label7;
+        private Label lb_hoac;
         private Label label9;
-        private Label label8;
-        private Label label6;
+        private Label lb_ChuaCoTK;
+        private Label lb_DangNhap;
         private Label lb_DangKi;
         private Label lb_QuenMK;
         private RoundedPanel btn_DangNhap;
