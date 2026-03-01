@@ -266,10 +266,8 @@
         private TextBox txt_MatKhau;
         private Label lb_MatKhau;
         private Label lb_TaiKhoan;
-        private Label label5;
         private RoundedPanel btnDangNhap;
         private Label lb_hoac;
-        private Label label9;
         private Label lb_ChuaCoTK;
         private Label lb_DangNhap;
         private Label lb_DangKi;
