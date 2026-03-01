@@ -38,12 +38,12 @@ namespace PBL3
         }
         private void btn_DangNhap_MouseEnter(object sender, EventArgs e)
         {
-            btn_DangNhap.BackColor = Color.FromArgb(255, 69, 0);
+            hcnt_DangNhap.BackColor = Color.FromArgb(255, 69, 0);
         }
 
         private void btn_DangNhap_MouseLeave(object sender, EventArgs e)
         {
-            btn_DangNhap.BackColor = Color.LightSalmon;
+            hcnt_DangNhap.BackColor = Color.LightSalmon;
         }
 
         private void lb_QuenMK_MouseEnter(object sender, EventArgs e)

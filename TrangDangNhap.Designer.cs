@@ -38,14 +38,14 @@
             lb_TieuDeHeThong = new Label();
             hcnt_MatKhau = new RoundedPanel();
             txt_MatKhau = new TextBox();
-            btn_DangNhap = new RoundedPanel();
+            hcnt_DangNhap = new RoundedPanel();
             lb_DangNhap = new Label();
             hcnt_TaiKhoan = new RoundedPanel();
             txt_TaiKhoan = new TextBox();
             lb_TieuDeDangNhap = new Label();
             hcnt_KhungDangNhap.SuspendLayout();
             hcnt_MatKhau.SuspendLayout();
-            btn_DangNhap.SuspendLayout();
+            hcnt_DangNhap.SuspendLayout();
             hcnt_TaiKhoan.SuspendLayout();
             SuspendLayout();
             // 
@@ -60,7 +60,7 @@
             hcnt_KhungDangNhap.Controls.Add(lb_TaiKhoan);
             hcnt_KhungDangNhap.Controls.Add(lb_TieuDeHeThong);
             hcnt_KhungDangNhap.Controls.Add(hcnt_MatKhau);
-            hcnt_KhungDangNhap.Controls.Add(btn_DangNhap);
+            hcnt_KhungDangNhap.Controls.Add(hcnt_DangNhap);
             hcnt_KhungDangNhap.Controls.Add(hcnt_TaiKhoan);
             hcnt_KhungDangNhap.Controls.Add(lb_TieuDeDangNhap);
             hcnt_KhungDangNhap.Location = new Point(315, 114);
@@ -175,17 +175,17 @@
             txt_MatKhau.Size = new Size(369, 22);
             txt_MatKhau.TabIndex = 0;
             // 
-            // btn_DangNhap
+            // hcnt_DangNhap
             // 
-            btn_DangNhap.BackColor = Color.LightSalmon;
-            btn_DangNhap.Controls.Add(lb_DangNhap);
-            btn_DangNhap.Location = new Point(127, 269);
-            btn_DangNhap.Name = "btn_DangNhap";
-            btn_DangNhap.Size = new Size(223, 42);
-            btn_DangNhap.TabIndex = 2;
-            btn_DangNhap.Paint += roundedPanel2_Paint;
-            btn_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
-            btn_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
+            hcnt_DangNhap.BackColor = Color.LightSalmon;
+            hcnt_DangNhap.Controls.Add(lb_DangNhap);
+            hcnt_DangNhap.Location = new Point(127, 269);
+            hcnt_DangNhap.Name = "hcnt_DangNhap";
+            hcnt_DangNhap.Size = new Size(223, 42);
+            hcnt_DangNhap.TabIndex = 2;
+            hcnt_DangNhap.Paint += roundedPanel2_Paint;
+            hcnt_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
+            hcnt_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
             // 
             // lb_DangNhap
             // 
@@ -248,8 +248,8 @@
             hcnt_KhungDangNhap.PerformLayout();
             hcnt_MatKhau.ResumeLayout(false);
             hcnt_MatKhau.PerformLayout();
-            btn_DangNhap.ResumeLayout(false);
-            btn_DangNhap.PerformLayout();
+            hcnt_DangNhap.ResumeLayout(false);
+            hcnt_DangNhap.PerformLayout();
             hcnt_TaiKhoan.ResumeLayout(false);
             hcnt_TaiKhoan.PerformLayout();
             ResumeLayout(false);
@@ -272,6 +272,6 @@
         private Label lb_DangNhap;
         private Label lb_DangKi;
         private Label lb_QuenMK;
-        private RoundedPanel btn_DangNhap;
+        private RoundedPanel hcnt_DangNhap;
     }
 }
