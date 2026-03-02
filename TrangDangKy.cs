@@ -14,5 +14,10 @@ namespace PBL3
         {
             InitializeComponent();
         }
+
+        private void dtp_NgaySinh_ValueChanged(object sender, EventArgs e)
+        {
+            tbx_NgaySinh.Text = dtp_NgaySinh.Value.ToString("dd/MM/yyyy");
+        }
     }
 }
