@@ -113,7 +113,10 @@
             hcnt_DangXuat.Name = "hcnt_DangXuat";
             hcnt_DangXuat.Size = new Size(126, 33);
             hcnt_DangXuat.TabIndex = 3;
+            hcnt_DangXuat.Click += hcnt_DangXuat_Click;
             hcnt_DangXuat.Paint += roundedPanel4_Paint;
+            hcnt_DangXuat.MouseEnter += hcnt_DangXuat_MouseEnter;
+            hcnt_DangXuat.MouseLeave += hcnt_DangXuat_MouseLeave;
             // 
             // lb_DangXuat
             // 
@@ -125,7 +128,7 @@
             lb_DangXuat.Size = new Size(105, 25);
             lb_DangXuat.TabIndex = 2;
             lb_DangXuat.Text = "Đăng xuất";
-            lb_DangXuat.Click += label2_Click;
+            lb_DangXuat.Click += hcnt_DangXuat_Click;
             // 
             // lb_Admin
             // 
@@ -463,8 +466,6 @@
         private RoundedPanel hcnt_KhungMenuAD;
         private Label lb_Admin;
         private RoundedPanel hcnt_Khung;
-        private RoundedPanel hcnt_DangXuat;
-        private Label lb_DangXuat;
         private Label lb_DMQL;
         private RoundedPanel hcnt_QLNV;
         private RoundedPanel hcnt_QLNCC;
@@ -488,5 +489,7 @@
         private PictureBox pb_QLHDN;
         private PictureBox pb_QLHDB;
         private PictureBox pb_ThongKe;
+        private RoundedPanel hcnt_DangXuat;
+        private Label lb_DangXuat;
     }
 }

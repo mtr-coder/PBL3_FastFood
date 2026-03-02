@@ -36,12 +36,12 @@ namespace PBL3
         {
 
         }
-        private void btn_DangNhap_MouseEnter(object sender, EventArgs e)
+        private void hcnt_DangNhap_MouseEnter(object sender, EventArgs e)
         {
             hcnt_DangNhap.BackColor = Color.FromArgb(255, 69, 0);
         }
 
-        private void btn_DangNhap_MouseLeave(object sender, EventArgs e)
+        private void hcnt_DangNhap_MouseLeave(object sender, EventArgs e)
         {
             hcnt_DangNhap.BackColor = Color.LightSalmon;
         }
@@ -64,6 +64,31 @@ namespace PBL3
         private void lb_DangKi_MouseLeave(object sender, EventArgs e)
         {
             lb_DangKi.ForeColor = Color.LightSalmon;
+        }
+
+        private void hcnt_DangNhap_Click(object sender, EventArgs e)
+        {
+            string taiKhoan = txt_TaiKhoan.Text.Trim();
+            string matKhau = txt_MatKhau.Text.Trim();
+
+            if (taiKhoan == "admin1" && matKhau == "12345")
+            {
+                TrangChuADMIN trangChuAdmin = new TrangChuADMIN();
+                this.Hide();
+                trangChuAdmin.ShowDialog();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Sai tài khoản hoặc mật khẩu!", "Lỗi");
+                txt_TaiKhoan.Clear();
+                txt_MatKhau.Clear();
+            }
+        }
+
+        private void hcnt_KhungDangNhap_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

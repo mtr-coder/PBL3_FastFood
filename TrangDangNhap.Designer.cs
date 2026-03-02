@@ -63,18 +63,20 @@
             hcnt_KhungDangNhap.Controls.Add(hcnt_DangNhap);
             hcnt_KhungDangNhap.Controls.Add(hcnt_TaiKhoan);
             hcnt_KhungDangNhap.Controls.Add(lb_TieuDeDangNhap);
-            hcnt_KhungDangNhap.Location = new Point(315, 114);
+            hcnt_KhungDangNhap.Location = new Point(360, 152);
+            hcnt_KhungDangNhap.Margin = new Padding(3, 4, 3, 4);
             hcnt_KhungDangNhap.Name = "hcnt_KhungDangNhap";
-            hcnt_KhungDangNhap.Size = new Size(481, 379);
+            hcnt_KhungDangNhap.Size = new Size(550, 505);
             hcnt_KhungDangNhap.TabIndex = 0;
+            hcnt_KhungDangNhap.Paint += hcnt_KhungDangNhap_Paint;
             // 
             // lb_hoac
             // 
             lb_hoac.AutoSize = true;
             lb_hoac.ForeColor = SystemColors.ControlDarkDark;
-            lb_hoac.Location = new Point(127, 314);
+            lb_hoac.Location = new Point(145, 419);
             lb_hoac.Name = "lb_hoac";
-            lb_hoac.Size = new Size(223, 15);
+            lb_hoac.Size = new Size(269, 20);
             lb_hoac.TabIndex = 4;
             lb_hoac.Text = "-------------------hoặc-------------------";
             // 
@@ -83,9 +85,9 @@
             lb_MatKhau.AutoSize = true;
             lb_MatKhau.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_MatKhau.ForeColor = SystemColors.ControlDarkDark;
-            lb_MatKhau.Location = new Point(36, 171);
+            lb_MatKhau.Location = new Point(41, 228);
             lb_MatKhau.Name = "lb_MatKhau";
-            lb_MatKhau.Size = new Size(75, 19);
+            lb_MatKhau.Size = new Size(91, 23);
             lb_MatKhau.TabIndex = 3;
             lb_MatKhau.Text = "Mật khẩu:";
             lb_MatKhau.Click += label4_Click;
@@ -95,9 +97,9 @@
             lb_DangKi.AutoSize = true;
             lb_DangKi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_DangKi.ForeColor = Color.Salmon;
-            lb_DangKi.Location = new Point(249, 338);
+            lb_DangKi.Location = new Point(291, 451);
             lb_DangKi.Name = "lb_DangKi";
-            lb_DangKi.Size = new Size(101, 19);
+            lb_DangKi.Size = new Size(121, 23);
             lb_DangKi.TabIndex = 1;
             lb_DangKi.Text = "Đăng ký ngay";
             lb_DangKi.Click += label2_Click;
@@ -109,9 +111,9 @@
             lb_ChuaCoTK.AutoSize = true;
             lb_ChuaCoTK.Font = new Font("Segoe UI", 10F);
             lb_ChuaCoTK.ForeColor = SystemColors.ControlDarkDark;
-            lb_ChuaCoTK.Location = new Point(127, 338);
+            lb_ChuaCoTK.Location = new Point(141, 451);
             lb_ChuaCoTK.Name = "lb_ChuaCoTK";
-            lb_ChuaCoTK.Size = new Size(126, 19);
+            lb_ChuaCoTK.Size = new Size(157, 23);
             lb_ChuaCoTK.TabIndex = 1;
             lb_ChuaCoTK.Text = "Chưa có tài khoản?";
             lb_ChuaCoTK.Click += label2_Click;
@@ -121,9 +123,9 @@
             lb_QuenMK.AutoSize = true;
             lb_QuenMK.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_QuenMK.ForeColor = Color.Salmon;
-            lb_QuenMK.Location = new Point(314, 238);
+            lb_QuenMK.Location = new Point(359, 317);
             lb_QuenMK.Name = "lb_QuenMK";
-            lb_QuenMK.Size = new Size(116, 19);
+            lb_QuenMK.Size = new Size(140, 23);
             lb_QuenMK.TabIndex = 1;
             lb_QuenMK.Text = "Quên mật khẩu?";
             lb_QuenMK.Click += label2_Click;
@@ -135,9 +137,9 @@
             lb_TaiKhoan.AutoSize = true;
             lb_TaiKhoan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_TaiKhoan.ForeColor = SystemColors.ControlDarkDark;
-            lb_TaiKhoan.Location = new Point(36, 108);
+            lb_TaiKhoan.Location = new Point(41, 144);
             lb_TaiKhoan.Name = "lb_TaiKhoan";
-            lb_TaiKhoan.Size = new Size(77, 19);
+            lb_TaiKhoan.Size = new Size(92, 23);
             lb_TaiKhoan.TabIndex = 1;
             lb_TaiKhoan.Text = "Tài khoản:";
             lb_TaiKhoan.Click += label2_Click;
@@ -147,9 +149,9 @@
             lb_TieuDeHeThong.AutoSize = true;
             lb_TieuDeHeThong.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_TieuDeHeThong.ForeColor = SystemColors.ControlDarkDark;
-            lb_TieuDeHeThong.Location = new Point(22, 61);
+            lb_TieuDeHeThong.Location = new Point(25, 81);
             lb_TieuDeHeThong.Name = "lb_TieuDeHeThong";
-            lb_TieuDeHeThong.Size = new Size(282, 19);
+            lb_TieuDeHeThong.Size = new Size(342, 23);
             lb_TieuDeHeThong.TabIndex = 1;
             lb_TieuDeHeThong.Text = "Hệ thống quản lí cửa hàng thức ăn nhanh";
             lb_TieuDeHeThong.Click += label2_Click;
@@ -158,9 +160,10 @@
             // 
             hcnt_MatKhau.BackColor = SystemColors.ButtonFace;
             hcnt_MatKhau.Controls.Add(txt_MatKhau);
-            hcnt_MatKhau.Location = new Point(36, 193);
+            hcnt_MatKhau.Location = new Point(41, 257);
+            hcnt_MatKhau.Margin = new Padding(3, 4, 3, 4);
             hcnt_MatKhau.Name = "hcnt_MatKhau";
-            hcnt_MatKhau.Size = new Size(408, 42);
+            hcnt_MatKhau.Size = new Size(466, 56);
             hcnt_MatKhau.TabIndex = 2;
             hcnt_MatKhau.Paint += roundedPanel2_Paint;
             // 
@@ -170,44 +173,48 @@
             txt_MatKhau.BorderStyle = BorderStyle.None;
             txt_MatKhau.Font = new Font("Segoe UI", 12F);
             txt_MatKhau.ForeColor = SystemColors.ActiveCaptionText;
-            txt_MatKhau.Location = new Point(20, 9);
+            txt_MatKhau.Location = new Point(23, 12);
+            txt_MatKhau.Margin = new Padding(3, 4, 3, 4);
             txt_MatKhau.Name = "txt_MatKhau";
-            txt_MatKhau.Size = new Size(369, 22);
+            txt_MatKhau.Size = new Size(422, 27);
             txt_MatKhau.TabIndex = 0;
             // 
             // hcnt_DangNhap
             // 
             hcnt_DangNhap.BackColor = Color.LightSalmon;
             hcnt_DangNhap.Controls.Add(lb_DangNhap);
-            hcnt_DangNhap.Location = new Point(127, 269);
+            hcnt_DangNhap.Location = new Point(145, 359);
+            hcnt_DangNhap.Margin = new Padding(3, 4, 3, 4);
             hcnt_DangNhap.Name = "hcnt_DangNhap";
-            hcnt_DangNhap.Size = new Size(223, 42);
+            hcnt_DangNhap.Size = new Size(255, 56);
             hcnt_DangNhap.TabIndex = 2;
+            hcnt_DangNhap.Click += hcnt_DangNhap_Click;
             hcnt_DangNhap.Paint += roundedPanel2_Paint;
-            hcnt_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
-            hcnt_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
+            hcnt_DangNhap.MouseEnter += hcnt_DangNhap_MouseEnter;
+            hcnt_DangNhap.MouseLeave += hcnt_DangNhap_MouseLeave;
             // 
             // lb_DangNhap
             // 
             lb_DangNhap.AutoSize = true;
             lb_DangNhap.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_DangNhap.ForeColor = Color.White;
-            lb_DangNhap.Location = new Point(70, 11);
+            lb_DangNhap.Location = new Point(80, 15);
             lb_DangNhap.Name = "lb_DangNhap";
-            lb_DangNhap.Size = new Size(81, 19);
+            lb_DangNhap.Size = new Size(98, 23);
             lb_DangNhap.TabIndex = 1;
             lb_DangNhap.Text = "Đăng nhập";
-            lb_DangNhap.Click += label2_Click;
-            lb_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
-            lb_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
+            lb_DangNhap.Click += hcnt_DangNhap_Click;
+            lb_DangNhap.MouseEnter += hcnt_DangNhap_MouseEnter;
+            lb_DangNhap.MouseLeave += hcnt_DangNhap_MouseLeave;
             // 
             // hcnt_TaiKhoan
             // 
             hcnt_TaiKhoan.BackColor = SystemColors.ButtonFace;
             hcnt_TaiKhoan.Controls.Add(txt_TaiKhoan);
-            hcnt_TaiKhoan.Location = new Point(36, 130);
+            hcnt_TaiKhoan.Location = new Point(41, 173);
+            hcnt_TaiKhoan.Margin = new Padding(3, 4, 3, 4);
             hcnt_TaiKhoan.Name = "hcnt_TaiKhoan";
-            hcnt_TaiKhoan.Size = new Size(408, 42);
+            hcnt_TaiKhoan.Size = new Size(466, 56);
             hcnt_TaiKhoan.TabIndex = 2;
             hcnt_TaiKhoan.Paint += roundedPanel2_Paint;
             // 
@@ -217,30 +224,32 @@
             txt_TaiKhoan.BorderStyle = BorderStyle.None;
             txt_TaiKhoan.Font = new Font("Segoe UI", 12F);
             txt_TaiKhoan.ForeColor = SystemColors.ActiveCaptionText;
-            txt_TaiKhoan.Location = new Point(20, 9);
+            txt_TaiKhoan.Location = new Point(23, 12);
+            txt_TaiKhoan.Margin = new Padding(3, 4, 3, 4);
             txt_TaiKhoan.Name = "txt_TaiKhoan";
-            txt_TaiKhoan.Size = new Size(369, 22);
+            txt_TaiKhoan.Size = new Size(422, 27);
             txt_TaiKhoan.TabIndex = 0;
             // 
             // lb_TieuDeDangNhap
             // 
             lb_TieuDeDangNhap.AutoSize = true;
             lb_TieuDeDangNhap.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
-            lb_TieuDeDangNhap.Location = new Point(22, 15);
+            lb_TieuDeDangNhap.Location = new Point(25, 20);
             lb_TieuDeDangNhap.Name = "lb_TieuDeDangNhap";
-            lb_TieuDeDangNhap.Size = new Size(161, 37);
+            lb_TieuDeDangNhap.Size = new Size(200, 46);
             lb_TieuDeDangNhap.TabIndex = 0;
             lb_TieuDeDangNhap.Text = "Đăng Nhập";
             // 
             // TrangDangNhap
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = Properties.Resources.mt;
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(1101, 628);
+            ClientSize = new Size(1258, 837);
             Controls.Add(hcnt_KhungDangNhap);
             DoubleBuffered = true;
+            Margin = new Padding(3, 4, 3, 4);
             Name = "TrangDangNhap";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "TrangDangNhap";
