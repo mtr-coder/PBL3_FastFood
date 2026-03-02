@@ -29,163 +29,163 @@
         private void InitializeComponent()
         {
             roundedPanel1 = new RoundedPanel();
-            pictureBox1 = new PictureBox();
-            roundedPanel4 = new RoundedPanel();
-            label2 = new Label();
-            label1 = new Label();
-            roundedPanel3 = new RoundedPanel();
-            roundedPanel2 = new RoundedPanel();
-            roundedPanel11 = new RoundedPanel();
-            pictureBox8 = new PictureBox();
+            pb_Admin = new PictureBox();
+            hcnt_DangXuat = new RoundedPanel();
+            lb_DangXuat = new Label();
+            lb_Admin = new Label();
+            hcnt_Khung = new RoundedPanel();
+            hcnt_KhungMenuAD = new RoundedPanel();
+            hcnt_ThongKe = new RoundedPanel();
+            pb_ThongKe = new PictureBox();
             label10 = new Label();
             roundedPanel10 = new RoundedPanel();
-            pictureBox7 = new PictureBox();
-            label9 = new Label();
-            roundedPanel9 = new RoundedPanel();
-            pictureBox6 = new PictureBox();
+            pb_QLHDB = new PictureBox();
+            hcnt_QLHDB = new Label();
+            hcnt_QLHDN = new RoundedPanel();
+            pb_QLHDN = new PictureBox();
             label8 = new Label();
-            roundedPanel8 = new RoundedPanel();
-            pictureBox5 = new PictureBox();
+            hcnt_QLMA = new RoundedPanel();
+            pb_QLMA = new PictureBox();
             label7 = new Label();
-            roundedPanel7 = new RoundedPanel();
-            pictureBox4 = new PictureBox();
+            hcnt_QLKH = new RoundedPanel();
+            pb_QLKH = new PictureBox();
             label6 = new Label();
-            roundedPanel6 = new RoundedPanel();
-            pictureBox3 = new PictureBox();
+            hcnt_QLNCC = new RoundedPanel();
+            pb_QLNCC = new PictureBox();
             label5 = new Label();
-            roundedPanel5 = new RoundedPanel();
-            pictureBox2 = new PictureBox();
+            hcnt_QLNV = new RoundedPanel();
+            pb_QLNV = new PictureBox();
             label4 = new Label();
-            label3 = new Label();
+            lb_DMQL = new Label();
             roundedPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            roundedPanel4.SuspendLayout();
-            roundedPanel2.SuspendLayout();
-            roundedPanel11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pb_Admin).BeginInit();
+            hcnt_DangXuat.SuspendLayout();
+            hcnt_KhungMenuAD.SuspendLayout();
+            hcnt_ThongKe.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_ThongKe).BeginInit();
             roundedPanel10.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
-            roundedPanel9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
-            roundedPanel8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
-            roundedPanel7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
-            roundedPanel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
-            roundedPanel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pb_QLHDB).BeginInit();
+            hcnt_QLHDN.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLHDN).BeginInit();
+            hcnt_QLMA.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLMA).BeginInit();
+            hcnt_QLKH.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLKH).BeginInit();
+            hcnt_QLNCC.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLNCC).BeginInit();
+            hcnt_QLNV.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLNV).BeginInit();
             SuspendLayout();
             // 
             // roundedPanel1
             // 
-            roundedPanel1.Controls.Add(pictureBox1);
-            roundedPanel1.Controls.Add(roundedPanel4);
-            roundedPanel1.Controls.Add(label1);
-            roundedPanel1.Controls.Add(roundedPanel3);
-            roundedPanel1.Controls.Add(roundedPanel2);
+            roundedPanel1.Controls.Add(pb_Admin);
+            roundedPanel1.Controls.Add(hcnt_DangXuat);
+            roundedPanel1.Controls.Add(lb_Admin);
+            roundedPanel1.Controls.Add(hcnt_Khung);
+            roundedPanel1.Controls.Add(hcnt_KhungMenuAD);
             roundedPanel1.Location = new Point(14, 16);
             roundedPanel1.Margin = new Padding(3, 4, 3, 4);
             roundedPanel1.Name = "roundedPanel1";
             roundedPanel1.Size = new Size(1232, 811);
             roundedPanel1.TabIndex = 0;
             // 
-            // pictureBox1
+            // pb_Admin
             // 
-            pictureBox1.BackColor = SystemColors.Control;
-            pictureBox1.Image = Properties.Resources.admin;
-            pictureBox1.Location = new Point(19, 11);
-            pictureBox1.Margin = new Padding(3, 4, 3, 4);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(48, 47);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 2;
-            pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
+            pb_Admin.BackColor = SystemColors.Control;
+            pb_Admin.Image = Properties.Resources.admin;
+            pb_Admin.Location = new Point(19, 11);
+            pb_Admin.Margin = new Padding(3, 4, 3, 4);
+            pb_Admin.Name = "pb_Admin";
+            pb_Admin.Size = new Size(48, 47);
+            pb_Admin.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_Admin.TabIndex = 2;
+            pb_Admin.TabStop = false;
+            pb_Admin.Click += pictureBox1_Click;
             // 
-            // roundedPanel4
+            // hcnt_DangXuat
             // 
-            roundedPanel4.BackColor = Color.SandyBrown;
-            roundedPanel4.Controls.Add(label2);
-            roundedPanel4.Font = new Font("Segoe UI", 9F);
-            roundedPanel4.Location = new Point(170, 15);
-            roundedPanel4.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel4.Name = "roundedPanel4";
-            roundedPanel4.Size = new Size(126, 33);
-            roundedPanel4.TabIndex = 3;
-            roundedPanel4.Paint += roundedPanel4_Paint;
+            hcnt_DangXuat.BackColor = Color.SandyBrown;
+            hcnt_DangXuat.Controls.Add(lb_DangXuat);
+            hcnt_DangXuat.Font = new Font("Segoe UI", 9F);
+            hcnt_DangXuat.Location = new Point(194, 16);
+            hcnt_DangXuat.Margin = new Padding(3, 4, 3, 4);
+            hcnt_DangXuat.Name = "hcnt_DangXuat";
+            hcnt_DangXuat.Size = new Size(126, 33);
+            hcnt_DangXuat.TabIndex = 3;
+            hcnt_DangXuat.Paint += roundedPanel4_Paint;
             // 
-            // label2
+            // lb_DangXuat
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            label2.ForeColor = SystemColors.ButtonFace;
-            label2.Location = new Point(18, 3);
-            label2.Name = "label2";
-            label2.Size = new Size(105, 25);
-            label2.TabIndex = 2;
-            label2.Text = "Đăng xuất";
-            label2.Click += label2_Click;
+            lb_DangXuat.AutoSize = true;
+            lb_DangXuat.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lb_DangXuat.ForeColor = SystemColors.ButtonFace;
+            lb_DangXuat.Location = new Point(12, 3);
+            lb_DangXuat.Name = "lb_DangXuat";
+            lb_DangXuat.Size = new Size(105, 25);
+            lb_DangXuat.TabIndex = 2;
+            lb_DangXuat.Text = "Đăng xuất";
+            lb_DangXuat.Click += label2_Click;
             // 
-            // label1
+            // lb_Admin
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12F);
-            label1.Location = new Point(66, 16);
-            label1.Name = "label1";
-            label1.Size = new Size(70, 28);
-            label1.TabIndex = 2;
-            label1.Text = "Admin";
-            label1.Click += label1_Click;
+            lb_Admin.AutoSize = true;
+            lb_Admin.Font = new Font("Segoe UI", 12F);
+            lb_Admin.Location = new Point(66, 16);
+            lb_Admin.Name = "lb_Admin";
+            lb_Admin.Size = new Size(70, 28);
+            lb_Admin.TabIndex = 2;
+            lb_Admin.Text = "Admin";
+            lb_Admin.Click += label1_Click;
             // 
-            // roundedPanel3
+            // hcnt_Khung
             // 
-            roundedPanel3.BackColor = Color.Linen;
-            roundedPanel3.Location = new Point(326, 65);
-            roundedPanel3.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel3.Name = "roundedPanel3";
-            roundedPanel3.Size = new Size(886, 717);
-            roundedPanel3.TabIndex = 1;
+            hcnt_Khung.BackColor = Color.Linen;
+            hcnt_Khung.Location = new Point(342, 65);
+            hcnt_Khung.Margin = new Padding(3, 4, 3, 4);
+            hcnt_Khung.Name = "hcnt_Khung";
+            hcnt_Khung.Size = new Size(870, 717);
+            hcnt_Khung.TabIndex = 1;
             // 
-            // roundedPanel2
+            // hcnt_KhungMenuAD
             // 
-            roundedPanel2.BackColor = Color.Linen;
-            roundedPanel2.Controls.Add(roundedPanel11);
-            roundedPanel2.Controls.Add(roundedPanel10);
-            roundedPanel2.Controls.Add(roundedPanel9);
-            roundedPanel2.Controls.Add(roundedPanel8);
-            roundedPanel2.Controls.Add(roundedPanel7);
-            roundedPanel2.Controls.Add(roundedPanel6);
-            roundedPanel2.Controls.Add(roundedPanel5);
-            roundedPanel2.Controls.Add(label3);
-            roundedPanel2.Location = new Point(19, 65);
-            roundedPanel2.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel2.Name = "roundedPanel2";
-            roundedPanel2.Size = new Size(289, 717);
-            roundedPanel2.TabIndex = 0;
+            hcnt_KhungMenuAD.BackColor = Color.Linen;
+            hcnt_KhungMenuAD.Controls.Add(hcnt_ThongKe);
+            hcnt_KhungMenuAD.Controls.Add(roundedPanel10);
+            hcnt_KhungMenuAD.Controls.Add(hcnt_QLHDN);
+            hcnt_KhungMenuAD.Controls.Add(hcnt_QLMA);
+            hcnt_KhungMenuAD.Controls.Add(hcnt_QLKH);
+            hcnt_KhungMenuAD.Controls.Add(hcnt_QLNCC);
+            hcnt_KhungMenuAD.Controls.Add(hcnt_QLNV);
+            hcnt_KhungMenuAD.Controls.Add(lb_DMQL);
+            hcnt_KhungMenuAD.Location = new Point(19, 65);
+            hcnt_KhungMenuAD.Margin = new Padding(3, 4, 3, 4);
+            hcnt_KhungMenuAD.Name = "hcnt_KhungMenuAD";
+            hcnt_KhungMenuAD.Size = new Size(301, 717);
+            hcnt_KhungMenuAD.TabIndex = 0;
             // 
-            // roundedPanel11
+            // hcnt_ThongKe
             // 
-            roundedPanel11.BackColor = Color.Bisque;
-            roundedPanel11.Controls.Add(pictureBox8);
-            roundedPanel11.Controls.Add(label10);
-            roundedPanel11.Location = new Point(21, 517);
-            roundedPanel11.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel11.Name = "roundedPanel11";
-            roundedPanel11.Size = new Size(256, 53);
-            roundedPanel11.TabIndex = 1;
+            hcnt_ThongKe.BackColor = Color.Bisque;
+            hcnt_ThongKe.Controls.Add(pb_ThongKe);
+            hcnt_ThongKe.Controls.Add(label10);
+            hcnt_ThongKe.Location = new Point(21, 517);
+            hcnt_ThongKe.Margin = new Padding(3, 4, 3, 4);
+            hcnt_ThongKe.Name = "hcnt_ThongKe";
+            hcnt_ThongKe.Size = new Size(256, 53);
+            hcnt_ThongKe.TabIndex = 1;
             // 
-            // pictureBox8
+            // pb_ThongKe
             // 
-            pictureBox8.Image = Properties.Resources.thongke;
-            pictureBox8.Location = new Point(11, 4);
-            pictureBox8.Margin = new Padding(3, 4, 3, 4);
-            pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new Size(49, 47);
-            pictureBox8.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox8.TabIndex = 2;
-            pictureBox8.TabStop = false;
-            pictureBox8.Click += pictureBox1_Click;
+            pb_ThongKe.Image = Properties.Resources.thongke;
+            pb_ThongKe.Location = new Point(11, 4);
+            pb_ThongKe.Margin = new Padding(3, 4, 3, 4);
+            pb_ThongKe.Name = "pb_ThongKe";
+            pb_ThongKe.Size = new Size(49, 47);
+            pb_ThongKe.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_ThongKe.TabIndex = 2;
+            pb_ThongKe.TabStop = false;
+            pb_ThongKe.Click += pictureBox1_Click;
             // 
             // label10
             // 
@@ -201,59 +201,59 @@
             // roundedPanel10
             // 
             roundedPanel10.BackColor = Color.Bisque;
-            roundedPanel10.Controls.Add(pictureBox7);
-            roundedPanel10.Controls.Add(label9);
+            roundedPanel10.Controls.Add(pb_QLHDB);
+            roundedPanel10.Controls.Add(hcnt_QLHDB);
             roundedPanel10.Location = new Point(21, 443);
             roundedPanel10.Margin = new Padding(3, 4, 3, 4);
             roundedPanel10.Name = "roundedPanel10";
             roundedPanel10.Size = new Size(256, 53);
             roundedPanel10.TabIndex = 1;
             // 
-            // pictureBox7
+            // pb_QLHDB
             // 
-            pictureBox7.Image = Properties.Resources.hoadonban1;
-            pictureBox7.Location = new Point(11, 3);
-            pictureBox7.Margin = new Padding(3, 4, 3, 4);
-            pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new Size(49, 47);
-            pictureBox7.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox7.TabIndex = 2;
-            pictureBox7.TabStop = false;
-            pictureBox7.Click += pictureBox1_Click;
+            pb_QLHDB.Image = Properties.Resources.hoadonban1;
+            pb_QLHDB.Location = new Point(11, 3);
+            pb_QLHDB.Margin = new Padding(3, 4, 3, 4);
+            pb_QLHDB.Name = "pb_QLHDB";
+            pb_QLHDB.Size = new Size(49, 47);
+            pb_QLHDB.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_QLHDB.TabIndex = 2;
+            pb_QLHDB.TabStop = false;
+            pb_QLHDB.Click += pictureBox1_Click;
             // 
-            // label9
+            // hcnt_QLHDB
             // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 12F);
-            label9.ForeColor = SystemColors.ControlText;
-            label9.Location = new Point(58, 11);
-            label9.Name = "label9";
-            label9.Size = new Size(190, 28);
-            label9.TabIndex = 0;
-            label9.Text = "Quản lí hóa đơn bán";
+            hcnt_QLHDB.AutoSize = true;
+            hcnt_QLHDB.Font = new Font("Segoe UI", 12F);
+            hcnt_QLHDB.ForeColor = SystemColors.ControlText;
+            hcnt_QLHDB.Location = new Point(58, 11);
+            hcnt_QLHDB.Name = "hcnt_QLHDB";
+            hcnt_QLHDB.Size = new Size(190, 28);
+            hcnt_QLHDB.TabIndex = 0;
+            hcnt_QLHDB.Text = "Quản lí hóa đơn bán";
             // 
-            // roundedPanel9
+            // hcnt_QLHDN
             // 
-            roundedPanel9.BackColor = Color.Bisque;
-            roundedPanel9.Controls.Add(pictureBox6);
-            roundedPanel9.Controls.Add(label8);
-            roundedPanel9.Location = new Point(21, 369);
-            roundedPanel9.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel9.Name = "roundedPanel9";
-            roundedPanel9.Size = new Size(256, 53);
-            roundedPanel9.TabIndex = 1;
+            hcnt_QLHDN.BackColor = Color.Bisque;
+            hcnt_QLHDN.Controls.Add(pb_QLHDN);
+            hcnt_QLHDN.Controls.Add(label8);
+            hcnt_QLHDN.Location = new Point(21, 369);
+            hcnt_QLHDN.Margin = new Padding(3, 4, 3, 4);
+            hcnt_QLHDN.Name = "hcnt_QLHDN";
+            hcnt_QLHDN.Size = new Size(256, 53);
+            hcnt_QLHDN.TabIndex = 1;
             // 
-            // pictureBox6
+            // pb_QLHDN
             // 
-            pictureBox6.Image = Properties.Resources.hoadonnhap;
-            pictureBox6.Location = new Point(11, 0);
-            pictureBox6.Margin = new Padding(3, 4, 3, 4);
-            pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(49, 47);
-            pictureBox6.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox6.TabIndex = 2;
-            pictureBox6.TabStop = false;
-            pictureBox6.Click += pictureBox1_Click;
+            pb_QLHDN.Image = Properties.Resources.hoadonnhap;
+            pb_QLHDN.Location = new Point(11, 0);
+            pb_QLHDN.Margin = new Padding(3, 4, 3, 4);
+            pb_QLHDN.Name = "pb_QLHDN";
+            pb_QLHDN.Size = new Size(49, 47);
+            pb_QLHDN.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_QLHDN.TabIndex = 2;
+            pb_QLHDN.TabStop = false;
+            pb_QLHDN.Click += pictureBox1_Click;
             // 
             // label8
             // 
@@ -266,28 +266,28 @@
             label8.TabIndex = 0;
             label8.Text = "Quản lí hóa đơn nhập";
             // 
-            // roundedPanel8
+            // hcnt_QLMA
             // 
-            roundedPanel8.BackColor = Color.Bisque;
-            roundedPanel8.Controls.Add(pictureBox5);
-            roundedPanel8.Controls.Add(label7);
-            roundedPanel8.Location = new Point(21, 296);
-            roundedPanel8.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel8.Name = "roundedPanel8";
-            roundedPanel8.Size = new Size(256, 53);
-            roundedPanel8.TabIndex = 1;
+            hcnt_QLMA.BackColor = Color.Bisque;
+            hcnt_QLMA.Controls.Add(pb_QLMA);
+            hcnt_QLMA.Controls.Add(label7);
+            hcnt_QLMA.Location = new Point(21, 296);
+            hcnt_QLMA.Margin = new Padding(3, 4, 3, 4);
+            hcnt_QLMA.Name = "hcnt_QLMA";
+            hcnt_QLMA.Size = new Size(256, 53);
+            hcnt_QLMA.TabIndex = 1;
             // 
-            // pictureBox5
+            // pb_QLMA
             // 
-            pictureBox5.Image = Properties.Resources.monan;
-            pictureBox5.Location = new Point(11, 0);
-            pictureBox5.Margin = new Padding(3, 4, 3, 4);
-            pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(49, 47);
-            pictureBox5.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox5.TabIndex = 2;
-            pictureBox5.TabStop = false;
-            pictureBox5.Click += pictureBox1_Click;
+            pb_QLMA.Image = Properties.Resources.monan;
+            pb_QLMA.Location = new Point(11, 0);
+            pb_QLMA.Margin = new Padding(3, 4, 3, 4);
+            pb_QLMA.Name = "pb_QLMA";
+            pb_QLMA.Size = new Size(49, 47);
+            pb_QLMA.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_QLMA.TabIndex = 2;
+            pb_QLMA.TabStop = false;
+            pb_QLMA.Click += pictureBox1_Click;
             // 
             // label7
             // 
@@ -300,28 +300,28 @@
             label7.TabIndex = 0;
             label7.Text = "Quản lí món ăn";
             // 
-            // roundedPanel7
+            // hcnt_QLKH
             // 
-            roundedPanel7.BackColor = Color.Bisque;
-            roundedPanel7.Controls.Add(pictureBox4);
-            roundedPanel7.Controls.Add(label6);
-            roundedPanel7.Location = new Point(21, 223);
-            roundedPanel7.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel7.Name = "roundedPanel7";
-            roundedPanel7.Size = new Size(256, 53);
-            roundedPanel7.TabIndex = 1;
+            hcnt_QLKH.BackColor = Color.Bisque;
+            hcnt_QLKH.Controls.Add(pb_QLKH);
+            hcnt_QLKH.Controls.Add(label6);
+            hcnt_QLKH.Location = new Point(21, 223);
+            hcnt_QLKH.Margin = new Padding(3, 4, 3, 4);
+            hcnt_QLKH.Name = "hcnt_QLKH";
+            hcnt_QLKH.Size = new Size(256, 53);
+            hcnt_QLKH.TabIndex = 1;
             // 
-            // pictureBox4
+            // pb_QLKH
             // 
-            pictureBox4.Image = Properties.Resources.khachhang;
-            pictureBox4.Location = new Point(11, 3);
-            pictureBox4.Margin = new Padding(3, 4, 3, 4);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(49, 47);
-            pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox4.TabIndex = 2;
-            pictureBox4.TabStop = false;
-            pictureBox4.Click += pictureBox1_Click;
+            pb_QLKH.Image = Properties.Resources.khachhang;
+            pb_QLKH.Location = new Point(11, 3);
+            pb_QLKH.Margin = new Padding(3, 4, 3, 4);
+            pb_QLKH.Name = "pb_QLKH";
+            pb_QLKH.Size = new Size(49, 47);
+            pb_QLKH.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_QLKH.TabIndex = 2;
+            pb_QLKH.TabStop = false;
+            pb_QLKH.Click += pictureBox1_Click;
             // 
             // label6
             // 
@@ -334,28 +334,28 @@
             label6.TabIndex = 0;
             label6.Text = "Quản lí khách hàng";
             // 
-            // roundedPanel6
+            // hcnt_QLNCC
             // 
-            roundedPanel6.BackColor = Color.Bisque;
-            roundedPanel6.Controls.Add(pictureBox3);
-            roundedPanel6.Controls.Add(label5);
-            roundedPanel6.Location = new Point(21, 149);
-            roundedPanel6.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel6.Name = "roundedPanel6";
-            roundedPanel6.Size = new Size(256, 53);
-            roundedPanel6.TabIndex = 1;
+            hcnt_QLNCC.BackColor = Color.Bisque;
+            hcnt_QLNCC.Controls.Add(pb_QLNCC);
+            hcnt_QLNCC.Controls.Add(label5);
+            hcnt_QLNCC.Location = new Point(21, 149);
+            hcnt_QLNCC.Margin = new Padding(3, 4, 3, 4);
+            hcnt_QLNCC.Name = "hcnt_QLNCC";
+            hcnt_QLNCC.Size = new Size(256, 53);
+            hcnt_QLNCC.TabIndex = 1;
             // 
-            // pictureBox3
+            // pb_QLNCC
             // 
-            pictureBox3.Image = Properties.Resources.ncc;
-            pictureBox3.Location = new Point(11, 3);
-            pictureBox3.Margin = new Padding(3, 4, 3, 4);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(49, 47);
-            pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox3.TabIndex = 2;
-            pictureBox3.TabStop = false;
-            pictureBox3.Click += pictureBox1_Click;
+            pb_QLNCC.Image = Properties.Resources.ncc;
+            pb_QLNCC.Location = new Point(11, 3);
+            pb_QLNCC.Margin = new Padding(3, 4, 3, 4);
+            pb_QLNCC.Name = "pb_QLNCC";
+            pb_QLNCC.Size = new Size(49, 47);
+            pb_QLNCC.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_QLNCC.TabIndex = 2;
+            pb_QLNCC.TabStop = false;
+            pb_QLNCC.Click += pictureBox1_Click;
             // 
             // label5
             // 
@@ -368,28 +368,28 @@
             label5.TabIndex = 0;
             label5.Text = "Quản lí nhà cung cấp";
             // 
-            // roundedPanel5
+            // hcnt_QLNV
             // 
-            roundedPanel5.BackColor = Color.Bisque;
-            roundedPanel5.Controls.Add(pictureBox2);
-            roundedPanel5.Controls.Add(label4);
-            roundedPanel5.Location = new Point(21, 76);
-            roundedPanel5.Margin = new Padding(3, 4, 3, 4);
-            roundedPanel5.Name = "roundedPanel5";
-            roundedPanel5.Size = new Size(256, 53);
-            roundedPanel5.TabIndex = 1;
+            hcnt_QLNV.BackColor = Color.Bisque;
+            hcnt_QLNV.Controls.Add(pb_QLNV);
+            hcnt_QLNV.Controls.Add(label4);
+            hcnt_QLNV.Location = new Point(21, 76);
+            hcnt_QLNV.Margin = new Padding(3, 4, 3, 4);
+            hcnt_QLNV.Name = "hcnt_QLNV";
+            hcnt_QLNV.Size = new Size(256, 53);
+            hcnt_QLNV.TabIndex = 1;
             // 
-            // pictureBox2
+            // pb_QLNV
             // 
-            pictureBox2.Image = Properties.Resources.nhanvien;
-            pictureBox2.Location = new Point(11, 3);
-            pictureBox2.Margin = new Padding(3, 4, 3, 4);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(49, 47);
-            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox2.TabIndex = 2;
-            pictureBox2.TabStop = false;
-            pictureBox2.Click += pictureBox1_Click;
+            pb_QLNV.Image = Properties.Resources.nhanvien;
+            pb_QLNV.Location = new Point(11, 3);
+            pb_QLNV.Margin = new Padding(3, 4, 3, 4);
+            pb_QLNV.Name = "pb_QLNV";
+            pb_QLNV.Size = new Size(49, 47);
+            pb_QLNV.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_QLNV.TabIndex = 2;
+            pb_QLNV.TabStop = false;
+            pb_QLNV.Click += pictureBox1_Click;
             // 
             // label4
             // 
@@ -402,16 +402,16 @@
             label4.TabIndex = 0;
             label4.Text = "Quản lí nhân viên";
             // 
-            // label3
+            // lb_DMQL
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            label3.ForeColor = Color.Salmon;
-            label3.Location = new Point(43, 12);
-            label3.Name = "label3";
-            label3.Size = new Size(223, 35);
-            label3.TabIndex = 0;
-            label3.Text = "Danh mục Quản lí";
+            lb_DMQL.AutoSize = true;
+            lb_DMQL.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+            lb_DMQL.ForeColor = Color.Salmon;
+            lb_DMQL.Location = new Point(40, 12);
+            lb_DMQL.Name = "lb_DMQL";
+            lb_DMQL.Size = new Size(223, 35);
+            lb_DMQL.TabIndex = 0;
+            lb_DMQL.Text = "Danh mục Quản lí";
             // 
             // TrangChuADMIN
             // 
@@ -428,65 +428,65 @@
             Text = "TrangChuADMIN";
             roundedPanel1.ResumeLayout(false);
             roundedPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            roundedPanel4.ResumeLayout(false);
-            roundedPanel4.PerformLayout();
-            roundedPanel2.ResumeLayout(false);
-            roundedPanel2.PerformLayout();
-            roundedPanel11.ResumeLayout(false);
-            roundedPanel11.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pb_Admin).EndInit();
+            hcnt_DangXuat.ResumeLayout(false);
+            hcnt_DangXuat.PerformLayout();
+            hcnt_KhungMenuAD.ResumeLayout(false);
+            hcnt_KhungMenuAD.PerformLayout();
+            hcnt_ThongKe.ResumeLayout(false);
+            hcnt_ThongKe.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_ThongKe).EndInit();
             roundedPanel10.ResumeLayout(false);
             roundedPanel10.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
-            roundedPanel9.ResumeLayout(false);
-            roundedPanel9.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
-            roundedPanel8.ResumeLayout(false);
-            roundedPanel8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
-            roundedPanel7.ResumeLayout(false);
-            roundedPanel7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
-            roundedPanel6.ResumeLayout(false);
-            roundedPanel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
-            roundedPanel5.ResumeLayout(false);
-            roundedPanel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pb_QLHDB).EndInit();
+            hcnt_QLHDN.ResumeLayout(false);
+            hcnt_QLHDN.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLHDN).EndInit();
+            hcnt_QLMA.ResumeLayout(false);
+            hcnt_QLMA.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLMA).EndInit();
+            hcnt_QLKH.ResumeLayout(false);
+            hcnt_QLKH.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLKH).EndInit();
+            hcnt_QLNCC.ResumeLayout(false);
+            hcnt_QLNCC.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLNCC).EndInit();
+            hcnt_QLNV.ResumeLayout(false);
+            hcnt_QLNV.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_QLNV).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private RoundedPanel roundedPanel1;
-        private RoundedPanel roundedPanel2;
-        private Label label1;
-        private RoundedPanel roundedPanel3;
-        private RoundedPanel roundedPanel4;
-        private Label label2;
-        private Label label3;
-        private RoundedPanel roundedPanel5;
-        private RoundedPanel roundedPanel6;
+        private RoundedPanel hcnt_KhungMenuAD;
+        private Label lb_Admin;
+        private RoundedPanel hcnt_Khung;
+        private RoundedPanel hcnt_DangXuat;
+        private Label lb_DangXuat;
+        private Label lb_DMQL;
+        private RoundedPanel hcnt_QLNV;
+        private RoundedPanel hcnt_QLNCC;
         private Label label5;
         private Label label4;
-        private RoundedPanel roundedPanel11;
+        private RoundedPanel hcnt_ThongKe;
         private Label label10;
         private RoundedPanel roundedPanel10;
-        private Label label9;
-        private RoundedPanel roundedPanel9;
+        private Label hcnt_QLHDB;
+        private RoundedPanel hcnt_QLHDN;
         private Label label8;
-        private RoundedPanel roundedPanel8;
+        private RoundedPanel hcnt_QLMA;
         private Label label7;
-        private RoundedPanel roundedPanel7;
+        private RoundedPanel hcnt_QLKH;
         private Label label6;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
-        private PictureBox pictureBox4;
-        private PictureBox pictureBox3;
-        private PictureBox pictureBox5;
-        private PictureBox pictureBox6;
-        private PictureBox pictureBox7;
-        private PictureBox pictureBox8;
+        private PictureBox pb_Admin;
+        private PictureBox pb_QLNV;
+        private PictureBox pb_QLKH;
+        private PictureBox pb_QLNCC;
+        private PictureBox pb_QLMA;
+        private PictureBox pb_QLHDN;
+        private PictureBox pb_QLHDB;
+        private PictureBox pb_ThongKe;
     }
 }
