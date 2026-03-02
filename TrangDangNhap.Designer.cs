@@ -243,7 +243,7 @@
             DoubleBuffered = true;
             Name = "TrangDangNhap";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Form1";
+            Text = "TrangDangNhap";
             hcnt_KhungDangNhap.ResumeLayout(false);
             hcnt_KhungDangNhap.PerformLayout();
             hcnt_MatKhau.ResumeLayout(false);
