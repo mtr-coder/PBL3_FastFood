@@ -61,12 +61,12 @@ namespace PBL3
 
         private void lb_DangKi_MouseEnter(object sender, EventArgs e)
         {
-            lbl_DangKi.ForeColor = Color.FromArgb(255, 69, 0);
+            lb_DangKi.ForeColor = Color.FromArgb(255, 69, 0);
         }
 
         private void lb_DangKi_MouseLeave(object sender, EventArgs e)
         {
-            lbl_DangKi.ForeColor = Color.LightSalmon;
+            lb_DangKi.ForeColor = Color.LightSalmon;
         }
 
         private void hcnt_DangNhap_Click(object sender, EventArgs e)
