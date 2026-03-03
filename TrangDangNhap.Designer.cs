@@ -31,7 +31,7 @@
             hcnt_KhungDangNhap = new RoundedPanel();
             lb_hoac = new Label();
             lb_MatKhau = new Label();
-            lb_DangKi = new Label();
+            lbl_DangKi = new Label();
             lb_ChuaCoTK = new Label();
             lb_QuenMK = new Label();
             lb_TaiKhoan = new Label();
@@ -54,7 +54,7 @@
             hcnt_KhungDangNhap.BackColor = SystemColors.ButtonHighlight;
             hcnt_KhungDangNhap.Controls.Add(lb_hoac);
             hcnt_KhungDangNhap.Controls.Add(lb_MatKhau);
-            hcnt_KhungDangNhap.Controls.Add(lb_DangKi);
+            hcnt_KhungDangNhap.Controls.Add(lbl_DangKi);
             hcnt_KhungDangNhap.Controls.Add(lb_ChuaCoTK);
             hcnt_KhungDangNhap.Controls.Add(lb_QuenMK);
             hcnt_KhungDangNhap.Controls.Add(lb_TaiKhoan);
@@ -68,6 +68,7 @@
             hcnt_KhungDangNhap.Name = "hcnt_KhungDangNhap";
             hcnt_KhungDangNhap.Size = new Size(550, 505);
             hcnt_KhungDangNhap.TabIndex = 0;
+            hcnt_KhungDangNhap.Paint += hcnt_KhungDangNhap_Paint;
             // 
             // lb_hoac
             // 
@@ -91,8 +92,9 @@
             lb_MatKhau.Text = "Mật khẩu:";
             lb_MatKhau.Click += label4_Click;
             // 
-            // lb_DangKi
+            // lbl_DangKi
             // 
+<<<<<<< HEAD
             lb_DangKi.AutoSize = true;
             lb_DangKi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_DangKi.ForeColor = Color.Salmon;
@@ -104,13 +106,30 @@
             lb_DangKi.Click += label2_Click;
             lb_DangKi.MouseEnter += lb_DangKi_MouseEnter;
             lb_DangKi.MouseLeave += lb_DangKi_MouseLeave;
+=======
+            lbl_DangKi.AutoSize = true;
+            lbl_DangKi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lbl_DangKi.ForeColor = Color.Salmon;
+            lbl_DangKi.Location = new Point(291, 451);
+            lbl_DangKi.Name = "lbl_DangKi";
+            lbl_DangKi.Size = new Size(121, 23);
+            lbl_DangKi.TabIndex = 1;
+            lbl_DangKi.Text = "Đăng ký ngay";
+            lbl_DangKi.Click += label2_Click;
+            lbl_DangKi.MouseEnter += lb_DangKi_MouseEnter;
+            lbl_DangKi.MouseLeave += lb_DangKi_MouseLeave;
+>>>>>>> 6a8a0586044db20037dde3c7bfff4318856d10ba
             // 
             // lb_ChuaCoTK
             // 
             lb_ChuaCoTK.AutoSize = true;
             lb_ChuaCoTK.Font = new Font("Segoe UI", 10F);
             lb_ChuaCoTK.ForeColor = SystemColors.ControlDarkDark;
+<<<<<<< HEAD
             lb_ChuaCoTK.Location = new Point(145, 451);
+=======
+            lb_ChuaCoTK.Location = new Point(141, 451);
+>>>>>>> 6a8a0586044db20037dde3c7bfff4318856d10ba
             lb_ChuaCoTK.Name = "lb_ChuaCoTK";
             lb_ChuaCoTK.Size = new Size(157, 23);
             lb_ChuaCoTK.TabIndex = 1;
@@ -148,7 +167,11 @@
             lb_TieuDeHeThong.AutoSize = true;
             lb_TieuDeHeThong.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_TieuDeHeThong.ForeColor = SystemColors.ControlDarkDark;
+<<<<<<< HEAD
             lb_TieuDeHeThong.Location = new Point(25, 81);
+=======
+            lb_TieuDeHeThong.Location = new Point(104, 102);
+>>>>>>> 6a8a0586044db20037dde3c7bfff4318856d10ba
             lb_TieuDeHeThong.Name = "lb_TieuDeHeThong";
             lb_TieuDeHeThong.Size = new Size(342, 23);
             lb_TieuDeHeThong.TabIndex = 1;
@@ -187,9 +210,10 @@
             hcnt_DangNhap.Name = "hcnt_DangNhap";
             hcnt_DangNhap.Size = new Size(255, 56);
             hcnt_DangNhap.TabIndex = 2;
+            hcnt_DangNhap.Click += hcnt_DangNhap_Click;
             hcnt_DangNhap.Paint += roundedPanel2_Paint;
-            hcnt_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
-            hcnt_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
+            hcnt_DangNhap.MouseEnter += hcnt_DangNhap_MouseEnter;
+            hcnt_DangNhap.MouseLeave += hcnt_DangNhap_MouseLeave;
             // 
             // lb_DangNhap
             // 
@@ -201,9 +225,15 @@
             lb_DangNhap.Size = new Size(98, 23);
             lb_DangNhap.TabIndex = 1;
             lb_DangNhap.Text = "Đăng nhập";
+<<<<<<< HEAD
             lb_DangNhap.Click += btn_DanhNhap_Click;
             lb_DangNhap.MouseEnter += btn_DangNhap_MouseEnter;
             lb_DangNhap.MouseLeave += btn_DangNhap_MouseLeave;
+=======
+            lb_DangNhap.Click += hcnt_DangNhap_Click;
+            lb_DangNhap.MouseEnter += hcnt_DangNhap_MouseEnter;
+            lb_DangNhap.MouseLeave += hcnt_DangNhap_MouseLeave;
+>>>>>>> 6a8a0586044db20037dde3c7bfff4318856d10ba
             // 
             // hcnt_TaiKhoan
             // 
@@ -232,7 +262,11 @@
             // 
             lb_TieuDeDangNhap.AutoSize = true;
             lb_TieuDeDangNhap.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+<<<<<<< HEAD
             lb_TieuDeDangNhap.Location = new Point(25, 20);
+=======
+            lb_TieuDeDangNhap.Location = new Point(175, 41);
+>>>>>>> 6a8a0586044db20037dde3c7bfff4318856d10ba
             lb_TieuDeDangNhap.Name = "lb_TieuDeDangNhap";
             lb_TieuDeDangNhap.Size = new Size(200, 46);
             lb_TieuDeDangNhap.TabIndex = 0;
@@ -278,7 +312,7 @@
         private Label lb_hoac;
         private Label lb_ChuaCoTK;
         private Label lb_DangNhap;
-        private Label lb_DangKi;
+        private Label lbl_DangKi;
         private Label lb_QuenMK;
         private RoundedPanel hcnt_DangNhap;
     }

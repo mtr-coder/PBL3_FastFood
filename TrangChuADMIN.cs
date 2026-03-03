@@ -34,5 +34,35 @@ namespace PBL3
         {
 
         }
+
+        private void hcnt_DangXuat_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "Bạn có chắc chắn muốn đăng xuất?",
+                "Xác nhận đăng xuất",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                // Mở form Đăng nhập
+                TrangDangNhap trangDangNhap = new TrangDangNhap();
+                trangDangNhap.Show();
+
+                // Đóng form hiện tại
+                this.Close();
+            }
+        }
+
+        private void hcnt_DangXuat_MouseEnter(object sender, EventArgs e)
+        {
+            hcnt_DangXuat.BackColor = Color.FromArgb(255, 69, 0);
+        }
+
+        private void hcnt_DangXuat_MouseLeave(object sender, EventArgs e)
+        {
+            hcnt_DangXuat.BackColor = Color.LightSalmon;
+        }
     }
 }
