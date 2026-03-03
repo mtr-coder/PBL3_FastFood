@@ -35,7 +35,7 @@ namespace PBL3
 
         }
 
-        private void hcnt_DangXuat_Click(object sender, EventArgs e)
+        private void btn_DangXuat_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
                 "Bạn có chắc chắn muốn đăng xuất?",
@@ -55,14 +55,14 @@ namespace PBL3
             }
         }
 
-        private void hcnt_DangXuat_MouseEnter(object sender, EventArgs e)
+        private void btn_DangXuat_MouseEnter(object sender, EventArgs e)
         {
-            hcnt_DangXuat.BackColor = Color.FromArgb(255, 69, 0);
+            btn_DangXuat.BackColor = Color.FromArgb(255, 69, 0);
         }
 
-        private void hcnt_DangXuat_MouseLeave(object sender, EventArgs e)
+        private void btn_DangXuat_MouseLeave(object sender, EventArgs e)
         {
-            hcnt_DangXuat.BackColor = Color.LightSalmon;
+            btn_DangXuat.BackColor = Color.LightSalmon;
         }
     }
 }
