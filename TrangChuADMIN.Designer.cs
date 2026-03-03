@@ -95,7 +95,7 @@
             pb_Admin.Image = Properties.Resources.admin;
             pb_Admin.Location = new Point(17, 8);
             pb_Admin.Name = "pb_Admin";
-            pb_Admin.Size = new Size(42, 35);
+            pb_Admin.Size = new Size(38, 38);
             pb_Admin.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_Admin.TabIndex = 2;
             pb_Admin.TabStop = false;
@@ -175,9 +175,9 @@
             // pb_ThongKe
             // 
             pb_ThongKe.Image = Properties.Resources.thongke;
-            pb_ThongKe.Location = new Point(10, 3);
+            pb_ThongKe.Location = new Point(10, 0);
             pb_ThongKe.Name = "pb_ThongKe";
-            pb_ThongKe.Size = new Size(43, 35);
+            pb_ThongKe.Size = new Size(38, 38);
             pb_ThongKe.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_ThongKe.TabIndex = 2;
             pb_ThongKe.TabStop = false;
@@ -207,9 +207,9 @@
             // pb_QLHDB
             // 
             pb_QLHDB.Image = Properties.Resources.hoadonban1;
-            pb_QLHDB.Location = new Point(10, 2);
+            pb_QLHDB.Location = new Point(10, 1);
             pb_QLHDB.Name = "pb_QLHDB";
-            pb_QLHDB.Size = new Size(43, 35);
+            pb_QLHDB.Size = new Size(38, 38);
             pb_QLHDB.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLHDB.TabIndex = 2;
             pb_QLHDB.TabStop = false;
@@ -241,7 +241,7 @@
             pb_QLHDN.Image = Properties.Resources.hoadonnhap;
             pb_QLHDN.Location = new Point(10, 0);
             pb_QLHDN.Name = "pb_QLHDN";
-            pb_QLHDN.Size = new Size(43, 35);
+            pb_QLHDN.Size = new Size(38, 38);
             pb_QLHDN.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLHDN.TabIndex = 2;
             pb_QLHDN.TabStop = false;
@@ -273,7 +273,7 @@
             pb_QLMA.Image = Properties.Resources.monan;
             pb_QLMA.Location = new Point(10, 0);
             pb_QLMA.Name = "pb_QLMA";
-            pb_QLMA.Size = new Size(43, 35);
+            pb_QLMA.Size = new Size(38, 38);
             pb_QLMA.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLMA.TabIndex = 2;
             pb_QLMA.TabStop = false;
@@ -303,9 +303,9 @@
             // pb_QLKH
             // 
             pb_QLKH.Image = Properties.Resources.khachhang;
-            pb_QLKH.Location = new Point(10, 2);
+            pb_QLKH.Location = new Point(10, 1);
             pb_QLKH.Name = "pb_QLKH";
-            pb_QLKH.Size = new Size(43, 35);
+            pb_QLKH.Size = new Size(38, 38);
             pb_QLKH.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLKH.TabIndex = 2;
             pb_QLKH.TabStop = false;
@@ -335,9 +335,9 @@
             // pb_QLNCC
             // 
             pb_QLNCC.Image = Properties.Resources.ncc;
-            pb_QLNCC.Location = new Point(10, 2);
+            pb_QLNCC.Location = new Point(10, 1);
             pb_QLNCC.Name = "pb_QLNCC";
-            pb_QLNCC.Size = new Size(43, 35);
+            pb_QLNCC.Size = new Size(38, 38);
             pb_QLNCC.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLNCC.TabIndex = 2;
             pb_QLNCC.TabStop = false;
@@ -367,9 +367,9 @@
             // pb_QLNV
             // 
             pb_QLNV.Image = Properties.Resources.nhanvien;
-            pb_QLNV.Location = new Point(10, 2);
+            pb_QLNV.Location = new Point(10, 1);
             pb_QLNV.Name = "pb_QLNV";
-            pb_QLNV.Size = new Size(43, 35);
+            pb_QLNV.Size = new Size(38, 38);
             pb_QLNV.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLNV.TabIndex = 2;
             pb_QLNV.TabStop = false;
