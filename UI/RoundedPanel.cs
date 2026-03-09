@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing.Drawing2D;
 
-namespace PBL3
+namespace PBL3.UI
 {
     public class RoundedPanel : Panel
     {

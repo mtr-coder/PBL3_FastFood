@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace PBL3 // Đảm bảo tên namespace này trùng với tên Project của bạn
+namespace PBL3.UI // Đảm bảo tên namespace này trùng với tên Project của bạn
 {
     public class CustomDateTimePicker : DateTimePicker
     {
