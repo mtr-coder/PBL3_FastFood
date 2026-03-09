@@ -34,6 +34,7 @@
             label2 = new Label();
             label1 = new Label();
             roundedPanel3 = new RoundedPanel();
+            button1 = new Button();
             roundedPanel18 = new RoundedPanel();
             textBox6 = new TextBox();
             roundedPanel17 = new RoundedPanel();
@@ -53,7 +54,6 @@
             button4 = new Button();
             button2 = new Button();
             dataGridView1 = new DataGridView();
-            button1 = new Button();
             label17 = new Label();
             label16 = new Label();
             label15 = new Label();
@@ -81,7 +81,6 @@
             pictureBox2 = new PictureBox();
             label4 = new Label();
             label3 = new Label();
-            roundedPanel20 = new RoundedPanel();
             roundedPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             roundedPanel4.SuspendLayout();
@@ -106,7 +105,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             roundedPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            roundedPanel20.SuspendLayout();
             SuspendLayout();
             // 
             // roundedPanel1
@@ -169,7 +167,7 @@
             // roundedPanel3
             // 
             roundedPanel3.BackColor = Color.Linen;
-            roundedPanel3.Controls.Add(roundedPanel20);
+            roundedPanel3.Controls.Add(button1);
             roundedPanel3.Controls.Add(roundedPanel18);
             roundedPanel3.Controls.Add(roundedPanel17);
             roundedPanel3.Controls.Add(roundedPanel16);
@@ -194,6 +192,19 @@
             roundedPanel3.Name = "roundedPanel3";
             roundedPanel3.Size = new Size(886, 717);
             roundedPanel3.TabIndex = 1;
+            // 
+            // button1
+            // 
+            button1.BackColor = Color.Bisque;
+            button1.BackgroundImageLayout = ImageLayout.None;
+            button1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button1.Location = new Point(695, 251);
+            button1.Name = "button1";
+            button1.Size = new Size(188, 46);
+            button1.TabIndex = 19;
+            button1.Text = "Tìm kiếm";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click_1;
             // 
             // roundedPanel18
             // 
@@ -391,19 +402,6 @@
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(853, 307);
             dataGridView1.TabIndex = 20;
-            // 
-            // button1
-            // 
-            button1.BackColor = Color.Bisque;
-            button1.BackgroundImageLayout = ImageLayout.None;
-            button1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.Location = new Point(8, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(171, 34);
-            button1.TabIndex = 19;
-            button1.Text = "Tìm kiếm";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click_1;
             // 
             // label17
             // 
@@ -703,15 +701,6 @@
             label3.TabIndex = 0;
             label3.Text = "Danh mục Quản lí";
             // 
-            // roundedPanel20
-            // 
-            roundedPanel20.BackColor = Color.Bisque;
-            roundedPanel20.Controls.Add(button1);
-            roundedPanel20.Location = new Point(695, 257);
-            roundedPanel20.Name = "roundedPanel20";
-            roundedPanel20.Size = new Size(191, 40);
-            roundedPanel20.TabIndex = 30;
-            // 
             // Nhanvien
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -767,7 +756,6 @@
             roundedPanel5.ResumeLayout(false);
             roundedPanel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            roundedPanel20.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -826,6 +814,5 @@
         private TextBox textBox6;
         private RoundedPanel roundedPanel17;
         private TextBox textBox5;
-        private RoundedPanel roundedPanel20;
     }
 }

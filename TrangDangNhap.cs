@@ -22,7 +22,13 @@ namespace PBL3
 
         private void label2_Click(object sender, EventArgs e)
         {
-
+            // Only open registration when the clicked label is the "Đăng ký ngay" label
+            if (sender is Label lbl && lbl.Text == "Đăng ký ngay")
+            {
+                this.Hide();
+                TrangDangKy f = new TrangDangKy();
+                f.Show();
+            }
         }
 
         private void roundedPanel2_Paint(object sender, PaintEventArgs e)
