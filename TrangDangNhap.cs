@@ -126,7 +126,7 @@ namespace PBL3
 
                             this.Hide();
 
-                            if (maChucVu == "6")
+                            if (maChucVu == "1")
                             {
                                 TrangChuADMIN fAdmin = new TrangChuADMIN();
                                 fAdmin.Show();

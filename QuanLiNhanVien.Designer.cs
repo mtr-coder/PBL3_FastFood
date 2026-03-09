@@ -1,6 +1,6 @@
 ﻿namespace PBL3
 {
-    partial class TrangChuADMIN
+    partial class QuanLiNhanVien
     {
         /// <summary>
         /// Required designer variable.
@@ -376,7 +376,7 @@
             // 
             // btn_QLNV
             // 
-            btn_QLNV.BackColor = Color.Bisque;
+            btn_QLNV.BackColor = Color.Coral;
             btn_QLNV.Controls.Add(pb_QLNV);
             btn_QLNV.Controls.Add(label4);
             btn_QLNV.Location = new Point(21, 76);
@@ -419,7 +419,7 @@
             lb_DMQL.TabIndex = 0;
             lb_DMQL.Text = "Danh mục Quản lí";
             // 
-            // TrangChuADMIN
+            // QuanLiNhanVien
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -429,9 +429,9 @@
             Controls.Add(roundedPanel1);
             DoubleBuffered = true;
             Margin = new Padding(3, 4, 3, 4);
-            Name = "TrangChuADMIN";
+            Name = "QuanLiNhanVien";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "TrangChuADMIN";
+            Text = "QuanLiNhanVien";
             roundedPanel1.ResumeLayout(false);
             roundedPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pb_Admin).EndInit();

@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace PBL3
 {
-    public partial class TrangChuADMIN : Form
+    public partial class QuanLiNhanVien : Form
     {
-        public TrangChuADMIN()
+        public QuanLiNhanVien()
         {
             InitializeComponent();
         }
