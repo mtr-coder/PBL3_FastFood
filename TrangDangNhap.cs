@@ -81,18 +81,9 @@ namespace PBL3
 
         private void TrangDangNhap_Load(object sender, EventArgs e)
         {
-            try
-            {
-                using (SqlConnection conn = DbHelper.GetConnection())
-                {
-                    conn.Open();
-                    MessageBox.Show("Kết nối database thành công!");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi kết nối: " + ex.Message);
-            }
+
+            using (SqlConnection conn = DbHelper.GetConnection())
+            conn.Open();
         }
 
         private void btn_DangNhap_Click(object sender, EventArgs e)
