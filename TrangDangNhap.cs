@@ -91,12 +91,12 @@ namespace PBL3
 
         private void btn_DangNhap_Click(object sender, EventArgs e)
         {
-            string taiKhoan = txt_TaiKhoan.Text.Trim();
+            string soDienThoai = txt_TaiKhoan.Text.Trim();
             string matKhau = txt_MatKhau.Text.Trim();
 
-            if (string.IsNullOrEmpty(taiKhoan) || string.IsNullOrEmpty(matKhau))
+            if (string.IsNullOrEmpty(soDienThoai) || string.IsNullOrEmpty(matKhau))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ tài khoản và mật khẩu!",
+                MessageBox.Show("Vui lòng nhập đầy đủ số điện thoại và mật khẩu!",
                                 "Thông báo",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Warning);
@@ -109,18 +109,18 @@ namespace PBL3
                 {
                     conn.Open();
 
-                    string query = "SELECT VaiTro FROM TaiKhoan WHERE TenDangNhap = @tk AND MatKhau = @mk";
+                    string query = "SELECT MaCV FROM dbo.NHAN_VIEN WHERE SDT = @sdt AND MatKhau = @mk";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@tk", taiKhoan);
+                        cmd.Parameters.AddWithValue("@sdt", soDienThoai);
                         cmd.Parameters.AddWithValue("@mk", matKhau);
 
                         object result = cmd.ExecuteScalar();
 
                         if (result != null)
                         {
-                            string vaiTro = result.ToString();
+                            string maChucVu = result.ToString().Trim();
 
                             MessageBox.Show("Đăng nhập thành công!",
                                             "Thông báo",
@@ -129,25 +129,20 @@ namespace PBL3
 
                             this.Hide();
 
-                            if (vaiTro == "Admin")
+                            if (maChucVu == "6")
                             {
                                 TrangChuADMIN fAdmin = new TrangChuADMIN();
                                 fAdmin.Show();
                             }
-                            else if (vaiTro == "NhanVien")
-                            {
-                                //TrangChuNhanVien fNV = new TrangChuNhanVien();
-                                //fNV.Show();
-                            }
                             else
                             {
-                                MessageBox.Show("Vai trò không hợp lệ!");
-                                this.Show();
+                                //TrangNhanVien fNV = new TrangNhanVien();
+                                //fNV.Show();
                             }
                         }
                         else
                         {
-                            MessageBox.Show("Sai tài khoản hoặc mật khẩu!",
+                            MessageBox.Show("Sai số điện thoại hoặc mật khẩu!",
                                             "Lỗi",
                                             MessageBoxButtons.OK,
                                             MessageBoxIcon.Error);
