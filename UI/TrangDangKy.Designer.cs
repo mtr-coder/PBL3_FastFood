@@ -1,4 +1,6 @@
-﻿namespace PBL3
+﻿using PBL3.UI;
+
+namespace PBL3
 {
     partial class TrangDangKy
     {
@@ -29,6 +31,7 @@
         private void InitializeComponent()
         {
             roundedPanel1 = new RoundedPanel();
+            btn_DangKy = new Button();
             rdb_Nu = new RadioButton();
             rdb_Nam = new RadioButton();
             roundedPanel6 = new RoundedPanel();
@@ -50,7 +53,6 @@
             lbl_NgaySinh = new Label();
             lbl_MaNhanVien = new Label();
             lbl_DangKyTaiKhoan = new Label();
-            btn_DangKy = new Button();
             roundedPanel1.SuspendLayout();
             roundedPanel6.SuspendLayout();
             roundedPanel5.SuspendLayout();
@@ -81,6 +83,19 @@
             roundedPanel1.Name = "roundedPanel1";
             roundedPanel1.Size = new Size(700, 550);
             roundedPanel1.TabIndex = 0;
+            // 
+            // btn_DangKy
+            // 
+            btn_DangKy.BackColor = Color.LightSalmon;
+            btn_DangKy.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btn_DangKy.ForeColor = Color.White;
+            btn_DangKy.Location = new Point(281, 409);
+            btn_DangKy.Name = "btn_DangKy";
+            btn_DangKy.Size = new Size(139, 57);
+            btn_DangKy.TabIndex = 14;
+            btn_DangKy.Text = "Đăng ký";
+            btn_DangKy.UseVisualStyleBackColor = false;
+            btn_DangKy.Click += btn_DangKy_Click;
             // 
             // rdb_Nu
             // 
@@ -296,19 +311,6 @@
             lbl_DangKyTaiKhoan.TabIndex = 0;
             lbl_DangKyTaiKhoan.Text = "Đăng Ký Tài Khoản";
             // 
-            // btn_DangKy
-            // 
-            btn_DangKy.BackColor = Color.LightSalmon;
-            btn_DangKy.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btn_DangKy.ForeColor = Color.White;
-            btn_DangKy.Location = new Point(281, 409);
-            btn_DangKy.Name = "btn_DangKy";
-            btn_DangKy.Size = new Size(139, 57);
-            btn_DangKy.TabIndex = 14;
-            btn_DangKy.Text = "Đăng ký";
-            btn_DangKy.UseVisualStyleBackColor = false;
-            btn_DangKy.Click += btn_DangKy_Click;
-            // 
             // TrangDangKy
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -319,6 +321,7 @@
             Controls.Add(roundedPanel1);
             DoubleBuffered = true;
             Name = "TrangDangKy";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "TrangDangKy";
             roundedPanel1.ResumeLayout(false);
             roundedPanel1.PerformLayout();

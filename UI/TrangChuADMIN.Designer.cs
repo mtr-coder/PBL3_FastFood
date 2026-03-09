@@ -1,4 +1,6 @@
-﻿namespace PBL3
+﻿using PBL3.UI;
+
+namespace PBL3
 {
     partial class TrangChuADMIN
     {
