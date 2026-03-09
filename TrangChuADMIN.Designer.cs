@@ -121,14 +121,16 @@
             // lb_DangXuat
             // 
             lb_DangXuat.AutoSize = true;
-            lb_DangXuat.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lb_DangXuat.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_DangXuat.ForeColor = SystemColors.ButtonFace;
-            lb_DangXuat.Location = new Point(15, 3);
+            lb_DangXuat.Location = new Point(18, 4);
             lb_DangXuat.Name = "lb_DangXuat";
-            lb_DangXuat.Size = new Size(105, 25);
+            lb_DangXuat.Size = new Size(93, 23);
             lb_DangXuat.TabIndex = 2;
             lb_DangXuat.Text = "Đăng xuất";
             lb_DangXuat.Click += btn_DangXuat_Click;
+            lb_DangXuat.MouseEnter += btn_DangXuat_MouseEnter;
+            lb_DangXuat.MouseLeave += btn_DangXuat_MouseLeave;
             // 
             // lb_Admin
             // 
