@@ -50,21 +50,19 @@
             lbl_NgaySinh = new Label();
             lbl_MaNhanVien = new Label();
             lbl_DangKyTaiKhoan = new Label();
-            roundedPanel7 = new RoundedPanel();
-            label2 = new Label();
+            btn_DangKy = new Button();
             roundedPanel1.SuspendLayout();
             roundedPanel6.SuspendLayout();
             roundedPanel5.SuspendLayout();
             roundedPanel4.SuspendLayout();
             roundedPanel3.SuspendLayout();
             roundedPanel2.SuspendLayout();
-            roundedPanel7.SuspendLayout();
             SuspendLayout();
             // 
             // roundedPanel1
             // 
             roundedPanel1.BackColor = SystemColors.ButtonHighlight;
-            roundedPanel1.Controls.Add(roundedPanel7);
+            roundedPanel1.Controls.Add(btn_DangKy);
             roundedPanel1.Controls.Add(rdb_Nu);
             roundedPanel1.Controls.Add(rdb_Nam);
             roundedPanel1.Controls.Add(roundedPanel6);
@@ -298,25 +296,18 @@
             lbl_DangKyTaiKhoan.TabIndex = 0;
             lbl_DangKyTaiKhoan.Text = "Đăng Ký Tài Khoản";
             // 
-            // roundedPanel7
+            // btn_DangKy
             // 
-            roundedPanel7.BackColor = Color.LightSalmon;
-            roundedPanel7.Controls.Add(label2);
-            roundedPanel7.Location = new Point(256, 400);
-            roundedPanel7.Name = "roundedPanel7";
-            roundedPanel7.Size = new Size(188, 55);
-            roundedPanel7.TabIndex = 14;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            label2.ForeColor = Color.White;
-            label2.Location = new Point(56, 17);
-            label2.Name = "label2";
-            label2.Size = new Size(77, 23);
-            label2.TabIndex = 0;
-            label2.Text = "Đăng ký";
+            btn_DangKy.BackColor = Color.LightSalmon;
+            btn_DangKy.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btn_DangKy.ForeColor = Color.White;
+            btn_DangKy.Location = new Point(281, 409);
+            btn_DangKy.Name = "btn_DangKy";
+            btn_DangKy.Size = new Size(139, 57);
+            btn_DangKy.TabIndex = 14;
+            btn_DangKy.Text = "Đăng ký";
+            btn_DangKy.UseVisualStyleBackColor = false;
+            btn_DangKy.Click += btn_DangKy_Click;
             // 
             // TrangDangKy
             // 
@@ -341,8 +332,6 @@
             roundedPanel3.PerformLayout();
             roundedPanel2.ResumeLayout(false);
             roundedPanel2.PerformLayout();
-            roundedPanel7.ResumeLayout(false);
-            roundedPanel7.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -370,7 +359,6 @@
         private TextBox tbx_NgaySinh;
         private RadioButton rdb_Nu;
         private RadioButton rdb_Nam;
-        private RoundedPanel roundedPanel7;
-        private Label label2;
+        private Button btn_DangKy;
     }
 }
