@@ -75,6 +75,12 @@ namespace PBL3
             SetHeaderText("DiemTichLuy", "ĐiểmTíchLũy");
             SetHeaderText("DiemTichLuyTronDoi", "Điểm trọn đời");
             SetHeaderText("TenHang", "Hạng");
+            
+            // Ẩn cột MaHang
+            if (_dgvNhanVien.Columns.Contains("MaHang"))
+            {
+                _dgvNhanVien.Columns["MaHang"].Visible = false;
+            }
 
             SetColumnWidth("MaKH", 90);
             SetColumnWidth("SDT", 220);
@@ -243,17 +249,23 @@ namespace PBL3
 
             try
             {
-                int rows = _khachHangService.Update(_selectedMaKhDbValue ?? _txtMaNV.Text.Trim(), _txtSdt.Text.Trim(), int.Parse(DiemTichLuyText.Trim()));
-
-                if (rows > 0)
-                {
-                    UpdateHangForCustomer(_selectedMaKhDbValue ?? _txtMaNV.Text.Trim(), int.Parse(DiemTronDoiText.Trim()));
-                }
+                int diemTichLuyMoi = int.Parse(DiemTichLuyText.Trim());
+                int diemTronDoiHienTai = int.Parse(DiemTronDoiText.Trim());
+                
+                // Cập nhật thông tin khách hàng
+                int rows = _khachHangService.Update(_selectedMaKhDbValue ?? _txtMaNV.Text.Trim(), _txtSdt.Text.Trim(), diemTichLuyMoi);
 
                 if (rows == 0)
                 {
                     MessageBox.Show("Không tìm thấy khách hàng để cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
+                }
+
+                if (rows > 0)
+                {
+                    // Tính toán hạng mới dựa trên điểm trọn đời hiện tại
+                    int maHangMoi = _banHangService.GetHangByDiemTronDoi(diemTronDoiHienTai);
+                    _khachHangService.UpdateHang(_selectedMaKhDbValue ?? _txtMaNV.Text.Trim(), maHangMoi);
                 }
 
                 MessageBox.Show("Cập nhật khách hàng thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);

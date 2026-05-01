@@ -29,7 +29,6 @@ namespace PBL3
             lblTotalRevenue.Text = "Tổng doanh thu: 0 đ";
             lblTotalProfit.Text = "Tổng lợi nhuận: 0 đ";
             lblTotalOrders.Text = "Tổng số đơn: 0";
-            lblNewCustomers.Text = "Khách mới: 0";
             this.Load += ThongKe_Load;
         }
 
@@ -98,15 +97,12 @@ namespace PBL3
             lblTotalRevenue.AutoSize = true;
             lblTotalProfit.AutoSize = true;
             lblTotalOrders.AutoSize = true;
-            lblNewCustomers.AutoSize = true;
             lblTotalRevenue.TextAlign = ContentAlignment.MiddleCenter;
             lblTotalProfit.TextAlign = ContentAlignment.MiddleCenter;
             lblTotalOrders.TextAlign = ContentAlignment.MiddleCenter;
-            lblNewCustomers.TextAlign = ContentAlignment.MiddleCenter;
             lblTotalRevenue.ForeColor = Color.Black;
             lblTotalProfit.ForeColor = Color.Black;
             lblTotalOrders.ForeColor = Color.Black;
-            lblNewCustomers.ForeColor = Color.Black;
 
             dgvTopItems.BackgroundColor = Color.White;
             dgvTopItems.BorderStyle = BorderStyle.None;
@@ -126,11 +122,10 @@ namespace PBL3
             ArrangeSummaryLabels();
 
             // always keep summary labels visible above other controls
-            lblTotalRevenue.Visible = lblTotalProfit.Visible = lblTotalOrders.Visible = lblNewCustomers.Visible = true;
+            lblTotalRevenue.Visible = lblTotalProfit.Visible = lblTotalOrders.Visible = true;
             lblTotalRevenue.BringToFront();
             lblTotalProfit.BringToFront();
             lblTotalOrders.BringToFront();
-            lblNewCustomers.BringToFront();
         }
 
         private void ArrangeSummaryLabels()
@@ -147,8 +142,6 @@ namespace PBL3
 
             lblTotalOrders.Location = new Point(x, y);
             x += lblTotalOrders.Width + gap;
-
-            lblNewCustomers.Location = new Point(x, y);
         }
         private void ThongKe_Load(object? sender, EventArgs e)
         {
@@ -212,7 +205,6 @@ namespace PBL3
                 sw.WriteLine($"TotalRevenue,{ExtractNumberFromLabel(lblTotalRevenue.Text)}");
                 sw.WriteLine($"TotalProfit,{ExtractNumberFromLabel(lblTotalProfit.Text)}");
                 sw.WriteLine($"TotalOrders,{ExtractNumberFromLabel(lblTotalOrders.Text)}");
-                sw.WriteLine($"NewCustomers,{ExtractNumberFromLabel(lblNewCustomers.Text)}");
                 MessageBox.Show($"Xuất CSV thành công: {fn}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -280,7 +272,6 @@ namespace PBL3
 
                 lblTotalRevenue.Text = $"Tổng doanh thu: {dashboard.TotalRevenue:N0} đ";
                 lblTotalOrders.Text = $"Tổng số đơn: {dashboard.TotalOrders}";
-                lblNewCustomers.Text = $"Khách mới: {dashboard.NewCustomers}";
                 lblTotalProfit.Text = $"Tổng lợi nhuận: {dashboard.TotalProfit:N0} đ";
 
                 dgvRevenue.DataSource = dashboard.RevenueTable;

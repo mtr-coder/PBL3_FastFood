@@ -300,10 +300,13 @@ namespace PBL3
             // 
             _txtHang.BackColor = Color.Bisque;
             _txtHang.BorderStyle = BorderStyle.None;
+            _txtHang.Enabled = false;
             _txtHang.Location = new Point(10, 5);
             _txtHang.Name = "_txtHang";
+            _txtHang.ReadOnly = true;
             _txtHang.Size = new Size(102, 20);
             _txtHang.TabIndex = 7;
+            _txtHang.TabStop = false;
             // 
             // pnlSdtInput
             // 
@@ -448,13 +451,10 @@ namespace PBL3
             // 
             _txtDiemTichLuy.BackColor = Color.Bisque;
             _txtDiemTichLuy.BorderStyle = BorderStyle.None;
-            _txtDiemTichLuy.Enabled = false;
             _txtDiemTichLuy.Location = new Point(13, 5);
             _txtDiemTichLuy.Name = "_txtDiemTichLuy";
-            _txtDiemTichLuy.ReadOnly = true;
             _txtDiemTichLuy.Size = new Size(190, 20);
             _txtDiemTichLuy.TabIndex = 9;
-            _txtDiemTichLuy.TabStop = false;
             // 
             // lblDiemTronDoi
             // 

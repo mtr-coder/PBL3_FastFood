@@ -104,7 +104,7 @@ WHERE CONVERT(VARCHAR(20), mb.MaMon) = @MaMonRaw
             const string sql = @"
 SELECT kh.MaKH, kh.TenKH, kh.SDT,
        ISNULL(kh.DiemTichLuy,0) AS DiemTichLuy,
-       ISNULL(kh.DiemTichLuy,0) AS DiemTichLuyTronDoi,
+       ISNULL(kh.DiemTichLuyTronDoi,0) AS DiemTichLuyTronDoi,
        ISNULL(hv.MaHang, 1) AS MaHang,
        ISNULL(hv.TenHang, N'Bạc') AS TenHang,
        ISNULL(hv.PhanTramGiam, 0) AS PhanTramGiam
@@ -112,7 +112,7 @@ FROM dbo.KHACH_HANG kh
 OUTER APPLY (
     SELECT TOP 1 hv2.MaHang, hv2.TenHang, hv2.PhanTramGiam
     FROM dbo.HANG_THANH_VIEN hv2
-    WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuy,0)
+    WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuyTronDoi,0)
     ORDER BY hv2.DiemToiThieu DESC, hv2.MaHang DESC
 ) hv
 ORDER BY kh.MaKH";
@@ -200,7 +200,8 @@ ORDER BY kh.MaKH";
                 {
                     using SqlCommand cmd = new SqlCommand(@"
 UPDATE dbo.KHACH_HANG
-SET DiemTichLuy = ISNULL(DiemTichLuy,0) + @Cong - @Tru
+SET DiemTichLuy = ISNULL(DiemTichLuy,0) + @Cong - @Tru,
+    DiemTichLuyTronDoi = ISNULL(DiemTichLuyTronDoi,0) + @Cong
 WHERE MaKH=@MaKH", conn, tran);
                     cmd.Parameters.Add("@Cong", SqlDbType.Int).Value = diemCong;
                     cmd.Parameters.Add("@Tru", SqlDbType.Int).Value = diemDung;
@@ -251,14 +252,15 @@ WHERE MaKH=@MaKH", conn, tran);
                 {
                     using SqlCommand cmd = new SqlCommand(@"
 UPDATE dbo.KHACH_HANG
-SET DiemTichLuy = ISNULL(DiemTichLuy,0) + @Cong - @Tru
+SET DiemTichLuy = ISNULL(DiemTichLuy,0) + @Cong - @Tru,
+    DiemTichLuyTronDoi = ISNULL(DiemTichLuyTronDoi,0) + @Cong
 WHERE MaKH=@MaKH", conn, tran);
                     cmd.Parameters.Add("@Cong", SqlDbType.Int).Value = diemCong;
                     cmd.Parameters.Add("@Tru", SqlDbType.Int).Value = diemDung;
                     cmd.Parameters.Add("@MaKH", SqlDbType.Int).Value = maKh.Value;
                     cmd.ExecuteNonQuery();
 
-                    if (TableExists(conn, "LICH_SU_DIEM"))
+                    if (TableExists(conn, tran, "LICH_SU_DIEM"))
                     {
                         InsertDiemHistory(conn, tran, maKh.Value, diemCong, "Tích điểm", $"Thanh toán hóa đơn #{maHdb}");
                         if (diemDung > 0)
@@ -268,7 +270,7 @@ WHERE MaKH=@MaKH", conn, tran);
                     }
                 }
 
-                if (maKh.HasValue && TableColumnExists(conn, "KHACH_HANG", "MaHang") && maHangMoi > 0)
+                if (maKh.HasValue && TableColumnExists(conn, tran, "KHACH_HANG", "MaHang") && maHangMoi > 0)
                 {
                     using SqlCommand cmdHang = new SqlCommand("UPDATE dbo.KHACH_HANG SET MaHang = @MaHang WHERE MaKH = @MaKH", conn, tran);
                     cmdHang.Parameters.Add("@MaHang", SqlDbType.Int).Value = maHangMoi;
@@ -283,6 +285,13 @@ WHERE MaKH=@MaKH", conn, tran);
             {
                 tran.Rollback();
                 throw;
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
         }
 
@@ -304,10 +313,10 @@ ORDER BY DiemToiThieu DESC, MaHang DESC", conn);
         {
             using SqlConnection conn = DbHelper.GetConnection();
             const string sql = @"
-SELECT SoDiem, LoaiGD, NoiDung, NgayGD
+SELECT MaLS, SoDiem, LoaiGD, NoiDung, NgayGD
 FROM dbo.LICH_SU_DIEM
 WHERE MaKH = @MaKH
-ORDER BY NgayGD DESC, MaLSD DESC";
+ORDER BY NgayGD DESC, MaLS DESC";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.Add("@MaKH", SqlDbType.Int).Value = maKh;
@@ -371,9 +380,9 @@ VALUES (@MaKH, @SoDiem, @LoaiGD, @NoiDung, GETDATE())", conn, tran);
             cmd.ExecuteNonQuery();
         }
 
-        private static bool TableColumnExists(SqlConnection conn, string tableName, string columnName)
+        private static bool TableColumnExists(SqlConnection conn, SqlTransaction? tran, string tableName, string columnName)
         {
-            using SqlCommand cmd = new SqlCommand("SELECT CASE WHEN EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName AND COLUMN_NAME=@ColumnName) THEN 1 ELSE 0 END", conn);
+            using SqlCommand cmd = new SqlCommand("SELECT CASE WHEN EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName AND COLUMN_NAME=@ColumnName) THEN 1 ELSE 0 END", conn, tran);
             cmd.Parameters.Add("@TableName", SqlDbType.VarChar, 128).Value = tableName;
             cmd.Parameters.Add("@ColumnName", SqlDbType.VarChar, 128).Value = columnName;
             return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture) == 1;
@@ -447,7 +456,7 @@ WHERE dm.MaMon = @MaMon AND (dm.MaDVPV = @MaDVPV OR NOT EXISTS (SELECT 1 FROM db
             }
 
             string giaCol = ResolveMonDvpvGiaColumn(conn);
-            bool hasTrangThai = TableColumnExists(conn, "MON_DON_VI_PHUC_VU", "TrangThai");
+            bool hasTrangThai = TableColumnExists(conn, null, "MON_DON_VI_PHUC_VU", "TrangThai");
             string trangThaiFilter = hasTrangThai ? "WHERE ISNULL(TrangThai, N'Đang bán') <> N'Ngừng bán'" : string.Empty;
 
             string sql = $@"SELECT MaMon, MIN(ISNULL({giaCol}, 0)) AS DonGia
@@ -503,6 +512,13 @@ ORDER BY CASE COLUMN_NAME WHEN 'DonGia' THEN 1 WHEN 'GiaBan' THEN 2 WHEN 'Gia' T
         private static bool TableExists(SqlConnection conn, string tableName)
         {
             using SqlCommand cmd = new SqlCommand("SELECT CASE WHEN EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName) THEN 1 ELSE 0 END", conn);
+            cmd.Parameters.Add("@TableName", SqlDbType.VarChar, 128).Value = tableName;
+            return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture) == 1;
+        }
+
+        private static bool TableExists(SqlConnection conn, SqlTransaction? tran, string tableName)
+        {
+            using SqlCommand cmd = new SqlCommand("SELECT CASE WHEN EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName) THEN 1 ELSE 0 END", conn, tran);
             cmd.Parameters.Add("@TableName", SqlDbType.VarChar, 128).Value = tableName;
             return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture) == 1;
         }

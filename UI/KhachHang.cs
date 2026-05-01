@@ -16,6 +16,7 @@ namespace PBL3
         private readonly KhachHangService _khachHangService;
         private readonly BanHangService _banHangService;
         private bool _isNavigating;
+        private DataTable? _khachHangDataSource;
 
         public KhachHang() : this("1")
         {
@@ -58,19 +59,76 @@ namespace PBL3
             LoadKhachHang();
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            LoadKhachHang();
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (Visible)
+            {
+                LoadKhachHang();
+            }
+        }
+
         private void LoadKhachHang()
         {
-            DataTable dt = _khachHangService.GetForKhachHangPage();
+            _khachHangDataSource = _khachHangService.GetForKhachHangPage();
+            ApplyFilter();
 
-            dgvKhachHang.DataSource = dt;
+            lblCongThuc.Text = $"Công thức: {DiemMoiMocGiam} điểm = {TienGiamMoiMoc:N0}đ giảm giá | Cộng {DiemCongMoiNguong} điểm mỗi {NguongCongDiem:N0}đ thanh toán";
+        }
+
+        private void ApplyFilter()
+        {
+            if (_khachHangDataSource == null)
+            {
+                return;
+            }
+
+            // Create a filtered DataView
+            string filterText = GetSearchText().Trim().Replace("'", "''");
+            if (string.IsNullOrWhiteSpace(filterText))
+            {
+                dgvKhachHang.DataSource = _khachHangDataSource;
+            }
+            else
+            {
+                // Filter by SDT (phone number)
+                var filteredRows = _khachHangDataSource.AsEnumerable()
+                    .Where(r => r["SDT"].ToString()?.Contains(filterText, StringComparison.OrdinalIgnoreCase) ?? false)
+                    .CopyToDataTable();
+                dgvKhachHang.DataSource = filteredRows;
+            }
+
             ConfigureKhachHangGrid();
             if (dgvKhachHang.Columns.Contains("GiamGiaToiDa"))
             {
                 dgvKhachHang.Columns["GiamGiaToiDa"].HeaderText = "Giảm tối đa (đ)";
                 dgvKhachHang.Columns["GiamGiaToiDa"].DefaultCellStyle.Format = "N0";
             }
+        }
 
-            lblCongThuc.Text = $"Công thức: {DiemMoiMocGiam} điểm = {TienGiamMoiMoc:N0}đ giảm giá | Cộng {DiemCongMoiNguong} điểm mỗi {NguongCongDiem:N0}đ thanh toán";
+        private string GetSearchText()
+        {
+            // Assuming you have a search textbox named txtSearch or similar
+            // If it's named differently, adjust accordingly
+            foreach (Control ctrl in hcnt_Khung.Controls)
+            {
+                if (ctrl is TextBox txtBox && (ctrl.Name.Contains("Search") || ctrl.Name.Contains("TimKiem")))
+                {
+                    return txtBox.Text;
+                }
+            }
+            return string.Empty;
+        }
+
+        private void txtTimKiem_TextChanged(object? sender, EventArgs e)
+        {
+            ApplyFilter();
         }
 
         private void ConfigureKhachHangGrid()
@@ -213,51 +271,15 @@ namespace PBL3
                 grid.Columns["NgayGD"].HeaderText = "Ngày";
                 grid.Columns["NgayGD"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
             }
+            
+            // Ẩn cột MaLS (ID internal)
+            if (grid.Columns.Contains("MaLS"))
+            {
+                grid.Columns["MaLS"].Visible = false;
+            }
 
             dialog.Controls.Add(grid);
             dialog.ShowDialog(this);
-        }
-
-        private void btnThem_Click(object? sender, EventArgs e)
-        {
-            string sdt = txtSdt.Text.Trim();
-            string ten = txtTen.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(sdt) || !long.TryParse(sdt, out _))
-            {
-                MessageBox.Show("SĐT không hợp lệ.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (IsPhoneExists(sdt))
-            {
-                MessageBox.Show("SĐT đã tồn tại.", "Trùng dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                if (string.IsNullOrWhiteSpace(ten))
-                {
-                    ten = _khachHangService.GenerateNextDisplayCode();
-                }
-
-                _khachHangService.AddWithName(sdt, ten);
-
-                txtSdt.Clear();
-                txtTen.Clear();
-                LoadKhachHang();
-                MessageBox.Show("Thêm khách hàng thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Không thể thêm khách hàng.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private bool IsPhoneExists(string sdt)
-        {
-            return _khachHangService.IsPhoneExists(true, sdt, null);
         }
     }
 }

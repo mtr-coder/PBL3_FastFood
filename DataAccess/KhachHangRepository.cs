@@ -10,16 +10,11 @@ namespace PBL3.DataAccess
         {
             const string sql = @"
 SELECT kh.MaKH, kh.SDT, ISNULL(kh.DiemTichLuy,0) AS DiemTichLuy,
-       ISNULL(kh.DiemTichLuy,0) AS DiemTichLuyTronDoi,
+       ISNULL(kh.DiemTichLuyTronDoi, ISNULL(kh.DiemTichLuy,0)) AS DiemTichLuyTronDoi,
        ISNULL(hv.TenHang, N'Bạc') AS TenHang,
        (ISNULL(kh.DiemTichLuy,0) / 10) * 10000 AS GiamGiaToiDa
 FROM dbo.KHACH_HANG kh
-OUTER APPLY (
-    SELECT TOP 1 hv2.TenHang
-    FROM dbo.HANG_THANH_VIEN hv2
-    WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuy,0)
-    ORDER BY hv2.DiemToiThieu DESC, hv2.MaHang DESC
-) hv
+LEFT JOIN dbo.HANG_THANH_VIEN hv ON hv.MaHang = kh.MaHang
 ORDER BY kh.MaKH";
 
             using SqlConnection conn = DbHelper.GetConnection();
