@@ -51,5 +51,10 @@ namespace PBL3.Business
         {
             _repository.InsertWithName(sdt.Trim(), tenKh.Trim());
         }
+
+        public int UpdateHang(string maKh, int maHang)
+        {
+            return _repository.UpdateHang(maKh.Trim(), maHang);
+        }
     }
 }

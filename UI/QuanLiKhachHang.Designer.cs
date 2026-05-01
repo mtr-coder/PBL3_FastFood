@@ -42,21 +42,24 @@ namespace PBL3
             lblBtnLamMoi = new Label();
             _btnXoa = new RoundedPanel();
             lblBtnXoa = new Label();
+            pnlHangInput = new RoundedPanel();
+            _txtHang = new TextBox();
             pnlSdtInput = new RoundedPanel();
             _txtSdt = new TextBox();
             _btnSua = new RoundedPanel();
             lblBtnSua = new Label();
+            lblHang = new Label();
             lblSdt = new Label();
             _btnThem = new RoundedPanel();
             lblBtnThem = new Label();
             pnlTimKiem = new RoundedPanel();
             _txtTimKiem = new TextBox();
-            pnlDiaChiInput = new RoundedPanel();
-            _txtDiaChi = new TextBox();
-            lblDiaChi = new Label();
-            pnlHoTenInput = new RoundedPanel();
-            _txtHoTen = new TextBox();
-            lblHoTen = new Label();
+            pnlDiemTronDoiInput = new RoundedPanel();
+            _txtDiemTronDoi = new TextBox();
+            pnlDiemTichLuyInput = new RoundedPanel();
+            _txtDiemTichLuy = new TextBox();
+            lblDiemTronDoi = new Label();
+            lblDiemTichLuy = new Label();
             pnlMaNVInput = new RoundedPanel();
             _txtMaNV = new TextBox();
             lblMaKH = new Label();
@@ -94,12 +97,13 @@ namespace PBL3
             pnlFormNhanVien.SuspendLayout();
             _btnLamMoi.SuspendLayout();
             _btnXoa.SuspendLayout();
+            pnlHangInput.SuspendLayout();
             pnlSdtInput.SuspendLayout();
             _btnSua.SuspendLayout();
             _btnThem.SuspendLayout();
             pnlTimKiem.SuspendLayout();
-            pnlDiaChiInput.SuspendLayout();
-            pnlHoTenInput.SuspendLayout();
+            pnlDiemTronDoiInput.SuspendLayout();
+            pnlDiemTichLuyInput.SuspendLayout();
             pnlMaNVInput.SuspendLayout();
             pnlDanhSachNhanVien.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)_dgvNhanVien).BeginInit();
@@ -215,15 +219,17 @@ namespace PBL3
             pnlFormNhanVien.BackColor = Color.FromArgb(248, 242, 235);
             pnlFormNhanVien.Controls.Add(_btnLamMoi);
             pnlFormNhanVien.Controls.Add(_btnXoa);
+            pnlFormNhanVien.Controls.Add(pnlHangInput);
             pnlFormNhanVien.Controls.Add(pnlSdtInput);
             pnlFormNhanVien.Controls.Add(_btnSua);
+            pnlFormNhanVien.Controls.Add(lblHang);
             pnlFormNhanVien.Controls.Add(lblSdt);
             pnlFormNhanVien.Controls.Add(_btnThem);
             pnlFormNhanVien.Controls.Add(pnlTimKiem);
-            pnlFormNhanVien.Controls.Add(pnlDiaChiInput);
-            pnlFormNhanVien.Controls.Add(lblDiaChi);
-            pnlFormNhanVien.Controls.Add(pnlHoTenInput);
-            pnlFormNhanVien.Controls.Add(lblHoTen);
+            pnlFormNhanVien.Controls.Add(pnlDiemTronDoiInput);
+            pnlFormNhanVien.Controls.Add(pnlDiemTichLuyInput);
+            pnlFormNhanVien.Controls.Add(lblDiemTronDoi);
+            pnlFormNhanVien.Controls.Add(lblDiemTichLuy);
             pnlFormNhanVien.Controls.Add(pnlMaNVInput);
             pnlFormNhanVien.Controls.Add(lblMaKH);
             pnlFormNhanVien.CornerRadius = 16;
@@ -279,14 +285,34 @@ namespace PBL3
             lblBtnXoa.Text = "Xóa";
             lblBtnXoa.Click += BtnXoa_Click;
             // 
+            // pnlHangInput
+            // 
+            pnlHangInput.BackColor = Color.Bisque;
+            pnlHangInput.Controls.Add(_txtHang);
+            pnlHangInput.CornerRadius = 8;
+            pnlHangInput.Location = new Point(582, 44);
+            pnlHangInput.Name = "pnlHangInput";
+            pnlHangInput.Size = new Size(125, 33);
+            pnlHangInput.TabIndex = 25;
+            pnlHangInput.Paint += pnlSdtInput_Paint;
+            // 
+            // _txtHang
+            // 
+            _txtHang.BackColor = Color.Bisque;
+            _txtHang.BorderStyle = BorderStyle.None;
+            _txtHang.Location = new Point(10, 5);
+            _txtHang.Name = "_txtHang";
+            _txtHang.Size = new Size(102, 20);
+            _txtHang.TabIndex = 7;
+            // 
             // pnlSdtInput
             // 
             pnlSdtInput.BackColor = Color.Bisque;
             pnlSdtInput.Controls.Add(_txtSdt);
             pnlSdtInput.CornerRadius = 8;
-            pnlSdtInput.Location = new Point(33, 125);
+            pnlSdtInput.Location = new Point(285, 44);
             pnlSdtInput.Name = "pnlSdtInput";
-            pnlSdtInput.Size = new Size(125, 33);
+            pnlSdtInput.Size = new Size(162, 33);
             pnlSdtInput.TabIndex = 25;
             pnlSdtInput.Paint += pnlSdtInput_Paint;
             // 
@@ -296,7 +322,7 @@ namespace PBL3
             _txtSdt.BorderStyle = BorderStyle.None;
             _txtSdt.Location = new Point(10, 5);
             _txtSdt.Name = "_txtSdt";
-            _txtSdt.Size = new Size(102, 20);
+            _txtSdt.Size = new Size(139, 20);
             _txtSdt.TabIndex = 7;
             // 
             // _btnSua
@@ -322,11 +348,21 @@ namespace PBL3
             lblBtnSua.Text = "Sửa";
             lblBtnSua.Click += BtnSua_Click;
             // 
+            // lblHang
+            // 
+            lblHang.AutoSize = true;
+            lblHang.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblHang.Location = new Point(561, 16);
+            lblHang.Name = "lblHang";
+            lblHang.Size = new Size(53, 23);
+            lblHang.TabIndex = 6;
+            lblHang.Text = "Hạng";
+            // 
             // lblSdt
             // 
             lblSdt.AutoSize = true;
             lblSdt.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblSdt.Location = new Point(18, 97);
+            lblSdt.Location = new Point(262, 16);
             lblSdt.Name = "lblSdt";
             lblSdt.Size = new Size(43, 23);
             lblSdt.TabIndex = 6;
@@ -376,68 +412,70 @@ namespace PBL3
             _txtTimKiem.TabIndex = 0;
             _txtTimKiem.TextChanged += SearchControl_Changed;
             // 
-            // pnlDiaChiInput
+            // pnlDiemTronDoiInput
             // 
-            pnlDiaChiInput.BackColor = Color.Bisque;
-            pnlDiaChiInput.Controls.Add(_txtDiaChi);
-            pnlDiaChiInput.CornerRadius = 8;
-            pnlDiaChiInput.Location = new Point(318, 125);
-            pnlDiaChiInput.Name = "pnlDiaChiInput";
-            pnlDiaChiInput.Size = new Size(216, 33);
-            pnlDiaChiInput.TabIndex = 26;
+            pnlDiemTronDoiInput.BackColor = Color.Bisque;
+            pnlDiemTronDoiInput.Controls.Add(_txtDiemTronDoi);
+            pnlDiemTronDoiInput.CornerRadius = 8;
+            pnlDiemTronDoiInput.Location = new Point(370, 123);
+            pnlDiemTronDoiInput.Name = "pnlDiemTronDoiInput";
+            pnlDiemTronDoiInput.Size = new Size(216, 33);
+            pnlDiemTronDoiInput.TabIndex = 26;
             // 
-            // _txtDiaChi
+            // _txtDiemTronDoi
             // 
-            _txtDiaChi.BackColor = Color.Bisque;
-            _txtDiaChi.BorderStyle = BorderStyle.None;
-            _txtDiaChi.Location = new Point(13, 5);
-            _txtDiaChi.Name = "_txtDiaChi";
-            _txtDiaChi.Size = new Size(190, 20);
-            _txtDiaChi.TabIndex = 9;
-            _txtDiaChi.ReadOnly = true;
-            _txtDiaChi.Enabled = false;
-            _txtDiaChi.TabStop = false;
+            _txtDiemTronDoi.BackColor = Color.Bisque;
+            _txtDiemTronDoi.BorderStyle = BorderStyle.None;
+            _txtDiemTronDoi.Enabled = false;
+            _txtDiemTronDoi.Location = new Point(13, 5);
+            _txtDiemTronDoi.Name = "_txtDiemTronDoi";
+            _txtDiemTronDoi.ReadOnly = true;
+            _txtDiemTronDoi.Size = new Size(190, 20);
+            _txtDiemTronDoi.TabIndex = 9;
+            _txtDiemTronDoi.TabStop = false;
             // 
-            // lblDiaChi
+            // pnlDiemTichLuyInput
             // 
-            lblDiaChi.AutoSize = true;
-            lblDiaChi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblDiaChi.Location = new Point(290, 97);
-            lblDiaChi.Name = "lblDiaChi";
-            lblDiaChi.Size = new Size(117, 23);
-            lblDiaChi.TabIndex = 8;
-            lblDiaChi.Text = "Điểm tích lũy";
-            lblDiaChi.Click += lblDiaChi_Click;
+            pnlDiemTichLuyInput.BackColor = Color.Bisque;
+            pnlDiemTichLuyInput.Controls.Add(_txtDiemTichLuy);
+            pnlDiemTichLuyInput.CornerRadius = 8;
+            pnlDiemTichLuyInput.Location = new Point(33, 123);
+            pnlDiemTichLuyInput.Name = "pnlDiemTichLuyInput";
+            pnlDiemTichLuyInput.Size = new Size(216, 33);
+            pnlDiemTichLuyInput.TabIndex = 26;
             // 
-            // pnlHoTenInput
+            // _txtDiemTichLuy
             // 
-            pnlHoTenInput.BackColor = Color.Bisque;
-            pnlHoTenInput.Controls.Add(_txtHoTen);
-            pnlHoTenInput.CornerRadius = 8;
-            pnlHoTenInput.Location = new Point(318, 44);
-            pnlHoTenInput.Name = "pnlHoTenInput";
-            pnlHoTenInput.Size = new Size(174, 33);
-            pnlHoTenInput.TabIndex = 24;
+            _txtDiemTichLuy.BackColor = Color.Bisque;
+            _txtDiemTichLuy.BorderStyle = BorderStyle.None;
+            _txtDiemTichLuy.Enabled = false;
+            _txtDiemTichLuy.Location = new Point(13, 5);
+            _txtDiemTichLuy.Name = "_txtDiemTichLuy";
+            _txtDiemTichLuy.ReadOnly = true;
+            _txtDiemTichLuy.Size = new Size(190, 20);
+            _txtDiemTichLuy.TabIndex = 9;
+            _txtDiemTichLuy.TabStop = false;
             // 
-            // _txtHoTen
+            // lblDiemTronDoi
             // 
-            _txtHoTen.BackColor = Color.Bisque;
-            _txtHoTen.BorderStyle = BorderStyle.None;
-            _txtHoTen.Location = new Point(13, 5);
-            _txtHoTen.Name = "_txtHoTen";
-            _txtHoTen.Size = new Size(150, 20);
-            _txtHoTen.TabIndex = 3;
+            lblDiemTronDoi.AutoSize = true;
+            lblDiemTronDoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblDiemTronDoi.Location = new Point(317, 97);
+            lblDiemTronDoi.Name = "lblDiemTronDoi";
+            lblDiemTronDoi.Size = new Size(124, 23);
+            lblDiemTronDoi.TabIndex = 8;
+            lblDiemTronDoi.Text = "Điểm trọn đời";
             // 
-            // lblHoTen
+            // lblDiemTichLuy
             // 
-            lblHoTen.AutoSize = true;
-            lblHoTen.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblHoTen.Location = new Point(290, 16);
-            lblHoTen.Name = "lblHoTen";
-            lblHoTen.Size = new Size(37, 23);
-            lblHoTen.TabIndex = 2;
-            lblHoTen.Text = "Tên";
-            lblHoTen.Click += lblHoTen_Click;
+            lblDiemTichLuy.AutoSize = true;
+            lblDiemTichLuy.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblDiemTichLuy.Location = new Point(18, 97);
+            lblDiemTichLuy.Name = "lblDiemTichLuy";
+            lblDiemTichLuy.Size = new Size(117, 23);
+            lblDiemTichLuy.TabIndex = 8;
+            lblDiemTichLuy.Text = "Điểm tích lũy";
+            lblDiemTichLuy.Click += lblDiemTichLuy_Click;
             // 
             // pnlMaNVInput
             // 
@@ -488,20 +526,12 @@ namespace PBL3
             _cboTimTheo.DropDownStyle = ComboBoxStyle.DropDownList;
             _cboTimTheo.DropDownWidth = 120;
             _cboTimTheo.FormattingEnabled = true;
-            _cboTimTheo.Items.AddRange(new object[] { "MãKH", "SĐT", "ĐiểmTíchLũy" });
+            _cboTimTheo.Items.AddRange(new object[] { "MãKH", "SĐT", "ĐiểmTíchLũy", "ĐiểmTrọnĐời", "Hạng" });
             _cboTimTheo.Location = new Point(231, 12);
             _cboTimTheo.Name = "_cboTimTheo";
             _cboTimTheo.Size = new Size(98, 28);
             _cboTimTheo.TabIndex = 1;
             _cboTimTheo.SelectedIndexChanged += SearchControl_Changed;
-            // 
-            // pnlHoTenInput
-            // 
-            pnlHoTenInput.Visible = false;
-            // 
-            // lblHoTen
-            // 
-            lblHoTen.Visible = false;
             // 
             // _dgvNhanVien
             // 
@@ -838,6 +868,8 @@ namespace PBL3
             _btnLamMoi.PerformLayout();
             _btnXoa.ResumeLayout(false);
             _btnXoa.PerformLayout();
+            pnlHangInput.ResumeLayout(false);
+            pnlHangInput.PerformLayout();
             pnlSdtInput.ResumeLayout(false);
             pnlSdtInput.PerformLayout();
             _btnSua.ResumeLayout(false);
@@ -846,10 +878,10 @@ namespace PBL3
             _btnThem.PerformLayout();
             pnlTimKiem.ResumeLayout(false);
             pnlTimKiem.PerformLayout();
-            pnlDiaChiInput.ResumeLayout(false);
-            pnlDiaChiInput.PerformLayout();
-            pnlHoTenInput.ResumeLayout(false);
-            pnlHoTenInput.PerformLayout();
+            pnlDiemTronDoiInput.ResumeLayout(false);
+            pnlDiemTronDoiInput.PerformLayout();
+            pnlDiemTichLuyInput.ResumeLayout(false);
+            pnlDiemTichLuyInput.PerformLayout();
             pnlMaNVInput.ResumeLayout(false);
             pnlMaNVInput.PerformLayout();
             pnlDanhSachNhanVien.ResumeLayout(false);
@@ -916,15 +948,14 @@ namespace PBL3
         private RoundedPanel pnlFormNhanVien;
         private Label lblMaKH;
         private TextBox _txtMaNV;
-        private Label lblHoTen;
-        private TextBox _txtHoTen;
         private Label lblSdt;
         private TextBox _txtSdt;
-        private Label lblDiaChi;
-        private TextBox _txtDiaChi;
-        private RoundedPanel pnlDiaChiInput;
+        private Label lblDiemTichLuy;
+        private TextBox _txtDiemTichLuy;
+        private TextBox _txtDiemTronDoi;
+        private TextBox _txtHang;
+        private RoundedPanel pnlDiemTichLuyInput;
         private RoundedPanel pnlSdtInput;
-        private RoundedPanel pnlHoTenInput;
         private RoundedPanel pnlMaNVInput;
         private RoundedPanel pnlTimKiem;
         private TextBox _txtTimKiem;
@@ -940,5 +971,9 @@ namespace PBL3
         private RoundedPanel pnlDanhSachNhanVien;
         private Label lb_DSKhachHang;
         private DataGridView _dgvNhanVien;
+        private RoundedPanel pnlHangInput;
+        private Label lblHang;
+        private RoundedPanel pnlDiemTronDoiInput;
+        private Label lblDiemTronDoi;
     }
 }

@@ -93,8 +93,9 @@ namespace PBL3
             dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn6 = new DataGridViewTextBoxColumn();
-            lblKhachPreview = new Label();
             _bhLblDiemKhach = new Label();
+            _bhLblHangKhach = new Label();
+            _bhLblGiamHang = new Label();
             _bhTxtSdtKhachHang = new TextBox();
             _bhBtnTraCuuKhachHang = new Button();
             _bhCboKhachHang = new ComboBox();
@@ -103,6 +104,8 @@ namespace PBL3
             _bhCboSize = new ComboBox();
             lblSoLuongPreview = new Label();
             _bhNudSoLuong = new NumericUpDown();
+            lblDiemDungPreview = new Label();
+            _bhNudDiemDung = new NumericUpDown();
             _bhBtnThem = new Button();
             lblHoaDonPreview = new Label();
             _bhDgvHoaDon = new DataGridView();
@@ -154,6 +157,7 @@ namespace PBL3
             _designerBanHangPreview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)_bhDgvMenu).BeginInit();
             ((System.ComponentModel.ISupportInitialize)_bhNudSoLuong).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)_bhNudDiemDung).BeginInit();
             ((System.ComponentModel.ISupportInitialize)_bhDgvHoaDon).BeginInit();
             hcnt_KhungMenuAD.SuspendLayout();
             btn_QLHDN.SuspendLayout();
@@ -748,8 +752,9 @@ namespace PBL3
             _designerBanHangPreview.Controls.Add(lblLoaiMonPreview);
             _designerBanHangPreview.Controls.Add(_bhCboLoaiMon);
             _designerBanHangPreview.Controls.Add(_bhDgvMenu);
-            _designerBanHangPreview.Controls.Add(lblKhachPreview);
             _designerBanHangPreview.Controls.Add(_bhLblDiemKhach);
+            _designerBanHangPreview.Controls.Add(_bhLblHangKhach);
+            _designerBanHangPreview.Controls.Add(_bhLblGiamHang);
             _designerBanHangPreview.Controls.Add(_bhTxtSdtKhachHang);
             _designerBanHangPreview.Controls.Add(_bhBtnTraCuuKhachHang);
             _designerBanHangPreview.Controls.Add(_bhCboKhachHang);
@@ -758,6 +763,8 @@ namespace PBL3
             _designerBanHangPreview.Controls.Add(_bhCboSize);
             _designerBanHangPreview.Controls.Add(lblSoLuongPreview);
             _designerBanHangPreview.Controls.Add(_bhNudSoLuong);
+            _designerBanHangPreview.Controls.Add(lblDiemDungPreview);
+            _designerBanHangPreview.Controls.Add(_bhNudDiemDung);
             _designerBanHangPreview.Controls.Add(_bhBtnThem);
             _designerBanHangPreview.Controls.Add(lblHoaDonPreview);
             _designerBanHangPreview.Controls.Add(_bhDgvHoaDon);
@@ -879,32 +886,43 @@ namespace PBL3
             dataGridViewTextBoxColumn6.ReadOnly = true;
             dataGridViewTextBoxColumn6.Width = 125;
             // 
-            // lblKhachPreview
-            // 
-            lblKhachPreview.AutoSize = true;
-            lblKhachPreview.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblKhachPreview.ForeColor = Color.SaddleBrown;
-            lblKhachPreview.Location = new Point(507, 40);
-            lblKhachPreview.Name = "lblKhachPreview";
-            lblKhachPreview.Size = new Size(71, 15);
-            lblKhachPreview.TabIndex = 5;
-            lblKhachPreview.Text = "Khách hàng";
-            // 
             // _bhLblDiemKhach
             // 
             _bhLblDiemKhach.AutoSize = true;
             _bhLblDiemKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             _bhLblDiemKhach.ForeColor = Color.SaddleBrown;
-            _bhLblDiemKhach.Location = new Point(604, 40);
+            _bhLblDiemKhach.Location = new Point(507, 19);
             _bhLblDiemKhach.Name = "_bhLblDiemKhach";
             _bhLblDiemKhach.Size = new Size(93, 15);
             _bhLblDiemKhach.TabIndex = 6;
             _bhLblDiemKhach.Text = "Điểm tích lũy: 0";
             // 
+            // _bhLblHangKhach
+            // 
+            _bhLblHangKhach.AutoSize = true;
+            _bhLblHangKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            _bhLblHangKhach.ForeColor = Color.SaddleBrown;
+            _bhLblHangKhach.Location = new Point(507, 68);
+            _bhLblHangKhach.Name = "_bhLblHangKhach";
+            _bhLblHangKhach.Size = new Size(42, 15);
+            _bhLblHangKhach.TabIndex = 6;
+            _bhLblHangKhach.Text = "Hạng: ";
+            // 
+            // _bhLblGiamHang
+            // 
+            _bhLblGiamHang.AutoSize = true;
+            _bhLblGiamHang.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            _bhLblGiamHang.ForeColor = Color.SaddleBrown;
+            _bhLblGiamHang.Location = new Point(638, 68);
+            _bhLblGiamHang.Name = "_bhLblGiamHang";
+            _bhLblGiamHang.Size = new Size(59, 15);
+            _bhLblGiamHang.TabIndex = 6;
+            _bhLblGiamHang.Text = "Giảm: 0%";
+            // 
             // _bhTxtSdtKhachHang
             // 
             _bhTxtSdtKhachHang.BackColor = Color.Bisque;
-            _bhTxtSdtKhachHang.Location = new Point(507, 60);
+            _bhTxtSdtKhachHang.Location = new Point(507, 40);
             _bhTxtSdtKhachHang.Margin = new Padding(3, 2, 3, 2);
             _bhTxtSdtKhachHang.Name = "_bhTxtSdtKhachHang";
             _bhTxtSdtKhachHang.PlaceholderText = "Nhập số điện thoại";
@@ -916,7 +934,7 @@ namespace PBL3
             _bhBtnTraCuuKhachHang.BackColor = Color.SandyBrown;
             _bhBtnTraCuuKhachHang.FlatStyle = FlatStyle.Flat;
             _bhBtnTraCuuKhachHang.ForeColor = Color.White;
-            _bhBtnTraCuuKhachHang.Location = new Point(637, 59);
+            _bhBtnTraCuuKhachHang.Location = new Point(637, 40);
             _bhBtnTraCuuKhachHang.Margin = new Padding(3, 2, 3, 2);
             _bhBtnTraCuuKhachHang.Name = "_bhBtnTraCuuKhachHang";
             _bhBtnTraCuuKhachHang.Size = new Size(60, 24);
@@ -991,6 +1009,25 @@ namespace PBL3
             _bhNudSoLuong.Size = new Size(105, 23);
             _bhNudSoLuong.TabIndex = 13;
             _bhNudSoLuong.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // lblDiemDungPreview
+            // 
+            lblDiemDungPreview.AutoSize = true;
+            lblDiemDungPreview.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblDiemDungPreview.Location = new Point(620, 163);
+            lblDiemDungPreview.Name = "lblDiemDungPreview";
+            lblDiemDungPreview.Size = new Size(69, 15);
+            lblDiemDungPreview.TabIndex = 12;
+            lblDiemDungPreview.Text = "Dùng điểm";
+            // 
+            // _bhNudDiemDung
+            // 
+            _bhNudDiemDung.Location = new Point(620, 180);
+            _bhNudDiemDung.Margin = new Padding(3, 4, 3, 4);
+            _bhNudDiemDung.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            _bhNudDiemDung.Name = "_bhNudDiemDung";
+            _bhNudDiemDung.Size = new Size(100, 23);
+            _bhNudDiemDung.TabIndex = 13;
             // 
             // _bhBtnThem
             // 
@@ -1384,6 +1421,7 @@ namespace PBL3
             _designerBanHangPreview.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)_bhDgvMenu).EndInit();
             ((System.ComponentModel.ISupportInitialize)_bhNudSoLuong).EndInit();
+            ((System.ComponentModel.ISupportInitialize)_bhNudDiemDung).EndInit();
             ((System.ComponentModel.ISupportInitialize)_bhDgvHoaDon).EndInit();
             hcnt_KhungMenuAD.ResumeLayout(false);
             hcnt_KhungMenuAD.PerformLayout();
@@ -1480,9 +1518,9 @@ namespace PBL3
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private Label lblKhachPreview;
         private Label lblSizePreview;
         private Label lblSoLuongPreview;
+        private Label lblDiemDungPreview;
         private Label lblHoaDonPreview;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;

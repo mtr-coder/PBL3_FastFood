@@ -9,10 +9,18 @@ namespace PBL3.DataAccess
         public DataTable GetForKhachHangPage()
         {
             const string sql = @"
-SELECT MaKH, SDT, ISNULL(DiemTichLuy,0) AS DiemTichLuy,
-       (ISNULL(DiemTichLuy,0) / 10) * 10000 AS GiamGiaToiDa
-FROM dbo.KHACH_HANG
-ORDER BY MaKH";
+SELECT kh.MaKH, kh.SDT, ISNULL(kh.DiemTichLuy,0) AS DiemTichLuy,
+       ISNULL(kh.DiemTichLuy,0) AS DiemTichLuyTronDoi,
+       ISNULL(hv.TenHang, N'Bạc') AS TenHang,
+       (ISNULL(kh.DiemTichLuy,0) / 10) * 10000 AS GiamGiaToiDa
+FROM dbo.KHACH_HANG kh
+OUTER APPLY (
+    SELECT TOP 1 hv2.TenHang
+    FROM dbo.HANG_THANH_VIEN hv2
+    WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuy,0)
+    ORDER BY hv2.DiemToiThieu DESC, hv2.MaHang DESC
+) hv
+ORDER BY kh.MaKH";
 
             using SqlConnection conn = DbHelper.GetConnection();
             using SqlDataAdapter da = new SqlDataAdapter(sql, conn);
@@ -24,15 +32,35 @@ ORDER BY MaKH";
         public DataTable GetAll()
         {
             const string sql = @"
-SELECT MaKH, SDT, DiemTichLuy
-FROM dbo.KHACH_HANG
-ORDER BY MaKH";
+SELECT kh.MaKH, kh.SDT,
+       ISNULL(kh.DiemTichLuy,0) AS DiemTichLuy,
+       ISNULL(kh.DiemTichLuyTronDoi, ISNULL(kh.DiemTichLuy,0)) AS DiemTichLuyTronDoi,
+       ISNULL(kh.MaHang, 1) AS MaHang,
+       ISNULL(hv.TenHang, N'Bạc') AS TenHang
+FROM dbo.KHACH_HANG kh
+LEFT JOIN dbo.HANG_THANH_VIEN hv ON hv.MaHang = kh.MaHang
+ORDER BY kh.MaKH";
 
             using SqlConnection conn = DbHelper.GetConnection();
             using SqlDataAdapter da = new SqlDataAdapter(sql, conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
             return dt;
+        }
+
+        public int UpdateHang(string maKh, int maHang)
+        {
+            const string sql = @"
+UPDATE dbo.KHACH_HANG
+SET MaHang = @MaHang
+WHERE MaKH = @MaKH";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaKH", SqlDbType.VarChar, 20).Value = maKh;
+            cmd.Parameters.Add("@MaHang", SqlDbType.Int).Value = maHang;
+            conn.Open();
+            return cmd.ExecuteNonQuery();
         }
 
         public bool IsPhoneExists(bool isInsert, string phone, string? excludeMaKh)

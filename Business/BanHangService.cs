@@ -27,6 +27,21 @@ namespace PBL3.Business
             return _repository.SaveHoaDonBan(maNv.Trim(), maKh, tongSauGiam, diemCong, diemDung, hoaDonTable);
         }
 
+        public int SaveHoaDonBan(string maNv, int? maKh, decimal tongSauGiam, int diemCong, int diemDung, int diemTronDoiCong, int maHangMoi, DataTable hoaDonTable)
+        {
+            return _repository.SaveHoaDonBan(maNv.Trim(), maKh, tongSauGiam, diemCong, diemDung, diemTronDoiCong, maHangMoi, hoaDonTable);
+        }
+
+        public int GetHangByDiemTronDoi(int diemTronDoi)
+        {
+            return _repository.GetHangByDiemTronDoi(diemTronDoi);
+        }
+
+        public DataTable GetLichSuDiem(int maKh)
+        {
+            return _repository.GetLichSuDiem(maKh);
+        }
+
         public DataTable GetDanhMucMonAnData()
         {
             return _repository.GetDanhMucMonAnData();

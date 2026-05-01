@@ -44,6 +44,9 @@ namespace PBL3
         private Button? _bhBtnThanhToan;
         private CheckBox? _bhChkKhongLienKetKhach;
         private Label? _bhLblTongTien;
+        private Label? _bhLblHangKhach;
+        private Label? _bhLblGiamHang;
+        private NumericUpDown? _bhNudDiemDung;
         private PictureBox? _bhPicMon;
         private MuaHang? _muaHangEmbedded;
         private KhachHang? _khachHangEmbedded;
@@ -693,7 +696,13 @@ namespace PBL3
                     _bhChkKhongLienKetKhach.Checked = true;
                 }
 
-                EnsureDiemKhachLabel();
+            // Removed UI Ensure statements to use Designer instead
+            if (_bhNudDiemDung != null)
+            {
+                _bhNudDiemDung.ValueChanged -= BhDiemDung_ValueChanged;
+                _bhNudDiemDung.ValueChanged += BhDiemDung_ValueChanged;
+            }
+
 
                 UpdateKhachHangUiStateData();
                 return;
@@ -768,6 +777,8 @@ namespace PBL3
 
             _bhLblTongTien = new Label { Location = new Point(18, 600), AutoSize = true, Font = new Font("Segoe UI", 12F, FontStyle.Bold), ForeColor = Color.Firebrick, Text = "Tổng tiền: 0 đ", Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
             _bhLblDiemKhach = new Label { Location = new Point(600, 96), AutoSize = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold), ForeColor = Color.SaddleBrown, Text = "Điểm tích lũy: 0", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            _bhLblHangKhach = new Label { Location = new Point(600, 118), AutoSize = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold), ForeColor = Color.SaddleBrown, Text = "Hạng: ", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            _bhLblGiamHang = new Label { Location = new Point(600, 138), AutoSize = true, Font = new Font("Segoe UI", 9F), ForeColor = Color.SaddleBrown, Text = "Giảm hạng: 0%", Anchor = AnchorStyles.Top | AnchorStyles.Right };
             _bhPicMon = new PictureBox { Location = new Point(600, 18), Size = new Size(120, 70), BackColor = Color.Gainsboro, SizeMode = PictureBoxSizeMode.Zoom, Anchor = AnchorStyles.Top | AnchorStyles.Right };
 
             _banHangPanel.Controls.Add(new Label { Text = "Danh mục món ăn (Tên/Ảnh/Giá)", Font = new Font("Segoe UI", 12F, FontStyle.Bold), ForeColor = Color.SaddleBrown, AutoSize = true, Location = new Point(18, 18) });
@@ -775,6 +786,7 @@ namespace PBL3
             _banHangPanel.Controls.Add(new Label { Text = "Khách hàng", Font = new Font("Segoe UI", 9F, FontStyle.Bold), AutoSize = true, Location = new Point(600, 98), Anchor = AnchorStyles.Top | AnchorStyles.Right });
             _banHangPanel.Controls.Add(new Label { Text = "Size", Font = new Font("Segoe UI", 9F, FontStyle.Bold), AutoSize = true, Location = new Point(600, 168), Anchor = AnchorStyles.Top | AnchorStyles.Right });
             _banHangPanel.Controls.Add(new Label { Text = "Số lượng", Font = new Font("Segoe UI", 9F, FontStyle.Bold), AutoSize = true, Location = new Point(600, 232), Anchor = AnchorStyles.Top | AnchorStyles.Right });
+            _banHangPanel.Controls.Add(new Label { Text = "Dùng điểm", Font = new Font("Segoe UI", 9F, FontStyle.Bold), AutoSize = true, Location = new Point(600, 232 + 52), Anchor = AnchorStyles.Top | AnchorStyles.Right });
             _banHangPanel.Controls.Add(new Label { Text = "Hóa đơn", Font = new Font("Segoe UI", 12F, FontStyle.Bold), ForeColor = Color.SaddleBrown, AutoSize = true, Location = new Point(18, 328) });
 
             _banHangPanel.Controls.Add(_bhDgvMenu);
@@ -789,7 +801,10 @@ namespace PBL3
             _banHangPanel.Controls.Add(_bhBtnThanhToan);
             _banHangPanel.Controls.Add(_bhLblTongTien);
             _banHangPanel.Controls.Add(_bhLblDiemKhach);
+            _banHangPanel.Controls.Add(_bhLblHangKhach);
+            _banHangPanel.Controls.Add(_bhLblGiamHang);
             _banHangPanel.Controls.Add(_bhPicMon);
+            _banHangPanel.Controls.Add(_bhNudDiemDung);
 
             hcnt_Khung.Controls.Add(_banHangPanel);
 
@@ -949,22 +964,22 @@ namespace PBL3
 
         private void EnsureDiemKhachLabel()
         {
-            if (_banHangPanel is null || _bhLblDiemKhach is not null)
-            {
-                return;
-            }
+            // Migrated to Designer
+        }
 
-            _bhLblDiemKhach = new Label
-            {
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.SaddleBrown,
-                Location = new Point(525, 20),
-                Text = "Điểm tích lũy: 0"
-            };
+        private void EnsureHangKhachLabel()
+        {
+            // Migrated to Designer
+        }
 
-            _banHangPanel.Controls.Add(_bhLblDiemKhach);
-            _bhLblDiemKhach.BringToFront();
+        private void EnsureDiemDungInput()
+        {
+           // Migrated to Designer
+        }
+
+        private void BhDiemDung_ValueChanged(object? sender, EventArgs e)
+        {
+            UpdateTongTienData();
         }
 
         private void LoadDanhMucMonAnData()
@@ -1085,7 +1100,53 @@ namespace PBL3
                 _bhBtnTraCuuKhachHang.Enabled = linked;
             }
 
-            _bhLblDiemKhach.Text = linked ? $"Điểm tích lũy: {GetSelectedKhachHangPointsData()}" : "Điểm tích lũy: 0";
+            if (linked)
+            {
+                int diem = GetSelectedKhachHangPointsData();
+                _bhLblDiemKhach.Text = $"Điểm tích lũy: {diem}";
+                UpdateHangInfoUi();
+                UpdateDiemDungMax(diem);
+            }
+            else
+            {
+                _bhLblDiemKhach.Text = "Điểm tích lũy: 0";
+                UpdateHangInfoUi();
+                UpdateDiemDungMax(0);
+            }
+        }
+
+        private void UpdateHangInfoUi()
+        {
+            if (_bhLblHangKhach is null || _bhLblGiamHang is null)
+            {
+                return;
+            }
+
+            if (_bhChkKhongLienKetKhach?.Checked != false || _bhCboKhachHang?.SelectedItem is not DataRowView rv)
+            {
+                _bhLblHangKhach.Text = "Hạng: ";
+                _bhLblGiamHang.Text = "Giảm hạng: 0%";
+                return;
+            }
+
+            string tenHang = Convert.ToString(rv["TenHang"]) ?? string.Empty;
+            int phanTram = Convert.ToInt32(rv["PhanTramGiam"] ?? 0);
+            _bhLblHangKhach.Text = string.IsNullOrWhiteSpace(tenHang) ? "Hạng: " : $"Hạng: {tenHang}";
+            _bhLblGiamHang.Text = $"Giảm hạng: {phanTram}%";
+        }
+
+        private void UpdateDiemDungMax(int diemHienTai)
+        {
+            if (_bhNudDiemDung is null)
+            {
+                return;
+            }
+
+            _bhNudDiemDung.Maximum = Math.Max(0, diemHienTai);
+            if (_bhNudDiemDung.Value > _bhNudDiemDung.Maximum)
+            {
+                _bhNudDiemDung.Value = _bhNudDiemDung.Maximum;
+            }
         }
 
         private void FillThumbnailValuesData()
@@ -1194,8 +1255,28 @@ namespace PBL3
                 return;
             }
 
-            decimal total = _hoaDonTable.AsEnumerable().Sum(r => r.Field<decimal>("ThanhTien"));
-            _bhLblTongTien.Text = $"Tổng tiền: {total:N0} đ";
+            decimal tongGoc = _hoaDonTable.AsEnumerable().Sum(r => r.Field<decimal>("ThanhTien"));
+            decimal tongSauGiam = ApplyDiscounts(tongGoc, out _);
+            _bhLblTongTien.Text = $"Tổng tiền: {tongSauGiam:N0} đ";
+        }
+
+        private decimal ApplyDiscounts(decimal tongGoc, out int diemDung)
+        {
+            diemDung = _bhNudDiemDung is null ? 0 : (int)_bhNudDiemDung.Value;
+            int phanTram = GetSelectedKhachHangDiscountPercent();
+            decimal tienSauGiamHang = tongGoc * (1 - (phanTram / 100m));
+            decimal tongSauGiam = tienSauGiamHang - (diemDung * 1000m);
+            return tongSauGiam < 0 ? 0 : tongSauGiam;
+        }
+
+        private int GetSelectedKhachHangDiscountPercent()
+        {
+            if (_bhChkKhongLienKetKhach?.Checked != false || _bhCboKhachHang?.SelectedItem is not DataRowView rv)
+            {
+                return 0;
+            }
+
+            return Convert.ToInt32(rv["PhanTramGiam"] ?? 0);
         }
 
         private void BhDgvMenu_SelectionChanged(object? sender, EventArgs e) => LoadSizeForSelectedMonData();
@@ -1286,6 +1367,8 @@ namespace PBL3
 
             _bhCboKhachHang.SelectedValue = matchedRow["MaKH"];
             _bhLblDiemKhach!.Text = $"Điểm tích lũy: {Convert.ToInt32(matchedRow["DiemTichLuy"] ?? 0)}";
+            UpdateHangInfoUi();
+            UpdateDiemDungMax(Convert.ToInt32(matchedRow["DiemTichLuy"] ?? 0));
         }
 
         private void BhBtnThem_Click(object? sender, EventArgs e)
@@ -1388,25 +1471,22 @@ namespace PBL3
             decimal tongTien = _hoaDonTable.AsEnumerable().Sum(r => r.Field<decimal>("ThanhTien"));
             int? maKh = GetSelectedKhachHangIdData();
             int diemHienTai = GetSelectedKhachHangPointsData();
-            decimal giamGia = 0m;
-            int diemDung = 0;
-
-            if (maKh.HasValue && diemHienTai >= DiemMoiMocGiam)
+            int diemDung = _bhNudDiemDung is null ? 0 : (int)_bhNudDiemDung.Value;
+            if (diemDung > diemHienTai)
             {
-                int soMocTheoDiem = diemHienTai / DiemMoiMocGiam;
-                int soMocTheoTien = (int)(tongTien / TienGiamMoiMoc);
-                int soMocApDung = Math.Min(soMocTheoDiem, soMocTheoTien);
-                decimal giamToiDa = soMocApDung * TienGiamMoiMoc;
-
-                if (giamToiDa > 0 && MessageBox.Show($"Khách có {diemHienTai} điểm.\nQuy đổi: {DiemMoiMocGiam} điểm giảm {TienGiamMoiMoc:N0} đ.\nCó thể giảm tối đa {giamToiDa:N0} đ.\nDùng điểm giảm ngay không?", "Giảm giá", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    giamGia = giamToiDa;
-                    diemDung = soMocApDung * DiemMoiMocGiam;
-                }
+                MessageBox.Show("Số điểm dùng vượt quá điểm hiện có.", "Dữ liệu sai", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            decimal tongSauGiam = tongTien - giamGia;
+            decimal tongSauGiam = ApplyDiscounts(tongTien, out diemDung);
             int diemCong = maKh.HasValue ? (int)(tongSauGiam / NguongCongDiem) * DiemCongMoiNguong : 0;
+            int diemTronDoiCong = diemCong;
+            int maHangMoi = 1;
+            if (maKh.HasValue && _bhCboKhachHang?.SelectedItem is DataRowView rv)
+            {
+                int diemTronDoi = Convert.ToInt32(rv["DiemTichLuyTronDoi"] ?? 0) + diemTronDoiCong;
+                maHangMoi = _banHangService.GetHangByDiemTronDoi(diemTronDoi);
+            }
 
             try
             {
@@ -1416,6 +1496,8 @@ namespace PBL3
                     tongSauGiam,
                     diemCong,
                     diemDung,
+                    diemTronDoiCong,
+                    maHangMoi,
                     _hoaDonTable);
                 DataTable printTable = _hoaDonTable.Copy();
 

@@ -27,6 +27,7 @@ namespace PBL3
             hcnt_Khung = new RoundedPanel();
             lblCongThuc = new Label();
             btnLamMoi = new Button();
+            btnLichSuDiem = new Button();
             lblTitle = new Label();
             lblTen = new Label();
             lblSdt = new Label();
@@ -129,6 +130,7 @@ namespace PBL3
             hcnt_Khung.BackColor = Color.Linen;
             hcnt_Khung.Controls.Add(lblCongThuc);
             hcnt_Khung.Controls.Add(btnLamMoi);
+            hcnt_Khung.Controls.Add(btnLichSuDiem);
             hcnt_Khung.Controls.Add(lblTitle);
             hcnt_Khung.Controls.Add(lblTen);
             hcnt_Khung.Controls.Add(lblSdt);
@@ -165,6 +167,20 @@ namespace PBL3
             btnLamMoi.Text = "Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
             btnLamMoi.Click += btnLamMoi_Click;
+            // 
+            // btnLichSuDiem
+            // 
+            btnLichSuDiem.BackColor = Color.SandyBrown;
+            btnLichSuDiem.FlatStyle = FlatStyle.Flat;
+            btnLichSuDiem.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnLichSuDiem.ForeColor = Color.White;
+            btnLichSuDiem.Location = new Point(512, 88);
+            btnLichSuDiem.Name = "btnLichSuDiem";
+            btnLichSuDiem.Size = new Size(159, 31);
+            btnLichSuDiem.TabIndex = 9;
+            btnLichSuDiem.Text = "Lịch sử điểm";
+            btnLichSuDiem.UseVisualStyleBackColor = false;
+            btnLichSuDiem.Click += btnLichSuDiem_Click;
             // 
             // lblTitle
             // 
@@ -690,6 +706,7 @@ namespace PBL3
         private PictureBox pb_QLNV;
         private Label label4;
         private Label lb_DMQL;
+        private Button btnLichSuDiem;
         private DataGridView dgvKhachHang;
         private TextBox txtSdt;
         private TextBox txtTen;

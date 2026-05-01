@@ -14,6 +14,7 @@ namespace PBL3
 
         private readonly string _maNv;
         private readonly KhachHangService _khachHangService;
+        private readonly BanHangService _banHangService;
         private bool _isNavigating;
 
         public KhachHang() : this("1")
@@ -23,6 +24,7 @@ namespace PBL3
         public KhachHang(string maNv)
         {
             _khachHangService = new KhachHangService();
+            _banHangService = new BanHangService();
             _maNv = maNv;
             InitializeComponent();
         }
@@ -61,6 +63,7 @@ namespace PBL3
             DataTable dt = _khachHangService.GetForKhachHangPage();
 
             dgvKhachHang.DataSource = dt;
+            ConfigureKhachHangGrid();
             if (dgvKhachHang.Columns.Contains("GiamGiaToiDa"))
             {
                 dgvKhachHang.Columns["GiamGiaToiDa"].HeaderText = "Giảm tối đa (đ)";
@@ -68,6 +71,151 @@ namespace PBL3
             }
 
             lblCongThuc.Text = $"Công thức: {DiemMoiMocGiam} điểm = {TienGiamMoiMoc:N0}đ giảm giá | Cộng {DiemCongMoiNguong} điểm mỗi {NguongCongDiem:N0}đ thanh toán";
+        }
+
+        private void ConfigureKhachHangGrid()
+        {
+            dgvKhachHang.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvKhachHang.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            dgvKhachHang.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+
+            SetHeaderText("MaKH", "MãKH");
+            SetHeaderText("SDT", "SĐT");
+            SetHeaderText("DiemTichLuy", "Điểm tích lũy");
+            SetHeaderText("DiemTichLuyTronDoi", "Điểm trọn đời");
+            SetHeaderText("TenHang", "Hạng");
+
+            SetColumnWidth("MaKH", 80);
+            SetColumnWidth("SDT", 130);
+            SetColumnWidth("TenHang", 110);
+            SetColumnWidth("DiemTichLuy", 110);
+            SetColumnWidth("DiemTichLuyTronDoi", 120);
+            SetColumnWidth("GiamGiaToiDa", 120);
+
+            DataGridViewColumn? hangColumn = dgvKhachHang.Columns["TenHang"];
+            if (hangColumn is not null)
+            {
+                hangColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                hangColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            DataGridViewColumn? diemColumn = dgvKhachHang.Columns["DiemTichLuyTronDoi"];
+            if (diemColumn is not null)
+            {
+                diemColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+
+            dgvKhachHang.CellFormatting -= DgvKhachHang_CellFormatting;
+            dgvKhachHang.CellFormatting += DgvKhachHang_CellFormatting;
+        }
+
+        private void DgvKhachHang_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvKhachHang.Columns[e.ColumnIndex].Name != "TenHang" || e.Value is null)
+            {
+                return;
+            }
+
+            string hang = Convert.ToString(e.Value) ?? string.Empty;
+            if (hang.Equals("Kim cương", StringComparison.OrdinalIgnoreCase))
+            {
+                e.CellStyle.BackColor = Color.LightSkyBlue;
+                e.CellStyle.ForeColor = Color.Navy;
+            }
+            else if (hang.Equals("Vàng", StringComparison.OrdinalIgnoreCase))
+            {
+                e.CellStyle.BackColor = Color.Gold;
+                e.CellStyle.ForeColor = Color.SaddleBrown;
+            }
+        }
+
+        private void SetHeaderText(string columnName, string headerText)
+        {
+            DataGridViewColumn? column = dgvKhachHang.Columns[columnName];
+            if (column is not null)
+            {
+                column.HeaderText = headerText;
+            }
+        }
+
+        private void SetColumnWidth(string columnName, int width)
+        {
+            DataGridViewColumn? column = dgvKhachHang.Columns[columnName];
+            if (column is not null)
+            {
+                column.Width = width;
+            }
+        }
+
+        private void btnLichSuDiem_Click(object? sender, EventArgs e)
+        {
+            if (dgvKhachHang.CurrentRow is null)
+            {
+                MessageBox.Show("Vui lòng chọn khách hàng.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int? maKh = null;
+            object? value = dgvKhachHang.CurrentRow.Cells["MaKH"].Value;
+            if (value is not null && value != DBNull.Value)
+            {
+                int.TryParse(Convert.ToString(value), out int parsed);
+                maKh = parsed;
+            }
+
+            if (!maKh.HasValue)
+            {
+                MessageBox.Show("Không xác định khách hàng.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataTable dt = _banHangService.GetLichSuDiem(maKh.Value);
+            ShowLichSuDiemPopup(dt, maKh.Value);
+        }
+
+        private void ShowLichSuDiemPopup(DataTable data, int maKh)
+        {
+            using Form dialog = new Form
+            {
+                Text = $"Lịch sử điểm KH{maKh}",
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MinimizeBox = false,
+                MaximizeBox = false,
+                ClientSize = new Size(600, 360)
+            };
+
+            DataGridView grid = new DataGridView
+            {
+                Dock = DockStyle.Fill,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                RowHeadersVisible = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                DataSource = data
+            };
+
+            if (grid.Columns.Contains("SoDiem"))
+            {
+                grid.Columns["SoDiem"].HeaderText = "Số điểm";
+            }
+            if (grid.Columns.Contains("LoaiGD"))
+            {
+                grid.Columns["LoaiGD"].HeaderText = "Loại GD";
+            }
+            if (grid.Columns.Contains("NoiDung"))
+            {
+                grid.Columns["NoiDung"].HeaderText = "Nội dung";
+            }
+            if (grid.Columns.Contains("NgayGD"))
+            {
+                grid.Columns["NgayGD"].HeaderText = "Ngày";
+                grid.Columns["NgayGD"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+            }
+
+            dialog.Controls.Add(grid);
+            dialog.ShowDialog(this);
         }
 
         private void btnThem_Click(object? sender, EventArgs e)

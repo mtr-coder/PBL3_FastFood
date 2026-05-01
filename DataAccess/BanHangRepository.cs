@@ -101,7 +101,23 @@ WHERE CONVERT(VARCHAR(20), mb.MaMon) = @MaMonRaw
         public DataTable GetKhachHangOptions()
         {
             using SqlConnection conn = DbHelper.GetConnection();
-            using SqlDataAdapter da = new SqlDataAdapter("SELECT MaKH, TenKH, SDT, ISNULL(DiemTichLuy,0) AS DiemTichLuy FROM dbo.KHACH_HANG ORDER BY MaKH", conn);
+            const string sql = @"
+SELECT kh.MaKH, kh.TenKH, kh.SDT,
+       ISNULL(kh.DiemTichLuy,0) AS DiemTichLuy,
+       ISNULL(kh.DiemTichLuy,0) AS DiemTichLuyTronDoi,
+       ISNULL(hv.MaHang, 1) AS MaHang,
+       ISNULL(hv.TenHang, N'Bạc') AS TenHang,
+       ISNULL(hv.PhanTramGiam, 0) AS PhanTramGiam
+FROM dbo.KHACH_HANG kh
+OUTER APPLY (
+    SELECT TOP 1 hv2.MaHang, hv2.TenHang, hv2.PhanTramGiam
+    FROM dbo.HANG_THANH_VIEN hv2
+    WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuy,0)
+    ORDER BY hv2.DiemToiThieu DESC, hv2.MaHang DESC
+) hv
+ORDER BY kh.MaKH";
+
+            using SqlDataAdapter da = new SqlDataAdapter(sql, conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
             return dt;
@@ -182,7 +198,10 @@ WHERE CONVERT(VARCHAR(20), mb.MaMon) = @MaMonRaw
 
                 if (maKh.HasValue)
                 {
-                    using SqlCommand cmd = new SqlCommand("UPDATE dbo.KHACH_HANG SET DiemTichLuy = ISNULL(DiemTichLuy,0) + @Cong - @Tru WHERE MaKH=@MaKH", conn, tran);
+                    using SqlCommand cmd = new SqlCommand(@"
+UPDATE dbo.KHACH_HANG
+SET DiemTichLuy = ISNULL(DiemTichLuy,0) + @Cong - @Tru
+WHERE MaKH=@MaKH", conn, tran);
                     cmd.Parameters.Add("@Cong", SqlDbType.Int).Value = diemCong;
                     cmd.Parameters.Add("@Tru", SqlDbType.Int).Value = diemDung;
                     cmd.Parameters.Add("@MaKH", SqlDbType.Int).Value = maKh.Value;
@@ -197,6 +216,105 @@ WHERE CONVERT(VARCHAR(20), mb.MaMon) = @MaMonRaw
                 tran.Rollback();
                 throw;
             }
+        }
+
+        public int SaveHoaDonBan(string maNv, int? maKh, decimal tongSauGiam, int diemCong, int diemDung, int diemTronDoiCong, int maHangMoi, DataTable hoaDonTable)
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+            using SqlTransaction tran = conn.BeginTransaction();
+
+            try
+            {
+                int maHdb = InsertHoaDonBan(conn, tran, maNv, tongSauGiam, maKh);
+
+                foreach (DataRow row in hoaDonTable.Rows)
+                {
+                    string maMon = Convert.ToString(row["MaMon"]) ?? string.Empty;
+                    string maDvpv = Convert.ToString(row["MaDVPV"]) ?? string.Empty;
+                    int soLuong = Convert.ToInt32(row["SoLuong"], CultureInfo.InvariantCulture);
+                    if (!int.TryParse(NormalizeMonKey(maMon), out int maMonInt))
+                    {
+                        throw new InvalidOperationException($"Mã món không hợp lệ: {maMon}");
+                    }
+
+                    if (!int.TryParse(maDvpv, out int maDvpvInt))
+                    {
+                        throw new InvalidOperationException($"Mã đơn vị phục vụ không hợp lệ: {maDvpv}");
+                    }
+
+                    InsertChiTietHoaDon(conn, tran, maHdb, maMonInt, maDvpvInt, soLuong);
+                    TruKhoNguyenLieu(conn, tran, maMonInt, maDvpvInt, soLuong);
+                }
+
+                if (maKh.HasValue)
+                {
+                    using SqlCommand cmd = new SqlCommand(@"
+UPDATE dbo.KHACH_HANG
+SET DiemTichLuy = ISNULL(DiemTichLuy,0) + @Cong - @Tru
+WHERE MaKH=@MaKH", conn, tran);
+                    cmd.Parameters.Add("@Cong", SqlDbType.Int).Value = diemCong;
+                    cmd.Parameters.Add("@Tru", SqlDbType.Int).Value = diemDung;
+                    cmd.Parameters.Add("@MaKH", SqlDbType.Int).Value = maKh.Value;
+                    cmd.ExecuteNonQuery();
+
+                    if (TableExists(conn, "LICH_SU_DIEM"))
+                    {
+                        InsertDiemHistory(conn, tran, maKh.Value, diemCong, "Tích điểm", $"Thanh toán hóa đơn #{maHdb}");
+                        if (diemDung > 0)
+                        {
+                            InsertDiemHistory(conn, tran, maKh.Value, -diemDung, "Dùng điểm", $"Giảm giá {diemDung * 1000:N0}đ cho hóa đơn #{maHdb}");
+                        }
+                    }
+                }
+
+                if (maKh.HasValue && TableColumnExists(conn, "KHACH_HANG", "MaHang") && maHangMoi > 0)
+                {
+                    using SqlCommand cmdHang = new SqlCommand("UPDATE dbo.KHACH_HANG SET MaHang = @MaHang WHERE MaKH = @MaKH", conn, tran);
+                    cmdHang.Parameters.Add("@MaHang", SqlDbType.Int).Value = maHangMoi;
+                    cmdHang.Parameters.Add("@MaKH", SqlDbType.Int).Value = maKh.Value;
+                    cmdHang.ExecuteNonQuery();
+                }
+
+                tran.Commit();
+                return maHdb;
+            }
+            catch
+            {
+                tran.Rollback();
+                throw;
+            }
+        }
+
+        public int GetHangByDiemTronDoi(int diemTronDoi)
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+            using SqlCommand cmd = new SqlCommand(@"
+SELECT TOP 1 MaHang
+FROM dbo.HANG_THANH_VIEN
+WHERE DiemToiThieu <= @Diem
+ORDER BY DiemToiThieu DESC, MaHang DESC", conn);
+            cmd.Parameters.Add("@Diem", SqlDbType.Int).Value = diemTronDoi;
+            object? value = cmd.ExecuteScalar();
+            return value is null || value == DBNull.Value ? 1 : Convert.ToInt32(value, CultureInfo.InvariantCulture);
+        }
+
+        public DataTable GetLichSuDiem(int maKh)
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            const string sql = @"
+SELECT SoDiem, LoaiGD, NoiDung, NgayGD
+FROM dbo.LICH_SU_DIEM
+WHERE MaKH = @MaKH
+ORDER BY NgayGD DESC, MaLSD DESC";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaKH", SqlDbType.Int).Value = maKh;
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
         }
 
         private static int InsertHoaDonBan(SqlConnection conn, SqlTransaction tran, string maNv, decimal tongTien, int? maKh)
@@ -239,6 +357,26 @@ WHERE CONVERT(VARCHAR(20), mb.MaMon) = @MaMonRaw
             }
 
             return maHdb;
+        }
+
+        private static void InsertDiemHistory(SqlConnection conn, SqlTransaction tran, int maKh, int soDiem, string loaiGd, string noiDung)
+        {
+            using SqlCommand cmd = new SqlCommand(@"
+INSERT INTO dbo.LICH_SU_DIEM (MaKH, SoDiem, LoaiGD, NoiDung, NgayGD)
+VALUES (@MaKH, @SoDiem, @LoaiGD, @NoiDung, GETDATE())", conn, tran);
+            cmd.Parameters.Add("@MaKH", SqlDbType.Int).Value = maKh;
+            cmd.Parameters.Add("@SoDiem", SqlDbType.Int).Value = soDiem;
+            cmd.Parameters.Add("@LoaiGD", SqlDbType.NVarChar, 50).Value = loaiGd;
+            cmd.Parameters.Add("@NoiDung", SqlDbType.NVarChar, 255).Value = noiDung;
+            cmd.ExecuteNonQuery();
+        }
+
+        private static bool TableColumnExists(SqlConnection conn, string tableName, string columnName)
+        {
+            using SqlCommand cmd = new SqlCommand("SELECT CASE WHEN EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName AND COLUMN_NAME=@ColumnName) THEN 1 ELSE 0 END", conn);
+            cmd.Parameters.Add("@TableName", SqlDbType.VarChar, 128).Value = tableName;
+            cmd.Parameters.Add("@ColumnName", SqlDbType.VarChar, 128).Value = columnName;
+            return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture) == 1;
         }
 
         private static void InsertChiTietHoaDon(SqlConnection conn, SqlTransaction tran, int maHdb, int maMon, int maDvpv, int soLuong)
@@ -330,14 +468,6 @@ GROUP BY MaMon";
             }
 
             return map;
-        }
-
-        private static bool TableColumnExists(SqlConnection conn, string tableName, string columnName)
-        {
-            using SqlCommand cmd = new SqlCommand("SELECT CASE WHEN EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName AND COLUMN_NAME=@ColumnName) THEN 1 ELSE 0 END", conn);
-            cmd.Parameters.Add("@TableName", SqlDbType.VarChar, 128).Value = tableName;
-            cmd.Parameters.Add("@ColumnName", SqlDbType.VarChar, 128).Value = columnName;
-            return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture) == 1;
         }
 
         private static string ResolveMonDvpvGiaColumn(SqlConnection conn)

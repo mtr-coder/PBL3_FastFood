@@ -6,12 +6,26 @@ namespace PBL3
     public partial class QuanLiKhachHang : Form
     {
         private readonly KhachHangService _khachHangService;
+        private readonly BanHangService _banHangService;
         private DataTable? _khachHangTable;
         private string? _selectedMaKhDbValue;
+
         private string DiemTichLuyText
         {
-            get => _txtDiaChi.Text;
-            set => _txtDiaChi.Text = value;
+            get => _txtDiemTichLuy.Text;
+            set => _txtDiemTichLuy.Text = value;
+        }
+
+        private string DiemTronDoiText
+        {
+            get => _txtDiemTronDoi.Text;
+            set => _txtDiemTronDoi.Text = value;
+        }
+
+        private string HangText
+        {
+            get => _txtHang.Text;
+            set => _txtHang.Text = value;
         }
 
         private static bool IsValidPhone(string phone)
@@ -25,6 +39,7 @@ namespace PBL3
         public QuanLiKhachHang()
         {
             _khachHangService = new KhachHangService();
+            _banHangService = new BanHangService();
             InitializeComponent();
             _cboTimTheo.SelectionChangeCommitted += SearchControl_Changed;
         }
@@ -58,10 +73,14 @@ namespace PBL3
             SetHeaderText("MaKH", "MãKH");
             SetHeaderText("SDT", "SĐT");
             SetHeaderText("DiemTichLuy", "ĐiểmTíchLũy");
+            SetHeaderText("DiemTichLuyTronDoi", "Điểm trọn đời");
+            SetHeaderText("TenHang", "Hạng");
 
             SetColumnWidth("MaKH", 90);
             SetColumnWidth("SDT", 220);
             SetColumnWidth("DiemTichLuy", 130);
+            SetColumnWidth("DiemTichLuyTronDoi", 130);
+            SetColumnWidth("TenHang", 120);
 
             ApplySearchFilter();
         }
@@ -95,6 +114,14 @@ namespace PBL3
             else if (selected == "ĐiểmTíchLũy" || selected == "Điểm tích lũy" || selected == "DiemTichLuy")
             {
                 filter = $"Convert(DiemTichLuy, 'System.String') LIKE '%{keyword}%'";
+            }
+            else if (selected == "ĐiểmTrọnĐời" || selected == "DiemTronDoi" || selected == "Điểm trọn đời")
+            {
+                filter = $"Convert(DiemTichLuyTronDoi, 'System.String') LIKE '%{keyword}%'";
+            }
+            else if (selected == "Hạng" || selected == "Hang" || selected == "TenHang")
+            {
+                filter = $"TenHang LIKE '%{keyword}%'";
             }
             else
             {
@@ -134,6 +161,8 @@ namespace PBL3
             _txtMaNV.Text = FormatMaKhForDisplay(_selectedMaKhDbValue);
             _txtSdt.Text = Convert.ToString(row.Cells["SDT"].Value) ?? string.Empty;
             DiemTichLuyText = Convert.ToString(row.Cells["DiemTichLuy"].Value) ?? "0";
+            DiemTronDoiText = Convert.ToString(row.Cells["DiemTichLuyTronDoi"].Value) ?? DiemTichLuyText;
+            HangText = Convert.ToString(row.Cells["TenHang"].Value) ?? string.Empty;
         }
 
         private bool ValidateInput(bool isInsert)
@@ -144,7 +173,6 @@ namespace PBL3
                 return false;
             }
 
-            // Phone validation: digits only, exactly 10 digits
             string phone = _txtSdt.Text.Trim();
             if (!IsValidPhone(phone))
             {
@@ -162,6 +190,12 @@ namespace PBL3
             if (!int.TryParse(DiemTichLuyText.Trim(), out int diem) || diem < 0)
             {
                 MessageBox.Show("Điểm tích lũy không hợp lệ.", "Dữ liệu sai", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (!int.TryParse(DiemTronDoiText.Trim(), out int diemTronDoi) || diemTronDoi < 0)
+            {
+                MessageBox.Show("Điểm trọn đời không hợp lệ.", "Dữ liệu sai", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -210,6 +244,11 @@ namespace PBL3
             try
             {
                 int rows = _khachHangService.Update(_selectedMaKhDbValue ?? _txtMaNV.Text.Trim(), _txtSdt.Text.Trim(), int.Parse(DiemTichLuyText.Trim()));
+
+                if (rows > 0)
+                {
+                    UpdateHangForCustomer(_selectedMaKhDbValue ?? _txtMaNV.Text.Trim(), int.Parse(DiemTronDoiText.Trim()));
+                }
 
                 if (rows == 0)
                 {
@@ -282,7 +321,15 @@ namespace PBL3
             _txtMaNV.Text = GenerateNextMaKH();
             _txtSdt.Clear();
             DiemTichLuyText = "0";
+            DiemTronDoiText = "0";
+            HangText = string.Empty;
             _txtSdt.Focus();
+        }
+
+        private void UpdateHangForCustomer(string maKh, int diemTronDoi)
+        {
+            int maHangMoi = _banHangService.GetHangByDiemTronDoi(diemTronDoi);
+            _khachHangService.UpdateHang(maKh, maHangMoi);
         }
 
         private string GenerateNextMaKH()
@@ -308,39 +355,13 @@ namespace PBL3
             return value.StartsWith("KH", StringComparison.OrdinalIgnoreCase) ? value.ToUpperInvariant() : $"KH{value}";
         }
 
-        private void btn_QLKH_Click(object? sender, EventArgs e)
-        {
-        }
-
-        private void btn_QLNCC_Click(object? sender, EventArgs e)
-        {
-            AdminNavigationManager.Navigate<QuanLiNhaCungCap>(this);
-        }
-
-        private void btn_QLNV_Click(object? sender, EventArgs e)
-        {
-            AdminNavigationManager.Navigate<QuanLiNhanVien>(this);
-        }
-
-        private void btn_QLMA_Click(object? sender, EventArgs e)
-        {
-            AdminNavigationManager.Navigate<QuanLiMonAn>(this);
-        }
-
-        private void btn_QLHDN_Click(object? sender, EventArgs e)
-        {
-            AdminNavigationManager.Navigate<QuanLiNguyenLieu>(this);
-        }
-
-        private void btn_QLHDB_Click(object? sender, EventArgs e)
-        {
-            AdminNavigationManager.Navigate<LichSuHoaDon>(this);
-        }
-
-        private void btn_ThongKe_Click(object? sender, EventArgs e)
-        {
-            AdminNavigationManager.Navigate<ThongKe>(this);
-        }
+        private void btn_QLKH_Click(object? sender, EventArgs e) { }
+        private void btn_QLNCC_Click(object? sender, EventArgs e) { AdminNavigationManager.Navigate<QuanLiNhaCungCap>(this); }
+        private void btn_QLNV_Click(object? sender, EventArgs e) { AdminNavigationManager.Navigate<QuanLiNhanVien>(this); }
+        private void btn_QLMA_Click(object? sender, EventArgs e) { AdminNavigationManager.Navigate<QuanLiMonAn>(this); }
+        private void btn_QLHDN_Click(object? sender, EventArgs e) { AdminNavigationManager.Navigate<QuanLiNguyenLieu>(this); }
+        private void btn_QLHDB_Click(object? sender, EventArgs e) { AdminNavigationManager.Navigate<LichSuHoaDon>(this); }
+        private void btn_ThongKe_Click(object? sender, EventArgs e) { AdminNavigationManager.Navigate<ThongKe>(this); }
 
         private void btn_DangXuat_Click(object sender, EventArgs e)
         {
@@ -357,63 +378,21 @@ namespace PBL3
             }
         }
 
-        private void btn_DangXuat_MouseEnter(object sender, EventArgs e)
-        {
-            btn_DangXuat.BackColor = Color.FromArgb(255, 69, 0);
-        }
+        private void btn_DangXuat_MouseEnter(object sender, EventArgs e) { btn_DangXuat.BackColor = Color.FromArgb(255, 69, 0); }
+        private void btn_DangXuat_MouseLeave(object sender, EventArgs e) { btn_DangXuat.BackColor = Color.LightSalmon; }
 
-        private void btn_DangXuat_MouseLeave(object sender, EventArgs e)
-        {
-            btn_DangXuat.BackColor = Color.LightSalmon;
-        }
-
-        private void roundedPanel1_Paint(object sender, PaintEventArgs e)
-        {
-        }
-
-        private void btn_ThongKe_Paint(object sender, PaintEventArgs e)
-        {
-        }
-
-        private void lblHoTen_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void lblTrangThai_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void lblDiaChi_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void _cboTrangThai_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void pnlSdtInput_Paint(object sender, PaintEventArgs e)
-        {
-        }
-
-        private void lblNgaySinh_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void roundedPanel4_Paint(object sender, PaintEventArgs e)
-        {
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void pnlFormNhanVien_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+        private void roundedPanel1_Paint(object sender, PaintEventArgs e) { }
+        private void btn_ThongKe_Paint(object sender, PaintEventArgs e) { }
+        private void lblHoTen_Click(object sender, EventArgs e) { }
+        private void lblTrangThai_Click(object sender, EventArgs e) { }
+        private void lblDiemTichLuy_Click(object sender, EventArgs e) { }
+        private void _cboTrangThai_SelectedIndexChanged(object sender, EventArgs e) { }
+        private void pnlSdtInput_Paint(object sender, PaintEventArgs e) { }
+        private void lblNgaySinh_Click(object sender, EventArgs e) { }
+        private void label1_Click(object sender, EventArgs e) { }
+        private void roundedPanel4_Paint(object sender, PaintEventArgs e) { }
+        private void pictureBox1_Click(object sender, EventArgs e) { }
+        private void pnlFormNhanVien_Paint(object sender, PaintEventArgs e) { }
+        private void pnlHoTenInput_Paint(object sender, PaintEventArgs e) { }
     }
 }
