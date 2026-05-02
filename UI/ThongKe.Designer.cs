@@ -161,25 +161,25 @@ namespace PBL3
             lblTotalRevenue.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblTotalRevenue.Location = new Point(40, 59);
             lblTotalRevenue.Name = "lblTotalRevenue";
-            lblTotalRevenue.Size = new Size(301, 30);
+            lblTotalRevenue.Size = new Size(280, 23);
             lblTotalRevenue.TabIndex = 7;
             lblTotalRevenue.Text = "Tổng doanh thu: 0 đ";
             // 
             // lblTotalProfit
             // 
             lblTotalProfit.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblTotalProfit.Location = new Point(347, 59);
+            lblTotalProfit.Location = new Point(330, 59);
             lblTotalProfit.Name = "lblTotalProfit";
-            lblTotalProfit.Size = new Size(280, 30);
+            lblTotalProfit.Size = new Size(280, 23);
             lblTotalProfit.TabIndex = 8;
             lblTotalProfit.Text = "Tổng lợi nhuận: 0 đ";
             // 
             // lblTotalOrders
             // 
             lblTotalOrders.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblTotalOrders.Location = new Point(633, 59);
+            lblTotalOrders.Location = new Point(620, 59);
             lblTotalOrders.Name = "lblTotalOrders";
-            lblTotalOrders.Size = new Size(208, 30);
+            lblTotalOrders.Size = new Size(220, 23);
             lblTotalOrders.TabIndex = 9;
             lblTotalOrders.Text = "Tổng số đơn: 0";
             // 
@@ -290,7 +290,7 @@ namespace PBL3
             lblLowStockTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblLowStockTitle.Location = new Point(465, 444);
             lblLowStockTitle.Name = "lblLowStockTitle";
-            lblLowStockTitle.Size = new Size(139, 20);
+            lblLowStockTitle.Size = new Size(162, 20);
             lblLowStockTitle.TabIndex = 21;
             lblLowStockTitle.Text = "Nguyên liệu sắp hết";
             // 

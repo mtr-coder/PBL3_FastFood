@@ -26,9 +26,6 @@ namespace PBL3
             dtpTo.Enabled = false;
             InitializeCharts();
             ApplyDashboardStyles();
-            lblTotalRevenue.Text = "Tổng doanh thu: 0 đ";
-            lblTotalProfit.Text = "Tổng lợi nhuận: 0 đ";
-            lblTotalOrders.Text = "Tổng số đơn: 0";
             this.Load += ThongKe_Load;
         }
 
@@ -94,12 +91,9 @@ namespace PBL3
 
         private void ApplyDashboardStyles()
         {
-            lblTotalRevenue.AutoSize = true;
-            lblTotalProfit.AutoSize = true;
-            lblTotalOrders.AutoSize = true;
-            lblTotalRevenue.TextAlign = ContentAlignment.MiddleCenter;
-            lblTotalProfit.TextAlign = ContentAlignment.MiddleCenter;
-            lblTotalOrders.TextAlign = ContentAlignment.MiddleCenter;
+            lblTotalRevenue.AutoSize = false;
+            lblTotalProfit.AutoSize = false;
+            lblTotalOrders.AutoSize = false;
             lblTotalRevenue.ForeColor = Color.Black;
             lblTotalProfit.ForeColor = Color.Black;
             lblTotalOrders.ForeColor = Color.Black;
@@ -119,8 +113,6 @@ namespace PBL3
             label1.Text = "Làm mới";
             label2.Text = "Xuất CSV";
 
-            ArrangeSummaryLabels();
-
             // always keep summary labels visible above other controls
             lblTotalRevenue.Visible = lblTotalProfit.Visible = lblTotalOrders.Visible = true;
             lblTotalRevenue.BringToFront();
@@ -128,21 +120,6 @@ namespace PBL3
             lblTotalOrders.BringToFront();
         }
 
-        private void ArrangeSummaryLabels()
-        {
-            int y = 44;
-            int x = 40;
-            int gap = 24;
-
-            lblTotalRevenue.Location = new Point(x, y);
-            x += lblTotalRevenue.Width + gap;
-
-            lblTotalProfit.Location = new Point(x, y);
-            x += lblTotalProfit.Width + gap;
-
-            lblTotalOrders.Location = new Point(x, y);
-            x += lblTotalOrders.Width + gap;
-        }
         private void ThongKe_Load(object? sender, EventArgs e)
         {
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
@@ -312,14 +289,14 @@ namespace PBL3
                     dgvLowStock.Columns["SoLuongTon"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 if (dgvLowStock.Columns.Contains("NguongToiThieu"))
                     dgvLowStock.Columns["NguongToiThieu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                ConfigureLowStockGrid();
+                ConfigureTopItemsGrid();
                 HighlightLowStockRows();
-                ArrangeSummaryLabels();
             }
             catch (Exception ex)
             {
                 lblTotalRevenue.Text = "Tổng doanh thu: 0 đ";
                 lblTotalProfit.Text = "Tổng lợi nhuận: 0 đ";
-                ArrangeSummaryLabels();
                 MessageBox.Show($"L?i t?i d? li?u th?ng kê: {ex.Message}", "L?i", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -459,6 +436,12 @@ namespace PBL3
                     int idx = series.Points.AddXY(nhom, doanhThu);
                     series.Points[idx].LegendText = nhom;
                     series.Points[idx].Label = "#PERCENT{P0}";
+
+                    // thêm nhãn giá trị trực tiếp lên cột cho biểu đồ cột
+                    if (series.ChartType == SeriesChartType.Column)
+                    {
+                        series.Points[idx].Label = $"{doanhThu:N0} đ";
+                    }
                     total += doanhThu;
                 }
             }
@@ -479,6 +462,26 @@ namespace PBL3
         private void lblHourTitle_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ConfigureTopItemsGrid()
+        {
+            if (dgvTopItems.Columns.Contains("MaMon"))
+                dgvTopItems.Columns["MaMon"].Visible = false;
+            if (dgvTopItems.Columns.Contains("TenMon"))
+                dgvTopItems.Columns["TenMon"].HeaderText = "Tên món";
+            if (dgvTopItems.Columns.Contains("SoLuong"))
+                dgvTopItems.Columns["SoLuong"].HeaderText = "Số lượng";
+        }
+
+        private void ConfigureLowStockGrid()
+        {
+            if (dgvLowStock.Columns.Contains("TenNL"))
+                dgvLowStock.Columns["TenNL"].HeaderText = "Tên nguyên liệu";
+            if (dgvLowStock.Columns.Contains("SoLuongTon"))
+                dgvLowStock.Columns["SoLuongTon"].HeaderText = "Số lượng tồn";
+            if (dgvLowStock.Columns.Contains("NguongToiThieu"))
+                dgvLowStock.Columns["NguongToiThieu"].HeaderText = "Ngưỡng tối thiểu";
         }
     }
 }
