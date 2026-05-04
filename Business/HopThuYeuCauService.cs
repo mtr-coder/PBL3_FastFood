@@ -31,7 +31,7 @@ namespace PBL3.Business
         {
             bool nghiHan = item.LoaiYeuCau.Contains("hẳn", StringComparison.OrdinalIgnoreCase)
                 || item.LoaiYeuCau.Contains("han", StringComparison.OrdinalIgnoreCase);
-            _repository.ApproveRequest(item.MaYeuCau, phanHoi.Trim(), nghiHan, item.MaNV);
+            _repository.ApproveRequest(item.MaYeuCau, phanHoi.Trim(), nghiHan, item.MaNV, item.TuNgay, item.DenNgay);
         }
 
         public void RejectRequest(int maYeuCau, string phanHoi)

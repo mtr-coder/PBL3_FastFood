@@ -161,7 +161,6 @@ namespace PBL3.UI
 
             lblReceiptNhanVien.Text = $"👤 Nhân viên: {_dgvHoaDonMaster.CurrentRow.Cells["NhanVien"].Value}";
             lblReceiptDoiTac.Text = $"🤝 {(_loaiHoaDon == "ban" ? "Khách hàng" : "Nhà cung cấp")}: {_dgvHoaDonMaster.CurrentRow.Cells["DoiTac"].Value}";
-            lblReceiptThanhToan.Text = string.Empty;
             if (_lblKhachHangView != null) _lblKhachHangView.Text = Convert.ToString(_dgvHoaDonMaster.CurrentRow.Cells["DoiTac"].Value) ?? "-";
 
             LoadHoaDonDetail(_selectedMaHD);
@@ -283,7 +282,6 @@ namespace PBL3.UI
             _dtpNgay.Value = DateTime.Now;
             lblReceiptNhanVien.Text = "👤 Nhân viên: -";
             lblReceiptDoiTac.Text = _loaiHoaDon == "ban" ? "🤝 Khách hàng: -" : "🤝 Nhà cung cấp: -";
-            lblReceiptThanhToan.Text = string.Empty;
             _dgvHoaDonDetail.DataSource = null;
             if (_lblKhachHangView != null) _lblKhachHangView.Text = "-";
         }

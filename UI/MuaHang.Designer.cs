@@ -25,6 +25,7 @@ namespace PBL3
             lb_DangXuat = new Label();
             lb_Admin = new Label();
             hcnt_Khung = new RoundedPanel();
+            lb_QLNhanVienTitle = new Label();
             lblPhieuNhap = new Label();
             lblNguyenLieu = new Label();
             lblDonGia = new Label();
@@ -136,6 +137,7 @@ namespace PBL3
             // hcnt_Khung
             // 
             hcnt_Khung.BackColor = Color.Linen;
+            hcnt_Khung.Controls.Add(lb_QLNhanVienTitle);
             hcnt_Khung.Controls.Add(lblPhieuNhap);
             hcnt_Khung.Controls.Add(lblNguyenLieu);
             hcnt_Khung.Controls.Add(lblDonGia);
@@ -157,12 +159,23 @@ namespace PBL3
             hcnt_Khung.Size = new Size(870, 717);
             hcnt_Khung.TabIndex = 1;
             // 
+            // lb_QLNhanVienTitle
+            // 
+            lb_QLNhanVienTitle.AutoSize = true;
+            lb_QLNhanVienTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+            lb_QLNhanVienTitle.ForeColor = Color.Salmon;
+            lb_QLNhanVienTitle.Location = new Point(388, 8);
+            lb_QLNhanVienTitle.Name = "lb_QLNhanVienTitle";
+            lb_QLNhanVienTitle.Size = new Size(144, 35);
+            lb_QLNhanVienTitle.TabIndex = 16;
+            lb_QLNhanVienTitle.Text = "Nhập hàng";
+            // 
             // lblPhieuNhap
             // 
             lblPhieuNhap.AutoSize = true;
             lblPhieuNhap.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblPhieuNhap.ForeColor = Color.SaddleBrown;
-            lblPhieuNhap.Location = new Point(18, 380);
+            lblPhieuNhap.Location = new Point(18, 382);
             lblPhieuNhap.Name = "lblPhieuNhap";
             lblPhieuNhap.Size = new Size(118, 28);
             lblPhieuNhap.TabIndex = 15;
@@ -173,7 +186,7 @@ namespace PBL3
             lblNguyenLieu.AutoSize = true;
             lblNguyenLieu.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblNguyenLieu.ForeColor = Color.SaddleBrown;
-            lblNguyenLieu.Location = new Point(18, 20);
+            lblNguyenLieu.Location = new Point(18, 53);
             lblNguyenLieu.Name = "lblNguyenLieu";
             lblNguyenLieu.Size = new Size(225, 28);
             lblNguyenLieu.TabIndex = 14;
@@ -183,7 +196,7 @@ namespace PBL3
             // 
             lblDonGia.AutoSize = true;
             lblDonGia.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblDonGia.Location = new Point(493, 283);
+            lblDonGia.Location = new Point(493, 308);
             lblDonGia.Name = "lblDonGia";
             lblDonGia.Size = new Size(63, 20);
             lblDonGia.TabIndex = 13;
@@ -193,7 +206,7 @@ namespace PBL3
             // 
             lblSoLuong.AutoSize = true;
             lblSoLuong.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblSoLuong.Location = new Point(493, 230);
+            lblSoLuong.Location = new Point(493, 255);
             lblSoLuong.Name = "lblSoLuong";
             lblSoLuong.Size = new Size(71, 20);
             lblSoLuong.TabIndex = 12;
@@ -203,7 +216,7 @@ namespace PBL3
             // 
             lblDonViTinh.AutoSize = true;
             lblDonViTinh.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblDonViTinh.Location = new Point(493, 176);
+            lblDonViTinh.Location = new Point(493, 201);
             lblDonViTinh.Name = "lblDonViTinh";
             lblDonViTinh.Size = new Size(86, 20);
             lblDonViTinh.TabIndex = 11;
@@ -213,7 +226,7 @@ namespace PBL3
             // 
             lblNhaCungCap.AutoSize = true;
             lblNhaCungCap.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblNhaCungCap.Location = new Point(493, 26);
+            lblNhaCungCap.Location = new Point(493, 61);
             lblNhaCungCap.Name = "lblNhaCungCap";
             lblNhaCungCap.Size = new Size(104, 20);
             lblNhaCungCap.TabIndex = 10;
@@ -224,7 +237,7 @@ namespace PBL3
             lblTongTien.AutoSize = true;
             lblTongTien.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblTongTien.ForeColor = Color.Firebrick;
-            lblTongTien.Location = new Point(18, 679);
+            lblTongTien.Location = new Point(18, 670);
             lblTongTien.Name = "lblTongTien";
             lblTongTien.Size = new Size(145, 28);
             lblTongTien.TabIndex = 9;
@@ -236,7 +249,7 @@ namespace PBL3
             btnLuuNhapHang.FlatStyle = FlatStyle.Flat;
             btnLuuNhapHang.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnLuuNhapHang.ForeColor = Color.White;
-            btnLuuNhapHang.Location = new Point(715, 679);
+            btnLuuNhapHang.Location = new Point(715, 670);
             btnLuuNhapHang.Name = "btnLuuNhapHang";
             btnLuuNhapHang.Size = new Size(145, 35);
             btnLuuNhapHang.TabIndex = 8;
@@ -250,7 +263,7 @@ namespace PBL3
             btnXoaDong.FlatStyle = FlatStyle.Flat;
             btnXoaDong.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnXoaDong.ForeColor = Color.White;
-            btnXoaDong.Location = new Point(581, 678);
+            btnXoaDong.Location = new Point(581, 671);
             btnXoaDong.Name = "btnXoaDong";
             btnXoaDong.Size = new Size(128, 35);
             btnXoaDong.TabIndex = 7;
@@ -264,7 +277,7 @@ namespace PBL3
             btnThem.FlatStyle = FlatStyle.Flat;
             btnThem.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnThem.ForeColor = Color.White;
-            btnThem.Location = new Point(493, 339);
+            btnThem.Location = new Point(493, 364);
             btnThem.Name = "btnThem";
             btnThem.Size = new Size(323, 38);
             btnThem.TabIndex = 6;
@@ -274,35 +287,41 @@ namespace PBL3
             // 
             // txtDonGia
             // 
-            txtDonGia.Location = new Point(493, 306);
+            txtDonGia.BackColor = Color.Bisque;
+            txtDonGia.Location = new Point(493, 331);
             txtDonGia.Name = "txtDonGia";
             txtDonGia.Size = new Size(323, 27);
             txtDonGia.TabIndex = 5;
             // 
             // nudSoLuong
             // 
+            nudSoLuong.BackColor = Color.Bisque;
             nudSoLuong.DecimalPlaces = 2;
-            nudSoLuong.Location = new Point(493, 253);
+            nudSoLuong.Location = new Point(493, 278);
             nudSoLuong.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
             nudSoLuong.Name = "nudSoLuong";
-            nudSoLuong.Size = new Size(180, 27);
+            nudSoLuong.Size = new Size(149, 27);
             nudSoLuong.TabIndex = 4;
             nudSoLuong.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // cboDonViTinh
             // 
+            cboDonViTinh.BackColor = Color.Bisque;
             cboDonViTinh.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboDonViTinh.FlatStyle = FlatStyle.Flat;
             cboDonViTinh.FormattingEnabled = true;
-            cboDonViTinh.Location = new Point(493, 199);
+            cboDonViTinh.Location = new Point(493, 224);
             cboDonViTinh.Name = "cboDonViTinh";
             cboDonViTinh.Size = new Size(323, 28);
             cboDonViTinh.TabIndex = 3;
             // 
             // cboNhaCungCap
             // 
+            cboNhaCungCap.BackColor = Color.Bisque;
             cboNhaCungCap.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboNhaCungCap.FlatStyle = FlatStyle.Flat;
             cboNhaCungCap.FormattingEnabled = true;
-            cboNhaCungCap.Location = new Point(493, 50);
+            cboNhaCungCap.Location = new Point(493, 84);
             cboNhaCungCap.Name = "cboNhaCungCap";
             cboNhaCungCap.Size = new Size(323, 28);
             cboNhaCungCap.TabIndex = 2;
@@ -314,14 +333,14 @@ namespace PBL3
             dgvPhieuNhap.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvPhieuNhap.BackgroundColor = Color.WhiteSmoke;
             dgvPhieuNhap.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvPhieuNhap.Location = new Point(18, 412);
+            dgvPhieuNhap.Location = new Point(18, 413);
             dgvPhieuNhap.MultiSelect = false;
             dgvPhieuNhap.Name = "dgvPhieuNhap";
             dgvPhieuNhap.ReadOnly = true;
             dgvPhieuNhap.RowHeadersVisible = false;
             dgvPhieuNhap.RowHeadersWidth = 51;
             dgvPhieuNhap.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPhieuNhap.Size = new Size(842, 260);
+            dgvPhieuNhap.Size = new Size(842, 236);
             dgvPhieuNhap.TabIndex = 1;
             // 
             // dgvNguyenLieu
@@ -331,14 +350,14 @@ namespace PBL3
             dgvNguyenLieu.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvNguyenLieu.BackgroundColor = Color.WhiteSmoke;
             dgvNguyenLieu.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvNguyenLieu.Location = new Point(18, 52);
+            dgvNguyenLieu.Location = new Point(18, 84);
             dgvNguyenLieu.MultiSelect = false;
             dgvNguyenLieu.Name = "dgvNguyenLieu";
             dgvNguyenLieu.ReadOnly = true;
             dgvNguyenLieu.RowHeadersVisible = false;
             dgvNguyenLieu.RowHeadersWidth = 51;
             dgvNguyenLieu.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvNguyenLieu.Size = new Size(458, 325);
+            dgvNguyenLieu.Size = new Size(458, 295);
             dgvNguyenLieu.TabIndex = 0;
             dgvNguyenLieu.SelectionChanged += dgvNguyenLieu_SelectionChanged;
             // 
@@ -615,6 +634,7 @@ namespace PBL3
         private Label lblDonGia;
         private Label lblNguyenLieu;
         private Label lblPhieuNhap;
+        private Label lb_QLNhanVienTitle;
     }
 }
 

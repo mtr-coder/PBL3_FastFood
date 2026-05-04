@@ -58,7 +58,6 @@ namespace PBL3
             txtMaNL = new TextBox();
             lblMaNL = new Label();
             pnlDanhSachNguyenLieu = new RoundedPanel();
-            _cboTimTheo = new ComboBox();
             dgvNguyenLieu = new DataGridView();
             lblDanhSach = new Label();
             hcnt_KhungMenuAD = new RoundedPanel();
@@ -411,14 +410,14 @@ namespace PBL3
             pnlTimKiem.CornerRadius = 12;
             pnlTimKiem.Location = new Point(33, 192);
             pnlTimKiem.Name = "pnlTimKiem";
-            pnlTimKiem.Size = new Size(282, 40);
+            pnlTimKiem.Size = new Size(282, 33);
             pnlTimKiem.TabIndex = 16;
             // 
             // _txtTimKiem
             // 
             _txtTimKiem.BackColor = Color.Bisque;
             _txtTimKiem.BorderStyle = BorderStyle.None;
-            _txtTimKiem.Location = new Point(11, 8);
+            _txtTimKiem.Location = new Point(12, 6);
             _txtTimKiem.Name = "_txtTimKiem";
             _txtTimKiem.PlaceholderText = "Tìm kiếm";
             _txtTimKiem.Size = new Size(257, 20);
@@ -427,7 +426,7 @@ namespace PBL3
             // 
             // _cboDonViTinh
             // 
-            _cboDonViTinh.BackColor = Color.White;
+            _cboDonViTinh.BackColor = Color.Bisque;
             _cboDonViTinh.DropDownStyle = ComboBoxStyle.DropDownList;
             _cboDonViTinh.FlatStyle = FlatStyle.Flat;
             _cboDonViTinh.FormattingEnabled = true;
@@ -478,6 +477,7 @@ namespace PBL3
             // 
             // _numNguongToiThieu
             // 
+            _numNguongToiThieu.BackColor = Color.Bisque;
             _numNguongToiThieu.Location = new Point(334, 125);
             _numNguongToiThieu.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
             _numNguongToiThieu.Name = "_numNguongToiThieu";
@@ -559,7 +559,6 @@ namespace PBL3
             // pnlDanhSachNguyenLieu
             // 
             pnlDanhSachNguyenLieu.BackColor = Color.FromArgb(248, 242, 235);
-            pnlDanhSachNguyenLieu.Controls.Add(_cboTimTheo);
             pnlDanhSachNguyenLieu.Controls.Add(dgvNguyenLieu);
             pnlDanhSachNguyenLieu.Controls.Add(lblDanhSach);
             pnlDanhSachNguyenLieu.CornerRadius = 16;
@@ -567,19 +566,6 @@ namespace PBL3
             pnlDanhSachNguyenLieu.Name = "pnlDanhSachNguyenLieu";
             pnlDanhSachNguyenLieu.Size = new Size(834, 385);
             pnlDanhSachNguyenLieu.TabIndex = 6;
-            // 
-            // _cboTimTheo
-            // 
-            _cboTimTheo.BackColor = Color.Bisque;
-            _cboTimTheo.DropDownStyle = ComboBoxStyle.DropDownList;
-            _cboTimTheo.DropDownWidth = 120;
-            _cboTimTheo.FormattingEnabled = true;
-            _cboTimTheo.Items.AddRange(new object[] { "MãNL", "TênNL", "ĐơnVịTính", "GiáNhập", "SốLượngTồn" });
-            _cboTimTheo.Location = new Point(241, 12);
-            _cboTimTheo.Name = "_cboTimTheo";
-            _cboTimTheo.Size = new Size(98, 28);
-            _cboTimTheo.TabIndex = 1;
-            _cboTimTheo.SelectedIndexChanged += SearchControl_Changed;
             // 
             // dgvNguyenLieu
             // 
@@ -1006,7 +992,6 @@ namespace PBL3
         private TextBox txtMaNL;
         private Label lblMaNL;
         private RoundedPanel pnlDanhSachNguyenLieu;
-        private ComboBox _cboTimTheo;
         private DataGridView dgvNguyenLieu;
         private Label lblDanhSach;
         private RoundedPanel hcnt_KhungMenuAD;

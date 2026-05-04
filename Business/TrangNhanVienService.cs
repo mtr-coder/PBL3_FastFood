@@ -81,6 +81,21 @@ namespace PBL3.Business
             return _repository.GetLichTruc(maNv.Trim());
         }
 
+        public DataTable GetCaTruc()
+        {
+            return _repository.GetCaTruc();
+        }
+
+        public int AddPhanCongCa(string maNv, string maCa, DateTime ngayLam)
+        {
+            return _repository.AddPhanCongCa(maNv.Trim(), maCa.Trim(), ngayLam);
+        }
+
+        public int DeletePhanCongCaByLeaveRange(string maNv, DateTime tuNgay, DateTime denNgay)
+        {
+            return _repository.DeletePhanCongCaByLeaveRange(maNv.Trim(), tuNgay, denNgay);
+        }
+
         public string GetCurrentPassword(string maNv)
         {
             return _repository.GetCurrentPassword(maNv.Trim());

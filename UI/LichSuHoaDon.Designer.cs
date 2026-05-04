@@ -15,6 +15,7 @@ namespace PBL3
             base.Dispose(disposing);
         }
 
+
         #region Windows Form Designer generated code
 
         private void InitializeComponent()
@@ -68,11 +69,9 @@ namespace PBL3
             lblDetail = new Label();
             lblReceiptNhanVien = new Label();
             lblReceiptDoiTac = new Label();
-            lblReceiptThanhToan = new Label();
             _dgvHoaDonDetail = new DataGridView();
             _btnHuyHoaDon = new RoundedPanel();
             lblBtnHuyHoaDon = new Label();
-            _cboLocDoiTuong = new ComboBox();
             _btnXuatBaoCao = new RoundedPanel();
             lblBtnXuatBaoCao = new Label();
             _btnInLai = new RoundedPanel();
@@ -460,7 +459,7 @@ namespace PBL3
             pnlBoLoc.Controls.Add(lblDenNgay);
             pnlBoLoc.Controls.Add(_dtpDenNgay);
             pnlBoLoc.CornerRadius = 16;
-            pnlBoLoc.Location = new Point(18, 54);
+            pnlBoLoc.Location = new Point(18, 53);
             pnlBoLoc.Name = "pnlBoLoc";
             pnlBoLoc.Size = new Size(834, 164);
             pnlBoLoc.TabIndex = 1;
@@ -471,7 +470,7 @@ namespace PBL3
             _btnHoaDonBan.FlatStyle = FlatStyle.Flat;
             _btnHoaDonBan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             _btnHoaDonBan.ForeColor = Color.White;
-            _btnHoaDonBan.Location = new Point(231, 10);
+            _btnHoaDonBan.Location = new Point(231, 11);
             _btnHoaDonBan.Name = "_btnHoaDonBan";
             _btnHoaDonBan.Size = new Size(162, 33);
             _btnHoaDonBan.TabIndex = 0;
@@ -483,7 +482,7 @@ namespace PBL3
             _btnHoaDonNhap.BackColor = Color.BurlyWood;
             _btnHoaDonNhap.FlatStyle = FlatStyle.Flat;
             _btnHoaDonNhap.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            _btnHoaDonNhap.Location = new Point(427, 10);
+            _btnHoaDonNhap.Location = new Point(427, 11);
             _btnHoaDonNhap.Name = "_btnHoaDonNhap";
             _btnHoaDonNhap.Size = new Size(165, 33);
             _btnHoaDonNhap.TabIndex = 1;
@@ -496,16 +495,16 @@ namespace PBL3
             pnlCard3.Controls.Add(lblCard3Title);
             pnlCard3.Controls.Add(_lblSoDonHuyValue);
             pnlCard3.CornerRadius = 10;
-            pnlCard3.Location = new Point(533, 78);
+            pnlCard3.Location = new Point(533, 77);
             pnlCard3.Name = "pnlCard3";
-            pnlCard3.Size = new Size(270, 70);
+            pnlCard3.Size = new Size(270, 69);
             pnlCard3.TabIndex = 4;
             // 
             // lblCard3Title
             // 
             lblCard3Title.AutoSize = true;
             lblCard3Title.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblCard3Title.Location = new Point(15, 6);
+            lblCard3Title.Location = new Point(15, 5);
             lblCard3Title.Name = "lblCard3Title";
             lblCard3Title.Size = new Size(101, 23);
             lblCard3Title.TabIndex = 0;
@@ -529,14 +528,14 @@ namespace PBL3
             pnlTimMa.CornerRadius = 8;
             pnlTimMa.Location = new Point(24, 107);
             pnlTimMa.Name = "pnlTimMa";
-            pnlTimMa.Size = new Size(326, 41);
+            pnlTimMa.Size = new Size(326, 33);
             pnlTimMa.TabIndex = 9;
             // 
             // _txtTimMaHD
             // 
             _txtTimMaHD.BackColor = Color.Bisque;
             _txtTimMaHD.BorderStyle = BorderStyle.None;
-            _txtTimMaHD.Location = new Point(9, 10);
+            _txtTimMaHD.Location = new Point(9, 6);
             _txtTimMaHD.Name = "_txtTimMaHD";
             _txtTimMaHD.PlaceholderText = "Tìm kiếm";
             _txtTimMaHD.Size = new Size(309, 20);
@@ -557,7 +556,7 @@ namespace PBL3
             // 
             _dtpTuNgay.CustomFormat = "dd/MM/yyyy";
             _dtpTuNgay.Format = DateTimePickerFormat.Custom;
-            _dtpTuNgay.Location = new Point(59, 70);
+            _dtpTuNgay.Location = new Point(59, 69);
             _dtpTuNgay.Name = "_dtpTuNgay";
             _dtpTuNgay.Size = new Size(115, 27);
             _dtpTuNgay.TabIndex = 3;
@@ -566,7 +565,7 @@ namespace PBL3
             // 
             lblDenNgay.AutoSize = true;
             lblDenNgay.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblDenNgay.Location = new Point(180, 72);
+            lblDenNgay.Location = new Point(181, 72);
             lblDenNgay.Name = "lblDenNgay";
             lblDenNgay.Size = new Size(42, 23);
             lblDenNgay.TabIndex = 4;
@@ -576,7 +575,7 @@ namespace PBL3
             // 
             _dtpDenNgay.CustomFormat = "dd/MM/yyyy";
             _dtpDenNgay.Format = DateTimePickerFormat.Custom;
-            _dtpDenNgay.Location = new Point(227, 70);
+            _dtpDenNgay.Location = new Point(227, 69);
             _dtpDenNgay.Name = "_dtpDenNgay";
             _dtpDenNgay.Size = new Size(115, 27);
             _dtpDenNgay.TabIndex = 5;
@@ -587,7 +586,6 @@ namespace PBL3
             pnlDanhSachHoaDon.Controls.Add(lblMaster);
             pnlDanhSachHoaDon.Controls.Add(_dgvHoaDonMaster);
             pnlDanhSachHoaDon.Controls.Add(pnlReceipt);
-            pnlDanhSachHoaDon.Controls.Add(_cboLocDoiTuong);
             pnlDanhSachHoaDon.CornerRadius = 16;
             pnlDanhSachHoaDon.Location = new Point(18, 224);
             pnlDanhSachHoaDon.Name = "pnlDanhSachHoaDon";
@@ -612,14 +610,14 @@ namespace PBL3
             _dgvHoaDonMaster.BackgroundColor = Color.WhiteSmoke;
             _dgvHoaDonMaster.BorderStyle = BorderStyle.None;
             _dgvHoaDonMaster.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _dgvHoaDonMaster.Location = new Point(18, 46);
+            _dgvHoaDonMaster.Location = new Point(18, 45);
             _dgvHoaDonMaster.MultiSelect = false;
             _dgvHoaDonMaster.Name = "_dgvHoaDonMaster";
             _dgvHoaDonMaster.ReadOnly = true;
             _dgvHoaDonMaster.RowHeadersVisible = false;
             _dgvHoaDonMaster.RowHeadersWidth = 51;
             _dgvHoaDonMaster.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _dgvHoaDonMaster.Size = new Size(332, 345);
+            _dgvHoaDonMaster.Size = new Size(331, 345);
             _dgvHoaDonMaster.TabIndex = 1;
             // 
             // pnlReceipt
@@ -628,7 +626,6 @@ namespace PBL3
             pnlReceipt.Controls.Add(lblDetail);
             pnlReceipt.Controls.Add(lblReceiptNhanVien);
             pnlReceipt.Controls.Add(lblReceiptDoiTac);
-            pnlReceipt.Controls.Add(lblReceiptThanhToan);
             pnlReceipt.Controls.Add(_dgvHoaDonDetail);
             pnlReceipt.Controls.Add(_btnHuyHoaDon);
             pnlReceipt.CornerRadius = 8;
@@ -642,7 +639,7 @@ namespace PBL3
             lblDetail.AutoSize = true;
             lblDetail.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblDetail.ForeColor = Color.FromArgb(110, 92, 75);
-            lblDetail.Location = new Point(12, 10);
+            lblDetail.Location = new Point(11, 11);
             lblDetail.Name = "lblDetail";
             lblDetail.Size = new Size(114, 25);
             lblDetail.TabIndex = 2;
@@ -652,7 +649,7 @@ namespace PBL3
             // 
             lblReceiptNhanVien.AutoSize = true;
             lblReceiptNhanVien.Font = new Font("Segoe UI", 10F);
-            lblReceiptNhanVien.Location = new Point(12, 40);
+            lblReceiptNhanVien.Location = new Point(11, 40);
             lblReceiptNhanVien.Name = "lblReceiptNhanVien";
             lblReceiptNhanVien.Size = new Size(132, 23);
             lblReceiptNhanVien.TabIndex = 3;
@@ -662,21 +659,11 @@ namespace PBL3
             // 
             lblReceiptDoiTac.AutoSize = true;
             lblReceiptDoiTac.Font = new Font("Segoe UI", 10F);
-            lblReceiptDoiTac.Location = new Point(12, 64);
+            lblReceiptDoiTac.Location = new Point(11, 64);
             lblReceiptDoiTac.Name = "lblReceiptDoiTac";
             lblReceiptDoiTac.Size = new Size(145, 23);
             lblReceiptDoiTac.TabIndex = 4;
             lblReceiptDoiTac.Text = "\U0001f91d Khách hàng: -";
-            // 
-            // lblReceiptThanhToan
-            // 
-            lblReceiptThanhToan.AutoSize = true;
-            lblReceiptThanhToan.Font = new Font("Segoe UI", 10F);
-            lblReceiptThanhToan.Location = new Point(12, 88);
-            lblReceiptThanhToan.Name = "lblReceiptThanhToan";
-            lblReceiptThanhToan.Size = new Size(142, 23);
-            lblReceiptThanhToan.TabIndex = 5;
-            lblReceiptThanhToan.Text = "💳 Thanh toán: -";
             // 
             // _dgvHoaDonDetail
             // 
@@ -685,14 +672,14 @@ namespace PBL3
             _dgvHoaDonDetail.BackgroundColor = Color.WhiteSmoke;
             _dgvHoaDonDetail.BorderStyle = BorderStyle.None;
             _dgvHoaDonDetail.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _dgvHoaDonDetail.Location = new Point(12, 118);
+            _dgvHoaDonDetail.Location = new Point(11, 100);
             _dgvHoaDonDetail.MultiSelect = false;
             _dgvHoaDonDetail.Name = "_dgvHoaDonDetail";
             _dgvHoaDonDetail.ReadOnly = true;
             _dgvHoaDonDetail.RowHeadersVisible = false;
             _dgvHoaDonDetail.RowHeadersWidth = 51;
             _dgvHoaDonDetail.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _dgvHoaDonDetail.Size = new Size(433, 206);
+            _dgvHoaDonDetail.Size = new Size(433, 220);
             _dgvHoaDonDetail.TabIndex = 6;
             // 
             // _btnHuyHoaDon
@@ -700,7 +687,7 @@ namespace PBL3
             _btnHuyHoaDon.BackColor = Color.IndianRed;
             _btnHuyHoaDon.Controls.Add(lblBtnHuyHoaDon);
             _btnHuyHoaDon.CornerRadius = 10;
-            _btnHuyHoaDon.Location = new Point(322, 330);
+            _btnHuyHoaDon.Location = new Point(322, 331);
             _btnHuyHoaDon.Name = "_btnHuyHoaDon";
             _btnHuyHoaDon.Size = new Size(123, 36);
             _btnHuyHoaDon.TabIndex = 6;
@@ -711,29 +698,19 @@ namespace PBL3
             lblBtnHuyHoaDon.AutoSize = true;
             lblBtnHuyHoaDon.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblBtnHuyHoaDon.ForeColor = Color.White;
-            lblBtnHuyHoaDon.Location = new Point(5, 6);
+            lblBtnHuyHoaDon.Location = new Point(5, 5);
             lblBtnHuyHoaDon.Name = "lblBtnHuyHoaDon";
             lblBtnHuyHoaDon.Size = new Size(113, 23);
             lblBtnHuyHoaDon.TabIndex = 0;
             lblBtnHuyHoaDon.Text = "Hủy hóa đơn";
             lblBtnHuyHoaDon.Click += BtnHuyHoaDon_Click;
             // 
-            // _cboLocDoiTuong
-            // 
-            _cboLocDoiTuong.BackColor = Color.Bisque;
-            _cboLocDoiTuong.DropDownStyle = ComboBoxStyle.DropDownList;
-            _cboLocDoiTuong.FormattingEnabled = true;
-            _cboLocDoiTuong.Location = new Point(205, 11);
-            _cboLocDoiTuong.Name = "_cboLocDoiTuong";
-            _cboLocDoiTuong.Size = new Size(126, 28);
-            _cboLocDoiTuong.TabIndex = 7;
-            // 
             // _btnXuatBaoCao
             // 
             _btnXuatBaoCao.BackColor = Color.BurlyWood;
             _btnXuatBaoCao.Controls.Add(lblBtnXuatBaoCao);
             _btnXuatBaoCao.CornerRadius = 10;
-            _btnXuatBaoCao.Location = new Point(652, 650);
+            _btnXuatBaoCao.Location = new Point(651, 651);
             _btnXuatBaoCao.Name = "_btnXuatBaoCao";
             _btnXuatBaoCao.Size = new Size(120, 40);
             _btnXuatBaoCao.TabIndex = 7;
@@ -743,7 +720,7 @@ namespace PBL3
             // 
             lblBtnXuatBaoCao.AutoSize = true;
             lblBtnXuatBaoCao.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblBtnXuatBaoCao.Location = new Point(12, 8);
+            lblBtnXuatBaoCao.Location = new Point(11, 8);
             lblBtnXuatBaoCao.Name = "lblBtnXuatBaoCao";
             lblBtnXuatBaoCao.Size = new Size(92, 23);
             lblBtnXuatBaoCao.TabIndex = 0;
@@ -755,7 +732,7 @@ namespace PBL3
             _btnInLai.BackColor = Color.BurlyWood;
             _btnInLai.Controls.Add(lblBtnInLai);
             _btnInLai.CornerRadius = 10;
-            _btnInLai.Location = new Point(778, 650);
+            _btnInLai.Location = new Point(778, 651);
             _btnInLai.Name = "_btnInLai";
             _btnInLai.Size = new Size(74, 40);
             _btnInLai.TabIndex = 8;
@@ -900,7 +877,6 @@ namespace PBL3
         private DateTimePicker _dtpTuNgay;
         private Label lblDenNgay;
         private DateTimePicker _dtpDenNgay;
-        private ComboBox _cboLocDoiTuong;
         private RoundedPanel pnlTimMa;
         private TextBox _txtTimMaHD;
         private RoundedPanel pnlCard3;

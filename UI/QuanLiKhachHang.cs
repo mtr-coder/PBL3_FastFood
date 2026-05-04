@@ -49,17 +49,27 @@ namespace PBL3
             try
             {
                 LoadKhachHang();
-                if (_cboTimTheo.Items.Count > 0 && _cboTimTheo.SelectedIndex < 0)
-                {
-                    _cboTimTheo.SelectedIndex = 0;
-                }
-
+                LoadHangOptions();
                 ClearForm();
+                ApplySearchFilter();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Không thể tải dữ liệu khách hàng.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void LoadHangOptions()
+        {
+            if (_khachHangTable == null) return;
+            DataTable dtHang = _khachHangTable.DefaultView.ToTable(true, "TenHang");
+            DataRow rowAll = dtHang.NewRow();
+            rowAll["TenHang"] = "Tất cả";
+            dtHang.Rows.InsertAt(rowAll, 0);
+            _cboTimTheo.SelectionChangeCommitted -= SearchControl_Changed;
+            _cboTimTheo.DataSource = dtHang;
+            _cboTimTheo.DisplayMember = "TenHang";
+            _cboTimTheo.ValueMember = "TenHang";
+            _cboTimTheo.SelectionChangeCommitted += SearchControl_Changed;
         }
 
         private void LoadKhachHang()
@@ -70,13 +80,11 @@ namespace PBL3
             _dgvNhanVien.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
             _dgvNhanVien.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
 
-            SetHeaderText("MaKH", "MãKH");
+            SetHeaderText("MaKH", "Mã KH");
             SetHeaderText("SDT", "SĐT");
-            SetHeaderText("DiemTichLuy", "ĐiểmTíchLũy");
+            SetHeaderText("DiemTichLuy", "Điểm tích lũy");
             SetHeaderText("DiemTichLuyTronDoi", "Điểm trọn đời");
             SetHeaderText("TenHang", "Hạng");
-            
-            // Ẩn cột MaHang
             if (_dgvNhanVien.Columns.Contains("MaHang"))
             {
                 _dgvNhanVien.Columns["MaHang"].Visible = false;
@@ -104,37 +112,25 @@ namespace PBL3
             }
 
             string keyword = _txtTimKiem.Text.Trim().Replace("'", "''");
-            if (string.IsNullOrWhiteSpace(keyword))
-            {
-                _khachHangTable.DefaultView.RowFilter = string.Empty;
-                return;
-            }
+            string selectedHang = _cboTimTheo.SelectedValue?.ToString() ?? "Tất cả";
 
-            string selected = (Convert.ToString(_cboTimTheo.SelectedItem) ?? "MãKH").Trim();
-            string filter;
-
-            if (selected == "SĐT" || selected == "SDT")
+            List<string> filterConditions = new List<string>();
+            if (!string.IsNullOrWhiteSpace(keyword))
             {
-                filter = $"SDT LIKE '%{keyword}%'";
+                filterConditions.Add($"(Convert(MaKH, 'System.String') LIKE '%{keyword}%' OR SDT LIKE '%{keyword}%')");
             }
-            else if (selected == "ĐiểmTíchLũy" || selected == "Điểm tích lũy" || selected == "DiemTichLuy")
+            if (selectedHang != "Tất cả" && !string.IsNullOrEmpty(selectedHang))
             {
-                filter = $"Convert(DiemTichLuy, 'System.String') LIKE '%{keyword}%'";
+                filterConditions.Add($"TenHang = '{selectedHang}'");
             }
-            else if (selected == "ĐiểmTrọnĐời" || selected == "DiemTronDoi" || selected == "Điểm trọn đời")
+            if (filterConditions.Count > 0)
             {
-                filter = $"Convert(DiemTichLuyTronDoi, 'System.String') LIKE '%{keyword}%'";
-            }
-            else if (selected == "Hạng" || selected == "Hang" || selected == "TenHang")
-            {
-                filter = $"TenHang LIKE '%{keyword}%'";
+                _khachHangTable.DefaultView.RowFilter = string.Join(" AND ", filterConditions);
             }
             else
             {
-                filter = $"Convert(MaKH, 'System.String') LIKE '%{keyword}%'";
+                _khachHangTable.DefaultView.RowFilter = string.Empty;
             }
-
-            _khachHangTable.DefaultView.RowFilter = filter;
         }
 
         private void SetColumnWidth(string columnName, int width)

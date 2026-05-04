@@ -401,14 +401,14 @@ namespace PBL3
             pnlTimKiem.CornerRadius = 12;
             pnlTimKiem.Location = new Point(33, 192);
             pnlTimKiem.Name = "pnlTimKiem";
-            pnlTimKiem.Size = new Size(282, 40);
+            pnlTimKiem.Size = new Size(282, 33);
             pnlTimKiem.TabIndex = 16;
             // 
             // _txtTimKiem
             // 
             _txtTimKiem.BackColor = Color.Bisque;
             _txtTimKiem.BorderStyle = BorderStyle.None;
-            _txtTimKiem.Location = new Point(11, 8);
+            _txtTimKiem.Location = new Point(11, 6);
             _txtTimKiem.Name = "_txtTimKiem";
             _txtTimKiem.PlaceholderText = "Tìm kiếm";
             _txtTimKiem.Size = new Size(257, 20);
@@ -523,10 +523,11 @@ namespace PBL3
             // 
             // _cboTimTheo
             // 
+            _cboTimTheo.BackColor = Color.Bisque;
             _cboTimTheo.DropDownStyle = ComboBoxStyle.DropDownList;
             _cboTimTheo.DropDownWidth = 120;
+            _cboTimTheo.FlatStyle = FlatStyle.Flat;
             _cboTimTheo.FormattingEnabled = true;
-            _cboTimTheo.Items.AddRange(new object[] { "MãKH", "SĐT", "ĐiểmTíchLũy", "ĐiểmTrọnĐời", "Hạng" });
             _cboTimTheo.Location = new Point(231, 12);
             _cboTimTheo.Name = "_cboTimTheo";
             _cboTimTheo.Size = new Size(98, 28);

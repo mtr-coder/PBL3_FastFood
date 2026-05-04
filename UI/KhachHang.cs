@@ -28,6 +28,7 @@ namespace PBL3
             _banHangService = new BanHangService();
             _maNv = maNv;
             InitializeComponent();
+            _txtTimKiem.TextChanged += TxtTimKiem_TextChanged;
         }
 
         private void btn_QLNV_Click(object? sender, EventArgs e) => OpenAndClose(new TrangNhanVien1(_maNv));
@@ -89,19 +90,20 @@ namespace PBL3
                 return;
             }
 
-            // Create a filtered DataView
-            string filterText = GetSearchText().Trim().Replace("'", "''");
+            string filterText = _txtTimKiem.Text.Trim();
             if (string.IsNullOrWhiteSpace(filterText))
             {
                 dgvKhachHang.DataSource = _khachHangDataSource;
             }
             else
             {
-                // Filter by SDT (phone number)
-                var filteredRows = _khachHangDataSource.AsEnumerable()
+                var matches = _khachHangDataSource.AsEnumerable()
                     .Where(r => r["SDT"].ToString()?.Contains(filterText, StringComparison.OrdinalIgnoreCase) ?? false)
-                    .CopyToDataTable();
-                dgvKhachHang.DataSource = filteredRows;
+                    .ToList();
+
+                dgvKhachHang.DataSource = matches.Count > 0
+                    ? matches.CopyToDataTable()
+                    : _khachHangDataSource.Clone();
             }
 
             ConfigureKhachHangGrid();
@@ -112,21 +114,7 @@ namespace PBL3
             }
         }
 
-        private string GetSearchText()
-        {
-            // Assuming you have a search textbox named txtSearch or similar
-            // If it's named differently, adjust accordingly
-            foreach (Control ctrl in hcnt_Khung.Controls)
-            {
-                if (ctrl is TextBox txtBox && (ctrl.Name.Contains("Search") || ctrl.Name.Contains("TimKiem")))
-                {
-                    return txtBox.Text;
-                }
-            }
-            return string.Empty;
-        }
-
-        private void txtTimKiem_TextChanged(object? sender, EventArgs e)
+        private void TxtTimKiem_TextChanged(object? sender, EventArgs e)
         {
             ApplyFilter();
         }
@@ -240,8 +228,25 @@ namespace PBL3
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 MinimizeBox = false,
                 MaximizeBox = false,
-                ClientSize = new Size(600, 360)
+                ClientSize = new Size(720, 390)
             };
+
+            Panel topBar = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 34,
+                BackColor = SystemColors.Control
+            };
+
+            Button btnDong = new Button
+            {
+                Text = "Đóng",
+                Dock = DockStyle.Right,
+                Width = 90,
+                FlatStyle = FlatStyle.System
+            };
+            btnDong.Click += (_, _) => dialog.Close();
+            topBar.Controls.Add(btnDong);
 
             DataGridView grid = new DataGridView
             {
@@ -250,36 +255,45 @@ namespace PBL3
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 RowHeadersVisible = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
                 DataSource = data
             };
 
+            if (grid.Columns.Contains("MaLS"))
+            {
+                grid.Columns["MaLS"].HeaderText = "Mã LS";
+                grid.Columns["MaLS"].Width = 60;
+            }
             if (grid.Columns.Contains("SoDiem"))
             {
                 grid.Columns["SoDiem"].HeaderText = "Số điểm";
+                grid.Columns["SoDiem"].Width = 70;
             }
             if (grid.Columns.Contains("LoaiGD"))
             {
                 grid.Columns["LoaiGD"].HeaderText = "Loại GD";
+                grid.Columns["LoaiGD"].Width = 85;
             }
             if (grid.Columns.Contains("NoiDung"))
             {
                 grid.Columns["NoiDung"].HeaderText = "Nội dung";
+                grid.Columns["NoiDung"].Width = 335;
             }
             if (grid.Columns.Contains("NgayGD"))
             {
-                grid.Columns["NgayGD"].HeaderText = "Ngày";
+                grid.Columns["NgayGD"].HeaderText = "Ngày GD";
+                grid.Columns["NgayGD"].Width = 145;
                 grid.Columns["NgayGD"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
-            }
-            
-            // Ẩn cột MaLS (ID internal)
-            if (grid.Columns.Contains("MaLS"))
-            {
-                grid.Columns["MaLS"].Visible = false;
             }
 
             dialog.Controls.Add(grid);
+            dialog.Controls.Add(topBar);
             dialog.ShowDialog(this);
+        }
+
+        private void pnlTimKiem_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

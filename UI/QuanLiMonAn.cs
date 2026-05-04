@@ -173,37 +173,25 @@ namespace PBL3
             }
 
             string keyword = _txtTimKiem.Text.Trim().Replace("'", "''");
-            if (string.IsNullOrWhiteSpace(keyword))
-            {
-                _monAnTable.DefaultView.RowFilter = string.Empty;
-                return;
-            }
+            string selectedMaLoai = _cboTimTheo.SelectedValue?.ToString() ?? "-99";
 
-            string selected = (Convert.ToString(_cboTimTheo.SelectedItem) ?? "MãMón").Trim();
-            string filter;
-
-            if (selected == "TênMón" || selected == "TenMon")
+            List<string> filterConditions = new List<string>();
+            if (!string.IsNullOrWhiteSpace(keyword))
             {
-                filter = $"TenMon LIKE '%{keyword}%'";
+                filterConditions.Add($"(Convert(MaMon, 'System.String') LIKE '%{keyword}%' OR TenMon LIKE '%{keyword}%')");
             }
-            else if (selected == "TênLoại" || selected == "TenLoai")
+            if (selectedMaLoai != "-99" && !string.IsNullOrEmpty(selectedMaLoai))
             {
-                filter = $"TenLoai LIKE '%{keyword}%'";
+                filterConditions.Add($"Convert(MaLoai, 'System.String') = '{selectedMaLoai}'");
             }
-            else if (selected == "TênDVT" || selected == "TenDVT")
+            if (filterConditions.Count > 0)
             {
-                filter = $"TenDVT LIKE '%{keyword}%'";
-            }
-            else if (selected == "TrạngThái" || selected == "TrangThai")
-            {
-                filter = $"TrangThai LIKE '%{keyword}%'";
+                _monAnTable.DefaultView.RowFilter = string.Join(" AND ", filterConditions);
             }
             else
             {
-                filter = $"Convert(MaMon, 'System.String') LIKE '%{keyword}%'";
+                _monAnTable.DefaultView.RowFilter = string.Empty;
             }
-
-            _monAnTable.DefaultView.RowFilter = filter;
         }
 
         private void SetColumnWidth(string columnName, int width)
@@ -595,10 +583,26 @@ namespace PBL3
         private void LoadLoaiMon()
         {
             DataTable dt = _quanLiMonAnService.GetLoaiMonOptions();
-
             _cboMaLoai.DataSource = dt;
             _cboMaLoai.DisplayMember = "TenLoai";
             _cboMaLoai.ValueMember = "MaLoai";
+            DataTable dtFilter = dt.Copy();
+            DataRow[] editRows = dtFilter.Select("Convert(MaLoai, 'System.String') = '-1'");
+            foreach (DataRow row in editRows)
+            {
+                dtFilter.Rows.Remove(row);
+            }
+            DataRow rowAll = dtFilter.NewRow();
+            rowAll["MaLoai"] = "-99";
+            rowAll["TenLoai"] = "Tất cả";
+            dtFilter.Rows.InsertAt(rowAll, 0);
+            _cboTimTheo.SelectionChangeCommitted -= SearchControl_Changed;
+
+            _cboTimTheo.DataSource = dtFilter;
+            _cboTimTheo.DisplayMember = "TenLoai";
+            _cboTimTheo.ValueMember = "MaLoai";
+
+            _cboTimTheo.SelectionChangeCommitted += SearchControl_Changed;
         }
 
         private void LoadDonViTinh()

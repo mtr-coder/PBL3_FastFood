@@ -9,8 +9,8 @@ namespace PBL3
         {
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            // Start the application with the HoaDon form (designer) so runtime matches the drag-drop layout.
-            Application.Run(new TrangDangNhap());
+            // Start the application with the login form.
+            Application.Run(new QuanLiNhanVien());
         }
     }
 }

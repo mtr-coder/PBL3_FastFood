@@ -60,7 +60,6 @@ namespace PBL3
             _btnHoaDonNhap.Click += (_, __) => SwitchInvoiceType("NHAP");
 
             _txtTimMaHD.TextChanged += (_, __) => ApplySearchFilter();
-            _cboLocDoiTuong.SelectionChangeCommitted += (_, __) => ApplySearchFilter();
             _dtpTuNgay.ValueChanged += FilterTime_Changed;
             _dtpDenNgay.ValueChanged += FilterTime_Changed;
 
@@ -177,11 +176,6 @@ namespace PBL3
             _filterOptions.Add(new FilterOption { Display = "Mã HĐ", FieldName = "MaHD", Value = string.Empty });
             _filterOptions.Add(new FilterOption { Display = "Thời gian", FieldName = "ThoiGian", Value = string.Empty });
             _filterOptions.Add(new FilterOption { Display = "Tổng tiền", FieldName = "TongTien", Value = string.Empty });
-
-            _cboLocDoiTuong.DataSource = null;
-            _cboLocDoiTuong.DataSource = _filterOptions;
-            _cboLocDoiTuong.DisplayMember = nameof(FilterOption.Display);
-            _cboLocDoiTuong.SelectedIndex = 0;
         }
 
         private string BuildTrangThaiExpression(string alias, bool hasTrangThai, string dataType)
@@ -330,21 +324,7 @@ namespace PBL3
                 UpdateDetailSelectionAfterFilter();
                 return;
             }
-
-            string rowFilter;
-            if (_cboLocDoiTuong.SelectedItem is not FilterOption opt || string.IsNullOrWhiteSpace(opt.FieldName))
-            {
-                rowFilter =
-                    $"Convert(MaHD, 'System.String') LIKE '%{keyword}%'" +
-                    $" OR Convert(ThoiGian, 'System.String') LIKE '%{keyword}%'" +
-                    $" OR Convert(TongTien, 'System.String') LIKE '%{keyword}%'";
-            }
-            else
-            {
-                rowFilter = $"Convert({opt.FieldName}, 'System.String') LIKE '%{keyword}%'";
-            }
-
-            _masterTable.DefaultView.RowFilter = rowFilter;
+            _masterTable.DefaultView.RowFilter = $"Convert(MaHD, 'System.String') LIKE '%{keyword}%'";
             UpdateDetailSelectionAfterFilter();
         }
 
@@ -406,7 +386,6 @@ namespace PBL3
             lblReceiptDoiTac.Text = invoiceType == "BAN"
                 ? $"🤝 Khách hàng: {doiTac}"
                 : $"🤝 Nhà cung cấp: {doiTac}";
-            lblReceiptThanhToan.Text = string.Empty;
         }
 
         private void LoadTopMetrics()
@@ -418,7 +397,6 @@ namespace PBL3
         private void BtnLamMoi_Click(object? sender, EventArgs e)
         {
             _txtTimMaHD.Clear();
-            _cboLocDoiTuong.SelectedIndex = 0;
             LoadMasterData();
             LoadTopMetrics();
         }

@@ -43,6 +43,7 @@ namespace PBL3
             _btnLamMoi = new RoundedPanel();
             lblBtnLamMoi = new Label();
             _btnXoa = new RoundedPanel();
+            lblBtnXoa = new Label();
             _btnSua = new RoundedPanel();
             lblBtnSua = new Label();
             lblSdt = new Label();
@@ -102,7 +103,6 @@ namespace PBL3
             pb_QLNV = new PictureBox();
             label4 = new Label();
             lb_DMQL = new Label();
-            lblBtnXoa = new Label();
             roundedPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pb_Admin).BeginInit();
             btn_DangXuat.SuspendLayout();
@@ -313,6 +313,18 @@ namespace PBL3
             _btnXoa.TabIndex = 19;
             _btnXoa.Click += BtnXoa_Click;
             // 
+            // lblBtnXoa
+            // 
+            lblBtnXoa.AutoSize = true;
+            lblBtnXoa.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblBtnXoa.ForeColor = Color.White;
+            lblBtnXoa.Location = new Point(22, 4);
+            lblBtnXoa.Name = "lblBtnXoa";
+            lblBtnXoa.Size = new Size(40, 23);
+            lblBtnXoa.TabIndex = 0;
+            lblBtnXoa.Text = "Xóa";
+            lblBtnXoa.Click += BtnXoa_Click;
+            // 
             // _btnSua
             // 
             _btnSua.BackColor = Color.SandyBrown;
@@ -376,14 +388,14 @@ namespace PBL3
             pnlTimKiem.CornerRadius = 12;
             pnlTimKiem.Location = new Point(19, 491);
             pnlTimKiem.Name = "pnlTimKiem";
-            pnlTimKiem.Size = new Size(240, 40);
+            pnlTimKiem.Size = new Size(240, 33);
             pnlTimKiem.TabIndex = 16;
             // 
             // _txtTimKiem
             // 
             _txtTimKiem.BackColor = Color.Bisque;
             _txtTimKiem.BorderStyle = BorderStyle.None;
-            _txtTimKiem.Location = new Point(11, 8);
+            _txtTimKiem.Location = new Point(11, 6);
             _txtTimKiem.Name = "_txtTimKiem";
             _txtTimKiem.PlaceholderText = "Tìm kiếm";
             _txtTimKiem.Size = new Size(219, 20);
@@ -549,37 +561,44 @@ namespace PBL3
             // 
             // _btnXoaSize
             // 
-            _btnXoaSize.Location = new Point(457, 139);
+            _btnXoaSize.BackColor = Color.Bisque;
+            _btnXoaSize.FlatStyle = FlatStyle.Flat;
+            _btnXoaSize.Location = new Point(474, 139);
             _btnXoaSize.Name = "_btnXoaSize";
             _btnXoaSize.Size = new Size(57, 29);
             _btnXoaSize.TabIndex = 4;
             _btnXoaSize.Text = "Xóa";
-            _btnXoaSize.UseVisualStyleBackColor = true;
+            _btnXoaSize.UseVisualStyleBackColor = false;
             _btnXoaSize.Click += BtnXoaSize_Click;
             // 
             // _btnThemSize
             // 
-            _btnThemSize.Location = new Point(393, 139);
+            _btnThemSize.BackColor = Color.Bisque;
+            _btnThemSize.FlatStyle = FlatStyle.Flat;
+            _btnThemSize.Location = new Point(411, 139);
             _btnThemSize.Name = "_btnThemSize";
             _btnThemSize.Size = new Size(57, 29);
             _btnThemSize.TabIndex = 3;
             _btnThemSize.Text = "Thêm";
-            _btnThemSize.UseVisualStyleBackColor = true;
+            _btnThemSize.UseVisualStyleBackColor = false;
             _btnThemSize.Click += BtnThemSize_Click;
             // 
             // _txtDonGiaSize
             // 
-            _txtDonGiaSize.Location = new Point(133, 140);
+            _txtDonGiaSize.BackColor = Color.Bisque;
+            _txtDonGiaSize.Location = new Point(130, 140);
             _txtDonGiaSize.Name = "_txtDonGiaSize";
             _txtDonGiaSize.PlaceholderText = "Đơn giá";
-            _txtDonGiaSize.Size = new Size(163, 27);
+            _txtDonGiaSize.Size = new Size(143, 27);
             _txtDonGiaSize.TabIndex = 2;
             // 
             // _cboDvpvChiTiet
             // 
+            _cboDvpvChiTiet.BackColor = Color.Bisque;
             _cboDvpvChiTiet.DropDownStyle = ComboBoxStyle.DropDownList;
+            _cboDvpvChiTiet.FlatStyle = FlatStyle.Flat;
             _cboDvpvChiTiet.FormattingEnabled = true;
-            _cboDvpvChiTiet.Location = new Point(7, 140);
+            _cboDvpvChiTiet.Location = new Point(6, 140);
             _cboDvpvChiTiet.Name = "_cboDvpvChiTiet";
             _cboDvpvChiTiet.Size = new Size(118, 28);
             _cboDvpvChiTiet.TabIndex = 1;
@@ -590,14 +609,14 @@ namespace PBL3
             _dgvGiaBan.AllowUserToAddRows = false;
             _dgvGiaBan.AllowUserToDeleteRows = false;
             _dgvGiaBan.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _dgvGiaBan.Location = new Point(7, 5);
+            _dgvGiaBan.Location = new Point(6, 5);
             _dgvGiaBan.MultiSelect = false;
             _dgvGiaBan.Name = "_dgvGiaBan";
             _dgvGiaBan.ReadOnly = true;
             _dgvGiaBan.RowHeadersVisible = false;
             _dgvGiaBan.RowHeadersWidth = 51;
             _dgvGiaBan.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _dgvGiaBan.Size = new Size(507, 125);
+            _dgvGiaBan.Size = new Size(522, 125);
             _dgvGiaBan.TabIndex = 0;
             _dgvGiaBan.SelectionChanged += DgvGiaBan_SelectionChanged;
             // 
@@ -621,7 +640,7 @@ namespace PBL3
             // 
             _lblGiaVon.AutoSize = true;
             _lblGiaVon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            _lblGiaVon.Location = new Point(214, 144);
+            _lblGiaVon.Location = new Point(202, 144);
             _lblGiaVon.Name = "_lblGiaVon";
             _lblGiaVon.Size = new Size(136, 20);
             _lblGiaVon.TabIndex = 5;
@@ -629,40 +648,47 @@ namespace PBL3
             // 
             // _btnXoaDinhMuc
             // 
+            _btnXoaDinhMuc.BackColor = Color.Bisque;
+            _btnXoaDinhMuc.FlatStyle = FlatStyle.Flat;
             _btnXoaDinhMuc.Location = new Point(457, 139);
             _btnXoaDinhMuc.Name = "_btnXoaDinhMuc";
             _btnXoaDinhMuc.Size = new Size(57, 29);
             _btnXoaDinhMuc.TabIndex = 4;
             _btnXoaDinhMuc.Text = "Xóa NL";
-            _btnXoaDinhMuc.UseVisualStyleBackColor = true;
+            _btnXoaDinhMuc.UseVisualStyleBackColor = false;
             _btnXoaDinhMuc.Click += BtnXoaDinhMuc_Click;
             // 
             // _btnThemDinhMuc
             // 
+            _btnThemDinhMuc.BackColor = Color.Bisque;
+            _btnThemDinhMuc.FlatStyle = FlatStyle.Flat;
             _btnThemDinhMuc.Location = new Point(393, 139);
             _btnThemDinhMuc.Name = "_btnThemDinhMuc";
             _btnThemDinhMuc.Size = new Size(57, 29);
             _btnThemDinhMuc.TabIndex = 3;
             _btnThemDinhMuc.Text = "Thêm";
-            _btnThemDinhMuc.UseVisualStyleBackColor = true;
+            _btnThemDinhMuc.UseVisualStyleBackColor = false;
             _btnThemDinhMuc.Click += BtnThemDinhMuc_Click;
             // 
             // _txtSoLuongDinhMuc
             // 
-            _txtSoLuongDinhMuc.Location = new Point(142, 140);
+            _txtSoLuongDinhMuc.BackColor = Color.Bisque;
+            _txtSoLuongDinhMuc.Location = new Point(128, 140);
             _txtSoLuongDinhMuc.Name = "_txtSoLuongDinhMuc";
             _txtSoLuongDinhMuc.PlaceholderText = "Số lượng";
-            _txtSoLuongDinhMuc.Size = new Size(68, 27);
+            _txtSoLuongDinhMuc.Size = new Size(71, 27);
             _txtSoLuongDinhMuc.TabIndex = 2;
             _txtSoLuongDinhMuc.TextChanged += _txtSoLuongDinhMuc_TextChanged;
             // 
             // _cboNguyenLieu
             // 
+            _cboNguyenLieu.BackColor = Color.Bisque;
             _cboNguyenLieu.DropDownStyle = ComboBoxStyle.DropDownList;
+            _cboNguyenLieu.FlatStyle = FlatStyle.Flat;
             _cboNguyenLieu.FormattingEnabled = true;
-            _cboNguyenLieu.Location = new Point(7, 140);
+            _cboNguyenLieu.Location = new Point(6, 140);
             _cboNguyenLieu.Name = "_cboNguyenLieu";
-            _cboNguyenLieu.Size = new Size(127, 28);
+            _cboNguyenLieu.Size = new Size(115, 28);
             _cboNguyenLieu.TabIndex = 1;
             // 
             // _dgvDinhMuc
@@ -676,7 +702,7 @@ namespace PBL3
             _dgvDinhMuc.RowHeadersVisible = false;
             _dgvDinhMuc.RowHeadersWidth = 51;
             _dgvDinhMuc.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _dgvDinhMuc.Size = new Size(512, 123);
+            _dgvDinhMuc.Size = new Size(522, 123);
             _dgvDinhMuc.TabIndex = 0;
             // 
             // _cboTimTheo
@@ -684,11 +710,11 @@ namespace PBL3
             _cboTimTheo.BackColor = Color.Bisque;
             _cboTimTheo.DropDownStyle = ComboBoxStyle.DropDownList;
             _cboTimTheo.DropDownWidth = 120;
+            _cboTimTheo.FlatStyle = FlatStyle.Flat;
             _cboTimTheo.FormattingEnabled = true;
-            _cboTimTheo.Items.AddRange(new object[] { "MãMón", "TênMón", "TênLoại", "TênDVT", "TrạngThái" });
-            _cboTimTheo.Location = new Point(178, 12);
+            _cboTimTheo.Location = new Point(182, 12);
             _cboTimTheo.Name = "_cboTimTheo";
-            _cboTimTheo.Size = new Size(98, 28);
+            _cboTimTheo.Size = new Size(112, 28);
             _cboTimTheo.TabIndex = 1;
             _cboTimTheo.SelectedIndexChanged += SearchControl_Changed;
             // 
@@ -999,18 +1025,6 @@ namespace PBL3
             lb_DMQL.Size = new Size(223, 35);
             lb_DMQL.TabIndex = 0;
             lb_DMQL.Text = "Danh mục Quản lí";
-            // 
-            // lblBtnXoa
-            // 
-            lblBtnXoa.AutoSize = true;
-            lblBtnXoa.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblBtnXoa.ForeColor = Color.White;
-            lblBtnXoa.Location = new Point(22, 4);
-            lblBtnXoa.Name = "lblBtnXoa";
-            lblBtnXoa.Size = new Size(40, 23);
-            lblBtnXoa.TabIndex = 0;
-            lblBtnXoa.Text = "Xóa";
-            lblBtnXoa.Click += BtnXoa_Click;
             // 
             // QuanLiMonAn
             // 

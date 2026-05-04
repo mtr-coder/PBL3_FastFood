@@ -10,6 +10,7 @@ namespace PBL3
         private DataTable? _nhanVienTable;
         private bool _isEditingExisting;
         private string? _selectedMaNvDbValue;
+        private decimal _lastLuongDuKien;
 
         public QuanLiNhanVien()
         {
@@ -52,11 +53,8 @@ namespace PBL3
                 LoadNhanVien();
                 EnsureCreateModeUi();
                 UpdateInboxButtonBadge();
-                if (_cboTimTheo.Items.Count > 0 && _cboTimTheo.SelectedIndex < 0)
-                {
-                    _cboTimTheo.SelectedIndex = 0;
-                }
                 ClearForm();
+                ApplySearchFilter();
             }
             catch (Exception ex)
             {
@@ -67,10 +65,22 @@ namespace PBL3
         private void LoadChucVu()
         {
             DataTable dt = _trangNhanVienService.GetChucVu();
-
             _cboChucVu.DataSource = dt;
             _cboChucVu.DisplayMember = "TenCV";
             _cboChucVu.ValueMember = "MaCV";
+            DataTable dtFilter = dt.Copy();
+
+            DataRow rowAll = dtFilter.NewRow();
+            rowAll["MaCV"] = "-1";
+            rowAll["TenCV"] = "Tất cả";
+            dtFilter.Rows.InsertAt(rowAll, 0);
+            _cboTimTheo.SelectionChangeCommitted -= SearchControl_Changed;
+
+            _cboTimTheo.DataSource = dtFilter;
+            _cboTimTheo.DisplayMember = "TenCV";
+            _cboTimTheo.ValueMember = "TenCV";
+
+            _cboTimTheo.SelectionChangeCommitted += SearchControl_Changed;
         }
 
         private void LoadNhanVien()
@@ -88,18 +98,18 @@ namespace PBL3
             DataGridViewColumn? tenCvColumn = _dgvNhanVien.Columns["TenCV"];
             if (tenCvColumn is not null)
             {
-                tenCvColumn.HeaderText = "ChứcVụ";
+                tenCvColumn.HeaderText = "Chức vụ";
                 tenCvColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
 
-            SetHeaderText("MaNV", "MãNV");
-            SetHeaderText("HoTen", "HọTên");
-            SetHeaderText("NgaySinh", "NgàySinh");
+            SetHeaderText("MaNV", "Mã NV");
+            SetHeaderText("HoTen", "Họ Tên");
+            SetHeaderText("NgaySinh", "Ngày sinh");
             SetHeaderText("SDT", "SĐT");
             SetHeaderText("Email", "Email");
-            SetHeaderText("DiaChi", "ĐịaChỉ");
-            SetHeaderText("MatKhau", "MậtKhẩu");
-            SetHeaderText("TrangThai", "TrạngThái");
+            SetHeaderText("DiaChi", "Địa chỉ");
+            SetHeaderText("MatKhau", "Mật khẩu");
+            SetHeaderText("TrangThai", "Trạng thái");
 
             DataGridViewColumn? matKhauColumn = _dgvNhanVien.Columns["MatKhau"];
             if (matKhauColumn is not null)
@@ -107,14 +117,14 @@ namespace PBL3
                 matKhauColumn.Visible = false;
             }
 
-            SetColumnWidth("MaNV", 70);
-            SetColumnWidth("HoTen", 130);
-            SetColumnWidth("NgaySinh", 90);
-            SetColumnWidth("SDT", 90);
-            SetColumnWidth("Email", 140);
-            SetColumnWidth("DiaChi", 140);
-            SetColumnWidth("TrangThai", 100);
-            SetColumnWidth("TenCV", 110);
+            SetColumnWidth("MaNV", 85);
+            SetColumnWidth("HoTen", 135);
+            SetColumnWidth("NgaySinh", 105);
+            SetColumnWidth("SDT", 95);
+            SetColumnWidth("Email", 150);
+            SetColumnWidth("DiaChi", 145);
+            SetColumnWidth("TrangThai", 105);
+            SetColumnWidth("TenCV", 115);
 
             ConfigureGridAppearance();
 
@@ -187,26 +197,29 @@ namespace PBL3
             }
 
             string keyword = _txtTimKiem.Text.Trim().Replace("'", "''");
-            if (string.IsNullOrWhiteSpace(keyword))
+            string selectedChucVu = _cboTimTheo.Text.Trim();
+            if (string.IsNullOrEmpty(selectedChucVu))
             {
-                _nhanVienTable.DefaultView.RowFilter = string.Empty;
-                return;
+                selectedChucVu = "Tất cả";
             }
 
-            string selected = (Convert.ToString(_cboTimTheo.SelectedItem) ?? "MãNV").Trim();
-            string filter = selected switch
+            List<string> filterConditions = new List<string>();
+            if (!string.IsNullOrWhiteSpace(keyword))
             {
-                "HọTên" => $"HoTen LIKE '%{keyword}%'",
-                "NgàySinh" => $"Convert(NgaySinh, 'System.String') LIKE '%{keyword}%'",
-                "SĐT" => $"SDT LIKE '%{keyword}%'",
-                "Email" => $"Email LIKE '%{keyword}%'",
-                "ĐịaChỉ" => $"DiaChi LIKE '%{keyword}%'",
-                "ChứcVụ" => $"TenCV LIKE '%{keyword}%'",
-                "TrạngThái" => $"TrangThai LIKE '%{keyword}%'",
-                _ => $"Convert(MaNV, 'System.String') LIKE '%{keyword}%'"
-            };
-
-            _nhanVienTable.DefaultView.RowFilter = filter;
+                filterConditions.Add($"(Convert(MaNV, 'System.String') LIKE '%{keyword}%' OR HoTen LIKE '%{keyword}%' OR SDT LIKE '%{keyword}%' OR Email LIKE '%{keyword}%')");
+            }
+            if (selectedChucVu != "Tất cả")
+            {
+                filterConditions.Add($"TenCV = '{selectedChucVu.Replace("'", "''")}'");
+            }
+            if (filterConditions.Count > 0)
+            {
+                _nhanVienTable.DefaultView.RowFilter = string.Join(" AND ", filterConditions);
+            }
+            else
+            {
+                _nhanVienTable.DefaultView.RowFilter = string.Empty;
+            }
         }
 
         private void SetColumnWidth(string columnName, int width)
@@ -747,63 +760,19 @@ namespace PBL3
             }
 
             const decimal donGiaCaTruc = 176000m;
+            string maNv = _selectedMaNvDbValue ?? _txtMaNV.Text.Trim();
+            string tenNv = _txtHoTen.Text.Trim();
 
             try
             {
-                DataTable dt = _trangNhanVienService.GetLichTruc(_selectedMaNvDbValue ?? _txtMaNV.Text.Trim());
-
-                if (dt.Rows.Count == 0)
-                {
-                    MessageBox.Show("Nhân viên này chưa có lịch trực.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                decimal tongHeSo = dt.AsEnumerable().Sum(r => Convert.ToDecimal(r["HeSoLuong"]));
-                int tongSoCa = dt.Rows.Count;
-                decimal luongDuKien = tongHeSo * donGiaCaTruc;
-
                 using Form scheduleForm = new Form
                 {
                     Text = $"Lịch trực - NV {_txtMaNV.Text}",
                     StartPosition = FormStartPosition.CenterParent,
-                    Size = new Size(720, 420)
+                    Size = new Size(760, 460),
+                    MinimizeBox = false,
+                    MaximizeBox = false
                 };
-
-                DataGridView dgv = new DataGridView
-                {
-                    Dock = DockStyle.Fill,
-                    ReadOnly = true,
-                    AllowUserToAddRows = false,
-                    AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                    SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                    DataSource = dt
-                };
-                dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
-                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-
-                if (dgv.Columns["NgayLam"] is not null)
-                {
-                    dgv.Columns["NgayLam"].HeaderText = "Ngày làm";
-                    dgv.Columns["NgayLam"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                }
-
-                if (dgv.Columns["GioBatDau"] is not null)
-                {
-                    dgv.Columns["GioBatDau"].HeaderText = "Giờ bắt đầu";
-                    dgv.Columns["GioBatDau"].DefaultCellStyle.Format = "HH:mm";
-                }
-
-                if (dgv.Columns["GioKetThuc"] is not null)
-                {
-                    dgv.Columns["GioKetThuc"].HeaderText = "Giờ kết thúc";
-                    dgv.Columns["GioKetThuc"].DefaultCellStyle.Format = "HH:mm";
-                }
-
-                if (dgv.Columns["HeSoLuong"] is not null)
-                {
-                    dgv.Columns["HeSoLuong"].HeaderText = "Hệ số lương";
-                    dgv.Columns["HeSoLuong"].DefaultCellStyle.Format = "N2";
-                }
 
                 Panel pnlSummary = new Panel
                 {
@@ -812,36 +781,298 @@ namespace PBL3
                     BackColor = Color.FromArgb(248, 242, 235)
                 };
 
+                Panel pnlActionButtons = new Panel
+                {
+                    Dock = DockStyle.Right,
+                    Width = 190,
+                    BackColor = Color.FromArgb(248, 242, 235)
+                };
+
+                Button btnThoat = new Button
+                {
+                    Text = "Thoát",
+                    Size = new Size(70, 24),
+                    FlatStyle = FlatStyle.System,
+                    Location = new Point(12, 14)
+                };
+
+                Button btnThemCa = new Button
+                {
+                    Text = "Thêm ca làm",
+                    Size = new Size(92, 24),
+                    FlatStyle = FlatStyle.System,
+                    Location = new Point(92, 14)
+                };
+
+                pnlActionButtons.Controls.Add(btnThoat);
+                pnlActionButtons.Controls.Add(btnThemCa);
+
                 Label lblTongSoCa = new Label
                 {
                     AutoSize = true,
                     Location = new Point(12, 17),
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    Text = $"Tổng số ca làm: {tongSoCa}"
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                 };
 
                 Label lblTongHeSo = new Label
                 {
                     AutoSize = true,
                     Location = new Point(210, 17),
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    Text = $"Tổng hệ số: {tongHeSo:N2}"
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                 };
 
                 Label lblLuongDuKien = new Label
                 {
                     AutoSize = true,
                     Location = new Point(380, 17),
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    Text = $"Tiền lương theo ca: {luongDuKien:N0} đ"
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                 };
 
                 pnlSummary.Controls.Add(lblTongSoCa);
                 pnlSummary.Controls.Add(lblTongHeSo);
                 pnlSummary.Controls.Add(lblLuongDuKien);
+                pnlSummary.Controls.Add(pnlActionButtons);
 
-                scheduleForm.Controls.Add(pnlSummary);
+                DataGridView dgv = new DataGridView
+                {
+                    Dock = DockStyle.Fill,
+                    ReadOnly = true,
+                    AllowUserToAddRows = false,
+                    AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                    SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                };
+                dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+
+                dgv.CellFormatting += (_, e) =>
+                {
+                    if (dgv.Columns[e.ColumnIndex].Name is "GioBatDau" or "GioKetThuc")
+                    {
+                        if (e.Value is TimeSpan ts)
+                        {
+                            e.Value = ts.ToString(@"hh\:mm");
+                            e.FormattingApplied = true;
+                        }
+                        else if (e.Value is DateTime dt)
+                        {
+                            e.Value = dt.ToString("HH:mm");
+                            e.FormattingApplied = true;
+                        }
+                    }
+                };
+
+                void ReloadSchedule()
+                {
+                    DataTable dt = _trangNhanVienService.GetLichTruc(maNv);
+                    decimal tongHeSo = dt.Rows.Count > 0 ? dt.AsEnumerable().Sum(r => Convert.ToDecimal(r["HeSoLuong"])) : 0m;
+                    int tongSoCa = dt.Rows.Count;
+                    _lastLuongDuKien = tongHeSo * donGiaCaTruc;
+
+                    dgv.DataSource = dt;
+
+                    if (dgv.Columns["NgayLam"] is not null)
+                    {
+                        dgv.Columns["NgayLam"].HeaderText = "Ngày làm";
+                        dgv.Columns["NgayLam"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    }
+
+                    if (dgv.Columns["GioBatDau"] is not null)
+                    {
+                        dgv.Columns["GioBatDau"].HeaderText = "Giờ bắt đầu";
+                    }
+
+                    if (dgv.Columns["GioKetThuc"] is not null)
+                    {
+                        dgv.Columns["GioKetThuc"].HeaderText = "Giờ kết thúc";
+                    }
+
+                    if (dgv.Columns["HeSoLuong"] is not null)
+                    {
+                        dgv.Columns["HeSoLuong"].HeaderText = "Hệ số lương";
+                        dgv.Columns["HeSoLuong"].DefaultCellStyle.Format = "N2";
+                    }
+
+                    if (dgv.Columns["MaCa"] is not null)
+                    {
+                        dgv.Columns["MaCa"].Visible = false;
+                    }
+
+                    if (dgv.Columns["TenCa"] is not null)
+                    {
+                        dgv.Columns["TenCa"].HeaderText = "Tên ca";
+                    }
+
+                    lblTongSoCa.Text = $"Tổng số ca làm: {tongSoCa}";
+                    lblTongHeSo.Text = $"Tổng hệ số: {tongHeSo:N2}";
+                    lblLuongDuKien.Text = $"Tiền lương theo ca: {_lastLuongDuKien:N0} đ";
+                }
+
+                void OpenAddShiftPopup()
+                {
+                    using Form addForm = new Form
+                    {
+                        Text = "Thêm ca làm",
+                        StartPosition = FormStartPosition.CenterParent,
+                        FormBorderStyle = FormBorderStyle.FixedDialog,
+                        MinimizeBox = false,
+                        MaximizeBox = false,
+                        ClientSize = new Size(540, 255)
+                    };
+
+                    Panel addBottomBar = new Panel
+                    {
+                        Dock = DockStyle.Bottom,
+                        Height = 38,
+                        BackColor = Color.FromArgb(248, 242, 235)
+                    };
+
+                    Panel addButtonArea = new Panel
+                    {
+                        Dock = DockStyle.Right,
+                        Width = 190,
+                        BackColor = Color.FromArgb(248, 242, 235)
+                    };
+
+                    Button btnThoatAdd = new Button
+                    {
+                        Text = "Thoát",
+                        Size = new Size(70, 24),
+                        Location = new Point(12, 7)
+                    };
+                    Button btnLuu = new Button
+                    {
+                        Text = "Lưu",
+                        Size = new Size(75, 24),
+                        Location = new Point(95, 7),
+                        DialogResult = DialogResult.OK
+                    };
+                    btnThoatAdd.Click += (_, _) => addForm.Close();
+                    addButtonArea.Controls.Add(btnThoatAdd);
+                    addButtonArea.Controls.Add(btnLuu);
+                    addBottomBar.Controls.Add(addButtonArea);
+
+                    Label lblNhanVien = new Label { Left = 18, Top = 20, AutoSize = true, Text = "Nhân viên" };
+                    TextBox txtNhanVien = new TextBox
+                    {
+                        Left = 110,
+                        Top = 16,
+                        Width = 250,
+                        ReadOnly = true,
+                        Text = !string.IsNullOrWhiteSpace(tenNv) ? tenNv : _txtMaNV.Text
+                    };
+
+                    Label lblCa = new Label { Left = 18, Top = 56, AutoSize = true, Text = "Ca làm" };
+                    ComboBox cboCa = new ComboBox
+                    {
+                        Left = 110,
+                        Top = 52,
+                        Width = 250,
+                        DropDownStyle = ComboBoxStyle.DropDownList,
+                        DisplayMember = "TenCa",
+                        ValueMember = "MaCa",
+                        DataSource = _trangNhanVienService.GetCaTruc()
+                    };
+
+                    Label lblThu = new Label { Left = 18, Top = 92, AutoSize = true, Text = "Chọn thứ" };
+                    CheckBox cb2 = new CheckBox { Left = 110, Top = 90, AutoSize = true, Text = "Thứ 2" };
+                    CheckBox cb3 = new CheckBox { Left = 180, Top = 90, AutoSize = true, Text = "Thứ 3" };
+                    CheckBox cb4 = new CheckBox { Left = 250, Top = 90, AutoSize = true, Text = "Thứ 4" };
+                    CheckBox cb5 = new CheckBox { Left = 320, Top = 90, AutoSize = true, Text = "Thứ 5" };
+                    CheckBox cb6 = new CheckBox { Left = 390, Top = 90, AutoSize = true, Text = "Thứ 6" };
+                    CheckBox cb7 = new CheckBox { Left = 110, Top = 120, AutoSize = true, Text = "Thứ 7" };
+                    CheckBox cbCN = new CheckBox { Left = 180, Top = 120, AutoSize = true, Text = "Chủ nhật" };
+
+                    Label lblInfo = new Label
+                    {
+                        Left = 18,
+                        Top = 155,
+                        AutoSize = true,
+                        ForeColor = Color.DimGray,
+                        Text = "Lịch sẽ được tự động thêm từ hôm nay đến hết tháng theo các thứ đã chọn."
+                    };
+
+                    addForm.Controls.Add(lblNhanVien);
+                    addForm.Controls.Add(txtNhanVien);
+                    addForm.Controls.Add(lblCa);
+                    addForm.Controls.Add(cboCa);
+                    addForm.Controls.Add(lblThu);
+                    addForm.Controls.Add(cb2);
+                    addForm.Controls.Add(cb3);
+                    addForm.Controls.Add(cb4);
+                    addForm.Controls.Add(cb5);
+                    addForm.Controls.Add(cb6);
+                    addForm.Controls.Add(cb7);
+                    addForm.Controls.Add(cbCN);
+                    addForm.Controls.Add(lblInfo);
+                    addForm.Controls.Add(addBottomBar);
+                    addForm.AcceptButton = btnLuu;
+                    addForm.CancelButton = btnThoatAdd;
+
+                    if (addForm.ShowDialog(scheduleForm) != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    if (cboCa.SelectedValue is null)
+                    {
+                        MessageBox.Show("Vui lòng chọn ca làm.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    List<DayOfWeek> selectedDays = new List<DayOfWeek>();
+                    if (cb2.Checked) selectedDays.Add(DayOfWeek.Monday);
+                    if (cb3.Checked) selectedDays.Add(DayOfWeek.Tuesday);
+                    if (cb4.Checked) selectedDays.Add(DayOfWeek.Wednesday);
+                    if (cb5.Checked) selectedDays.Add(DayOfWeek.Thursday);
+                    if (cb6.Checked) selectedDays.Add(DayOfWeek.Friday);
+                    if (cb7.Checked) selectedDays.Add(DayOfWeek.Saturday);
+                    if (cbCN.Checked) selectedDays.Add(DayOfWeek.Sunday);
+
+                    if (selectedDays.Count == 0)
+                    {
+                        MessageBox.Show("Vui lòng chọn ít nhất một thứ trong tuần.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        DateTime from = DateTime.Today;
+                        DateTime to = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+                        string maCa = Convert.ToString(cboCa.SelectedValue) ?? string.Empty;
+                        int inserted = 0;
+
+                        for (DateTime day = from; day <= to; day = day.AddDays(1))
+                        {
+                            if (!selectedDays.Contains(day.DayOfWeek))
+                            {
+                                continue;
+                            }
+
+                            inserted += _trangNhanVienService.AddPhanCongCa(maNv, maCa, day);
+                        }
+
+                        if (inserted > 0)
+                        {
+                            MessageBox.Show($"Đã thêm {inserted} lịch trong tháng này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            ReloadSchedule();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Đã có lịch rồi.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Không thể thêm ca làm.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                btnThoat.Click += (_, _) => scheduleForm.Close();
+                btnThemCa.Click += (_, _) => OpenAddShiftPopup();
+
                 scheduleForm.Controls.Add(dgv);
+                scheduleForm.Controls.Add(pnlSummary);
+                ReloadSchedule();
                 scheduleForm.ShowDialog(this);
             }
             catch (Exception ex)
@@ -865,19 +1096,12 @@ namespace PBL3
             }
         }
 
-        private decimal GetLuongCoBanNhanVien(string maNv)
-        {
-            return _trangNhanVienService.GetLuongCoBanNhanVien(maNv);
-        }
-
         private void _txtMatKhau_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void _dgvNhanVien_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
         }
 
         private void label4_Click(object sender, EventArgs e)

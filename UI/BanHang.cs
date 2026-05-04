@@ -1019,6 +1019,7 @@ namespace PBL3
             }
             FillThumbnailValuesData();
             LoadLoaiMonOptionsData();
+            BhCboLoaiMon_SelectedIndexChanged(null, EventArgs.Empty);
 
             if (_bhDgvMenu.Rows.Count > 0)
             {
@@ -1039,15 +1040,21 @@ namespace PBL3
             DataTable dtLoai = new DataTable();
             dtLoai.Columns.Add("Value", typeof(string));
             dtLoai.Columns.Add("Text", typeof(string));
-            dtLoai.Rows.Add(string.Empty, "Tất cả loại");
+            dtLoai.Rows.Add(string.Empty, "Tất cả");
             foreach (DataRow row in _menuTable.DefaultView.ToTable(true, "MaLoai", "TenLoai").Rows)
             {
                 dtLoai.Rows.Add(Convert.ToString(row["MaLoai"]) ?? string.Empty, Convert.ToString(row["TenLoai"]) ?? string.Empty);
             }
+            _bhCboLoaiMon.SelectedIndexChanged -= BhCboLoaiMon_SelectedIndexChanged;
 
             _bhCboLoaiMon.DataSource = dtLoai;
             _bhCboLoaiMon.DisplayMember = "Text";
             _bhCboLoaiMon.ValueMember = "Value";
+            if (_bhCboLoaiMon.Items.Count > 0)
+            {
+                _bhCboLoaiMon.SelectedIndex = 0;
+            }
+            _bhCboLoaiMon.SelectedIndexChanged += BhCboLoaiMon_SelectedIndexChanged;
         }
 
         private void LoadKhachHangOptionsData()
@@ -1125,14 +1132,14 @@ namespace PBL3
             if (_bhChkKhongLienKetKhach?.Checked != false || _bhCboKhachHang?.SelectedItem is not DataRowView rv)
             {
                 _bhLblHangKhach.Text = "Hạng: ";
-                _bhLblGiamHang.Text = "Giảm hạng: 0%";
+                _bhLblGiamHang.Text = "Giảm: 0%";
                 return;
             }
 
             string tenHang = Convert.ToString(rv["TenHang"]) ?? string.Empty;
             int phanTram = Convert.ToInt32(rv["PhanTramGiam"] ?? 0);
             _bhLblHangKhach.Text = string.IsNullOrWhiteSpace(tenHang) ? "Hạng: " : $"Hạng: {tenHang}";
-            _bhLblGiamHang.Text = $"Giảm hạng: {phanTram}%";
+            _bhLblGiamHang.Text = $"Giảm: {phanTram}%";
         }
 
         private void UpdateDiemDungMax(int diemHienTai)

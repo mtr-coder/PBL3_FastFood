@@ -40,6 +40,7 @@ namespace PBL3
             pnlFormNhanVien = new RoundedPanel();
             _btnLamMoi = new RoundedPanel();
             lblBtnLamMoi = new Label();
+            dgvLichSuYeuCau = new DataGridView();
             pnlSdtInput = new RoundedPanel();
             _txtSdt = new TextBox();
             _btnXemLichTruc = new RoundedPanel();
@@ -96,13 +97,13 @@ namespace PBL3
             _txtTimKiem = new TextBox();
             _cboTrangThai = new ComboBox();
             lblTrangThai = new Label();
-            dgvLichSuYeuCau = new DataGridView();
             roundedPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pb_Admin).BeginInit();
             btn_DangXuat.SuspendLayout();
             hcnt_Khung.SuspendLayout();
             pnlFormNhanVien.SuspendLayout();
             _btnLamMoi.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvLichSuYeuCau).BeginInit();
             pnlSdtInput.SuspendLayout();
             _btnXemLichTruc.SuspendLayout();
             _btnSua.SuspendLayout();
@@ -113,7 +114,6 @@ namespace PBL3
             pnlMaNVInput.SuspendLayout();
             pnlDanhSachNhanVien.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)_dgvNhanVien).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvLichSuYeuCau).BeginInit();
             hcnt_KhungMenuAD.SuspendLayout();
             btn_QLHDN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pb_QLHDN).BeginInit();
@@ -214,7 +214,7 @@ namespace PBL3
             lb_QLNhanVienTitle.AutoSize = true;
             lb_QLNhanVienTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lb_QLNhanVienTitle.ForeColor = Color.Salmon;
-            lb_QLNhanVienTitle.Location = new Point(306, 8);
+            lb_QLNhanVienTitle.Location = new Point(364, 8);
             lb_QLNhanVienTitle.Name = "lb_QLNhanVienTitle";
             lb_QLNhanVienTitle.Size = new Size(226, 35);
             lb_QLNhanVienTitle.TabIndex = 4;
@@ -261,6 +261,18 @@ namespace PBL3
             _btnLamMoi.TabIndex = 20;
             _btnLamMoi.Click += BtnLamMoi_Click;
             // 
+            // lblBtnLamMoi
+            // 
+            lblBtnLamMoi.AutoSize = true;
+            lblBtnLamMoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblBtnLamMoi.ForeColor = Color.White;
+            lblBtnLamMoi.Location = new Point(2, 3);
+            lblBtnLamMoi.Name = "lblBtnLamMoi";
+            lblBtnLamMoi.Size = new Size(81, 23);
+            lblBtnLamMoi.TabIndex = 0;
+            lblBtnLamMoi.Text = "Làm mới";
+            lblBtnLamMoi.Click += BtnLamMoi_Click;
+            // 
             // dgvLichSuYeuCau
             // 
             dgvLichSuYeuCau.AllowUserToAddRows = false;
@@ -277,18 +289,6 @@ namespace PBL3
             dgvLichSuYeuCau.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvLichSuYeuCau.Size = new Size(795, 257);
             dgvLichSuYeuCau.TabIndex = 35;
-            // 
-            // lblBtnLamMoi
-            // 
-            lblBtnLamMoi.AutoSize = true;
-            lblBtnLamMoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblBtnLamMoi.ForeColor = Color.White;
-            lblBtnLamMoi.Location = new Point(6, 3);
-            lblBtnLamMoi.Name = "lblBtnLamMoi";
-            lblBtnLamMoi.Size = new Size(81, 23);
-            lblBtnLamMoi.TabIndex = 0;
-            lblBtnLamMoi.Text = "Làm mới";
-            lblBtnLamMoi.Click += BtnLamMoi_Click;
             // 
             // pnlSdtInput
             // 
@@ -327,7 +327,7 @@ namespace PBL3
             _lblBtnXemLichTruc.AutoSize = true;
             _lblBtnXemLichTruc.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             _lblBtnXemLichTruc.ForeColor = Color.White;
-            _lblBtnXemLichTruc.Location = new Point(15, 5);
+            _lblBtnXemLichTruc.Location = new Point(10, 6);
             _lblBtnXemLichTruc.Name = "_lblBtnXemLichTruc";
             _lblBtnXemLichTruc.Size = new Size(117, 23);
             _lblBtnXemLichTruc.TabIndex = 0;
@@ -374,7 +374,7 @@ namespace PBL3
             _lblBtnDatLaiMatKhau.AutoSize = true;
             _lblBtnDatLaiMatKhau.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             _lblBtnDatLaiMatKhau.ForeColor = Color.White;
-            _lblBtnDatLaiMatKhau.Location = new Point(13, 7);
+            _lblBtnDatLaiMatKhau.Location = new Point(11, 7);
             _lblBtnDatLaiMatKhau.Name = "_lblBtnDatLaiMatKhau";
             _lblBtnDatLaiMatKhau.Size = new Size(95, 23);
             _lblBtnDatLaiMatKhau.TabIndex = 0;
@@ -424,6 +424,7 @@ namespace PBL3
             _cboChucVu.BackColor = Color.Bisque;
             _cboChucVu.DropDownStyle = ComboBoxStyle.DropDownList;
             _cboChucVu.Enabled = false;
+            _cboChucVu.FlatStyle = FlatStyle.Flat;
             _cboChucVu.FormattingEnabled = true;
             _cboChucVu.Location = new Point(696, 44);
             _cboChucVu.Name = "_cboChucVu";
@@ -966,6 +967,7 @@ namespace PBL3
             pnlFormNhanVien.PerformLayout();
             _btnLamMoi.ResumeLayout(false);
             _btnLamMoi.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvLichSuYeuCau).EndInit();
             pnlSdtInput.ResumeLayout(false);
             pnlSdtInput.PerformLayout();
             _btnXemLichTruc.ResumeLayout(false);
@@ -985,7 +987,6 @@ namespace PBL3
             pnlDanhSachNhanVien.ResumeLayout(false);
             pnlDanhSachNhanVien.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)_dgvNhanVien).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvLichSuYeuCau).EndInit();
             hcnt_KhungMenuAD.ResumeLayout(false);
             hcnt_KhungMenuAD.PerformLayout();
             btn_QLHDN.ResumeLayout(false);

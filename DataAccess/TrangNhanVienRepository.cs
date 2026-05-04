@@ -283,6 +283,65 @@ ORDER BY pc.NgayLam DESC, pc.MaCa";
             return dt;
         }
 
+        public DataTable GetCaTruc()
+        {
+            const string sql = @"
+SELECT MaCa, TenCa, GioBatDau, GioKetThuc, HeSoLuong
+FROM dbo.CA_TRUC
+ORDER BY MaCa";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+
+        public int AddPhanCongCa(string maNv, string maCa, DateTime ngayLam)
+        {
+            const string sql = @"
+IF EXISTS (
+    SELECT 1
+    FROM dbo.PHAN_CONG_CA
+    WHERE MaNV = @MaNV AND NgayLam = @NgayLam
+)
+BEGIN
+    SELECT 0;
+    RETURN;
+END
+
+INSERT INTO dbo.PHAN_CONG_CA (MaNV, MaCa, NgayLam)
+VALUES (@MaNV, @MaCa, @NgayLam);
+SELECT 1;";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaNV", SqlDbType.VarChar, 20).Value = maNv;
+            cmd.Parameters.Add("@MaCa", SqlDbType.VarChar, 20).Value = maCa;
+            cmd.Parameters.Add("@NgayLam", SqlDbType.Date).Value = ngayLam.Date;
+            conn.Open();
+            object? result = cmd.ExecuteScalar();
+            return result is null || result == DBNull.Value ? 0 : Convert.ToInt32(result);
+        }
+
+        public int DeletePhanCongCaByLeaveRange(string maNv, DateTime tuNgay, DateTime denNgay)
+        {
+            const string sql = @"
+DELETE FROM dbo.PHAN_CONG_CA
+WHERE MaNV = @MaNV
+  AND NgayLam >= @TuNgay
+  AND NgayLam <= @DenNgay";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaNV", SqlDbType.VarChar, 20).Value = maNv;
+            cmd.Parameters.Add("@TuNgay", SqlDbType.Date).Value = tuNgay.Date;
+            cmd.Parameters.Add("@DenNgay", SqlDbType.Date).Value = denNgay.Date;
+            conn.Open();
+            return cmd.ExecuteNonQuery();
+        }
+
         public string GetCurrentPassword(string maNv)
         {
             using SqlConnection conn = DbHelper.GetConnection();

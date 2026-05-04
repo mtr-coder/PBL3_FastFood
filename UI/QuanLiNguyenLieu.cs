@@ -17,7 +17,6 @@ namespace PBL3
         {
             _nguyenLieuService = new NguyenLieuService();
             InitializeComponent();
-            _cboTimTheo.SelectionChangeCommitted += SearchControl_Changed;
             _cboDonViTinh.Items.AddRange(new object[] { "Kg", "Lít", "Túi", "Thùng", "Cái" });
             if (_cboDonViTinh.Items.Count > 0)
             {
@@ -34,10 +33,6 @@ namespace PBL3
             NormalizeDonViTinhValues();
             SeedSampleNguyenLieuIfEmpty();
             LoadNguyenLieu();
-            if (_cboTimTheo.Items.Count > 0 && _cboTimTheo.SelectedIndex < 0)
-            {
-                _cboTimTheo.SelectedIndex = 0;
-            }
             ClearForm();
         }
 
@@ -83,15 +78,7 @@ namespace PBL3
                 return;
             }
 
-            string selected = (Convert.ToString(_cboTimTheo.SelectedItem) ?? "MãNL").Trim();
-            string filter = selected switch
-            {
-                "TênNL" => $"TenNL LIKE '%{keyword}%'",
-                "ĐơnVịTính" => $"DonViTinh LIKE '%{keyword}%'",
-                "GiáNhập" => $"Convert(GiaNhap, 'System.String') LIKE '%{keyword}%'",
-                "SốLượngTồn" => $"Convert(SoLuongTon, 'System.String') LIKE '%{keyword}%'",
-                _ => $"Convert(MaNL, 'System.String') LIKE '%{keyword}%'"
-            };
+            string filter = $"Convert(MaNL, 'System.String') LIKE '%{keyword}%' OR TenNL LIKE '%{keyword}%'";
 
             _nguyenLieuTable.DefaultView.RowFilter = filter;
         }
@@ -278,18 +265,10 @@ namespace PBL3
             }
 
             string keyword = _txtTimKiem.Text.Trim().Replace("'", "''");
-            string selected = (Convert.ToString(_cboTimTheo.SelectedItem) ?? "MãNL").Trim();
             string searchFilter = string.Empty;
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                searchFilter = selected switch
-                {
-                    "TênNL" => $"TenNL LIKE '%{keyword}%'",
-                    "ĐơnVịTính" => $"DonViTinh LIKE '%{keyword}%'",
-                    "GiáNhập" => $"Convert(GiaNhap, 'System.String') LIKE '%{keyword}%'",
-                    "SốLượngTồn" => $"Convert(SoLuongTon, 'System.String') LIKE '%{keyword}%'",
-                    _ => $"Convert(MaNL, 'System.String') LIKE '%{keyword}%'"
-                };
+                searchFilter = $"Convert(MaNL, 'System.String') LIKE '%{keyword}%' OR TenNL LIKE '%{keyword}%'";
             }
 
             string lowFilter = "Convert(SoLuongTon, 'System.Decimal') <= Convert(NguongToiThieu, 'System.Decimal')";

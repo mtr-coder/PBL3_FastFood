@@ -86,9 +86,9 @@ namespace PBL3
             hcnt_Khung.Controls.Add(_lblNguyenLieuMoi);
             hcnt_Khung.Controls.Add(_txtNguyenLieuMoi);
 
-            _chkNguyenLieuMoi.Location = new Point(493, 84);
-            _lblNguyenLieuMoi.Location = new Point(493, 112);
-            _txtNguyenLieuMoi.Location = new Point(493, 135);
+            _chkNguyenLieuMoi.Location = new Point(493, 120);
+            _lblNguyenLieuMoi.Location = new Point(493, 145);
+            _txtNguyenLieuMoi.Location = new Point(493, 168);
             _txtNguyenLieuMoi.Size = new Size(323, 27);
         }
 
@@ -208,16 +208,16 @@ namespace PBL3
         private void InitPhieuNhapGrid()
         {
             _phieuNhapTable.Columns.Add("MaNL", typeof(string));
-            _phieuNhapTable.Columns.Add("TenNL", typeof(string));
-            _phieuNhapTable.Columns.Add("DonViTinh", typeof(string));
-            _phieuNhapTable.Columns.Add("SoLuong", typeof(decimal));
-            _phieuNhapTable.Columns.Add("DonGia", typeof(decimal));
-            _phieuNhapTable.Columns.Add("ThanhTien", typeof(decimal), "SoLuong * DonGia");
+            _phieuNhapTable.Columns.Add("Tên nguyên liệu", typeof(string));
+            _phieuNhapTable.Columns.Add("Đơn vị tính", typeof(string));
+            _phieuNhapTable.Columns.Add("Số lượng", typeof(decimal));
+            _phieuNhapTable.Columns.Add("Đơn giá", typeof(decimal));
+            _phieuNhapTable.Columns.Add("Thành tiền", typeof(decimal), "[Số lượng] * [Đơn giá]");
 
             dgvPhieuNhap.DataSource = _phieuNhapTable;
             dgvPhieuNhap.Columns["MaNL"].Visible = false;
-            dgvPhieuNhap.Columns["DonGia"].DefaultCellStyle.Format = "N0";
-            dgvPhieuNhap.Columns["ThanhTien"].DefaultCellStyle.Format = "N0";
+            dgvPhieuNhap.Columns["Đơn giá"].DefaultCellStyle.Format = "N0";
+            dgvPhieuNhap.Columns["Thành tiền"].DefaultCellStyle.Format = "N0";
         }
 
         private void LoadNguyenLieu()
@@ -394,6 +394,12 @@ namespace PBL3
             {
                 _muaHangService.SavePhieuNhap(_maNv, maNcc, tongTien, _phieuNhapTable);
                 _phieuNhapTable.Clear();
+                if (_chkNguyenLieuMoi != null)
+                {
+                    _chkNguyenLieuMoi.Checked = false;
+                }
+                nudSoLuong.Value = 1;
+                txtDonGia.Clear();
                 UpdateTongTien();
                 LoadNguyenLieu();
                 MessageBox.Show("Lưu phiếu nhập thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);

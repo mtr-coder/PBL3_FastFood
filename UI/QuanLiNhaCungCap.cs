@@ -19,7 +19,6 @@ namespace PBL3
         {
             _nhaCungCapService = new NhaCungCapService();
             InitializeComponent();
-            _cboTimTheo.SelectionChangeCommitted += SearchControl_Changed;
             _dgvNhanVien.DataBindingComplete += DgvNhanVien_DataBindingComplete;
         }
 
@@ -51,10 +50,6 @@ namespace PBL3
             {
                 DetectNhaCungCapSchema();
                 LoadNhaCungCap();
-                if (_cboTimTheo.Items.Count > 0 && _cboTimTheo.SelectedIndex < 0)
-                {
-                    _cboTimTheo.SelectedIndex = 0;
-                }
 
                 ClearForm();
             }
@@ -88,25 +83,22 @@ namespace PBL3
             _dgvNhanVien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             _dgvNhanVien.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
             _dgvNhanVien.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-
-            // Desired column order: MaNCC, TenNCC, SDT, Email, DiaChi, MatHangChuYeu, GhiChu
-            SetHeaderText("MaNCC", "MãNCC");
+            SetHeaderText("MaNCC", "Mã NCC");
             SetHeaderText("TenNCC", "Tên");
             SetHeaderText("SDT", "SĐT");
             SetHeaderText("Email", "Email");
-            SetHeaderText("DiaChi", "ĐịaChỉ");
+            SetHeaderText("DiaChi", "Địa chỉ");
             SetHeaderText("MatHangChuYeu", "Mặt hàng chủ yếu");
             SetHeaderText("GhiChu", "Ghi chú");
 
-            SetColumnWidth("MaNCC", 95);
+            SetColumnWidth("MaNCC", 100);
             SetColumnWidth("TenNCC", 150);
-            SetColumnWidth("SDT", 110);
+            SetColumnWidth("SDT", 100);
             SetColumnWidth("Email", 150);
-            SetColumnWidth("DiaChi", 120);
+            SetColumnWidth("DiaChi", 125);
             SetColumnWidth("MatHangChuYeu", 160);
             SetColumnWidth("GhiChu", 140);
 
-            // TrangThai column is not shown in the grid
 
             ApplySearchFilter();
             UpdateTopMetrics();
@@ -125,7 +117,6 @@ namespace PBL3
             }
 
             string keyword = _txtTimKiem.Text.Trim().Replace("'", "''");
-            // status filtering removed (no TrangThai column shown)
 
             if (string.IsNullOrWhiteSpace(keyword))
             {
@@ -135,31 +126,18 @@ namespace PBL3
                 return;
             }
 
-            string selected = (Convert.ToString(_cboTimTheo.SelectedItem) ?? "MãNCC").Trim();
-            string filter;
+            List<string> filterConditions = new List<string>
+    {
+        $"Convert(MaNCC, 'System.String') LIKE '%{keyword}%'",
+        $"TenNCC LIKE '%{keyword}%'",
+        $"SDT LIKE '%{keyword}%'"
+    };
+            if (_hasEmailColumn)
+            {
+                filterConditions.Add($"Email LIKE '%{keyword}%'");
+            }
+            string filter = string.Join(" OR ", filterConditions);
 
-            if (selected == "TênNCC" || selected == "TenNCC" || selected == "Tên")
-            {
-                filter = $"TenNCC LIKE '%{keyword}%'";
-            }
-            else if (selected == "SĐT" || selected == "SDT")
-            {
-                filter = $"SDT LIKE '%{keyword}%'";
-            }
-            else if (selected == "ĐịaChỉ" || selected == "Địa chỉ" || selected == "DiaChi")
-            {
-                filter = $"DiaChi LIKE '%{keyword}%'";
-            }
-            else if (selected == "MặtHàngChủYếu" || selected == "MatHangChuYeu")
-            {
-                filter = $"MatHangChuYeu LIKE '%{keyword}%'";
-            }
-            else
-            {
-                filter = $"Convert(MaNCC, 'System.String') LIKE '%{keyword}%'";
-            }
-
-            // statusFilter removed, only apply keyword filter
             _nhaCungCapTable.DefaultView.RowFilter = filter;
 
             ApplyTrangThaiRowStyle();

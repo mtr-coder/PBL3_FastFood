@@ -97,27 +97,48 @@ ORDER BY NgayGui DESC";
             return history;
         }
 
-        public void ApproveRequest(int maYeuCau, string phanHoi, bool setNghiViec, int maNv)
+        public void ApproveRequest(int maYeuCau, string phanHoi, bool setNghiViec, int maNv, DateTime? tuNgay, DateTime? denNgay)
         {
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
             using SqlTransaction tran = conn.BeginTransaction();
 
-            using (SqlCommand cmd = new SqlCommand("UPDATE dbo.YEU_CAU SET TrangThai = 1, PhanHoiAdmin = @PhanHoi WHERE MaYeuCau = @Id", conn, tran))
+            try
             {
-                cmd.Parameters.AddWithValue("@PhanHoi", phanHoi);
-                cmd.Parameters.AddWithValue("@Id", maYeuCau);
-                cmd.ExecuteNonQuery();
-            }
+                using (SqlCommand cmd = new SqlCommand("UPDATE dbo.YEU_CAU SET TrangThai = 1, PhanHoiAdmin = @PhanHoi WHERE MaYeuCau = @Id", conn, tran))
+                {
+                    cmd.Parameters.AddWithValue("@PhanHoi", phanHoi);
+                    cmd.Parameters.AddWithValue("@Id", maYeuCau);
+                    cmd.ExecuteNonQuery();
+                }
 
-            if (setNghiViec)
+                if (tuNgay.HasValue && denNgay.HasValue)
+                {
+                    using SqlCommand cmdDelete = new SqlCommand(@"
+DELETE FROM dbo.PHAN_CONG_CA
+WHERE TRY_CAST(MaNV AS INT) = @MaNV
+  AND NgayLam >= @TuNgay
+  AND NgayLam <= @DenNgay", conn, tran);
+                    cmdDelete.Parameters.AddWithValue("@MaNV", maNv);
+                    cmdDelete.Parameters.AddWithValue("@TuNgay", tuNgay.Value.Date);
+                    cmdDelete.Parameters.AddWithValue("@DenNgay", denNgay.Value.Date);
+                    cmdDelete.ExecuteNonQuery();
+                }
+
+                if (setNghiViec)
+                {
+                    using SqlCommand cmdNv = new SqlCommand("UPDATE dbo.NHAN_VIEN SET TrangThai = N'Nghỉ việc' WHERE TRY_CAST(MaNV AS INT) = @MaNV", conn, tran);
+                    cmdNv.Parameters.AddWithValue("@MaNV", maNv);
+                    cmdNv.ExecuteNonQuery();
+                }
+
+                tran.Commit();
+            }
+            catch
             {
-                using SqlCommand cmdNv = new SqlCommand("UPDATE dbo.NHAN_VIEN SET TrangThai = N'Nghỉ việc' WHERE TRY_CAST(MaNV AS INT) = @MaNV", conn, tran);
-                cmdNv.Parameters.AddWithValue("@MaNV", maNv);
-                cmdNv.ExecuteNonQuery();
+                tran.Rollback();
+                throw;
             }
-
-            tran.Commit();
         }
 
         public void RejectRequest(int maYeuCau, string phanHoi)

@@ -75,7 +75,6 @@ namespace PBL3.UI
             lblDetail = new Label();
             lblReceiptNhanVien = new Label();
             lblReceiptDoiTac = new Label();
-            lblReceiptThanhToan = new Label();
             _dgvHoaDonDetail = new DataGridView();
             _btnHuyHoaDon = new RoundedPanel();
             lblBtnHuyHoaDon = new Label();
@@ -614,7 +613,6 @@ namespace PBL3.UI
             pnlReceipt.Controls.Add(lblDetail);
             pnlReceipt.Controls.Add(lblReceiptNhanVien);
             pnlReceipt.Controls.Add(lblReceiptDoiTac);
-            pnlReceipt.Controls.Add(lblReceiptThanhToan);
             pnlReceipt.Controls.Add(_dgvHoaDonDetail);
             pnlReceipt.Controls.Add(_btnHuyHoaDon);
             pnlReceipt.CornerRadius = 8;
@@ -654,16 +652,6 @@ namespace PBL3.UI
             lblReceiptDoiTac.TabIndex = 4;
             lblReceiptDoiTac.Text = "\U0001f91d Khách hàng: -";
             // 
-            // lblReceiptThanhToan
-            // 
-            lblReceiptThanhToan.AutoSize = true;
-            lblReceiptThanhToan.Font = new Font("Segoe UI", 10F);
-            lblReceiptThanhToan.Location = new Point(12, 88);
-            lblReceiptThanhToan.Name = "lblReceiptThanhToan";
-            lblReceiptThanhToan.Size = new Size(142, 23);
-            lblReceiptThanhToan.TabIndex = 5;
-            lblReceiptThanhToan.Text = "💳 Thanh toán: -";
-            // 
             // _dgvHoaDonDetail
             // 
             _dgvHoaDonDetail.AllowUserToAddRows = false;
@@ -671,14 +659,14 @@ namespace PBL3.UI
             _dgvHoaDonDetail.BackgroundColor = Color.WhiteSmoke;
             _dgvHoaDonDetail.BorderStyle = BorderStyle.None;
             _dgvHoaDonDetail.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _dgvHoaDonDetail.Location = new Point(12, 118);
+            _dgvHoaDonDetail.Location = new Point(12, 100);
             _dgvHoaDonDetail.MultiSelect = false;
             _dgvHoaDonDetail.Name = "_dgvHoaDonDetail";
             _dgvHoaDonDetail.ReadOnly = true;
             _dgvHoaDonDetail.RowHeadersVisible = false;
             _dgvHoaDonDetail.RowHeadersWidth = 51;
             _dgvHoaDonDetail.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _dgvHoaDonDetail.Size = new Size(433, 186);
+            _dgvHoaDonDetail.Size = new Size(433, 200);
             _dgvHoaDonDetail.TabIndex = 6;
             // 
             // _btnHuyHoaDon
@@ -825,7 +813,6 @@ namespace PBL3.UI
         private Label lblDetail;
         private Label lblReceiptNhanVien;
         private Label lblReceiptDoiTac;
-        private Label lblReceiptThanhToan;
         private DataGridView _dgvHoaDonDetail;
         private RoundedPanel _btnHuyHoaDon;
         private Label lblBtnHuyHoaDon;
