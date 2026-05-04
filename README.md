@@ -7,9 +7,15 @@
 // Update lại dữ liệu có ràng buộc dễ đọc
 
 ## Kết luận
-Trong phạm vi môn học, nhóm đã xây dựng được một hệ thống quản lý cửa hàng đồ ăn nhanh với các chức năng cốt lõi như quản lý món, quản lý đơn hàng, nhập hàng, quản lý khách hàng và nhân viên, cùng các màn hình thao tác cho nghiệp vụ bán hàng. Quá trình triển khai giúp nhóm hiểu rõ hơn về cách tổ chức kiến trúc theo tầng (UI, Business, DataAccess), cách kết nối và thao tác cơ sở dữ liệu, cũng như cách thiết kế luồng nghiệp vụ phù hợp với thực tế cửa hàng. Dù còn nhiều phần cần hoàn thiện, sản phẩm hiện tại đã thể hiện được quy trình vận hành chính và có thể dùng để kiểm thử, lấy phản hồi từ người dùng.
+Trong phạm vi môn học, nhóm đã xây dựng được một hệ thống quản lý cửa hàng đồ ăn nhanh với các chức năng cốt lõi như quản lý món, quản lý đơn hàng, nhập hàng, quản lý khách hàng và nhân viên, cùng các màn hình thao tác cho nghiệp vụ bán hàng.
 
-Nhóm rút ra rằng việc phân chia công việc, thống nhất quy ước đặt tên và quy trình làm việc (review, test, cập nhật dữ liệu mẫu) ảnh hưởng rất lớn đến chất lượng sản phẩm. Một số hạn chế hiện tại là giao diện chưa đồng nhất hoàn toàn, một vài màn hình còn đang sửa (như Hóa đơn), và dữ liệu ràng buộc chưa được chuẩn hóa đầy đủ. Tuy vậy, dự án là nền tảng tốt để nhóm tiếp tục phát triển, mở rộng tính năng và hoàn thiện trải nghiệm người dùng.
+Quá trình triển khai giúp nhóm hiểu rõ hơn về cách tổ chức kiến trúc theo tầng (UI, Business, DataAccess), cách kết nối và thao tác cơ sở dữ liệu, cũng như cách thiết kế luồng nghiệp vụ phù hợp với thực tế cửa hàng. Dù còn nhiều phần cần hoàn thiện, sản phẩm hiện tại đã thể hiện được quy trình vận hành chính và có thể dùng để kiểm thử, lấy phản hồi từ người dùng.
+
+Nhóm rút ra rằng việc phân chia công việc, thống nhất quy ước đặt tên và quy trình làm việc (review, test, cập nhật dữ liệu mẫu) ảnh hưởng rất lớn đến chất lượng sản phẩm.
+
+Một số hạn chế hiện tại là giao diện chưa đồng nhất hoàn toàn, một vài màn hình còn đang sửa (như Hóa đơn), và dữ liệu ràng buộc chưa được chuẩn hóa đầy đủ.
+
+Tuy vậy, dự án là nền tảng tốt để nhóm tiếp tục phát triển, mở rộng tính năng và hoàn thiện trải nghiệm người dùng.
 
 ## Hướng phát triển
 Trong thời gian tới, nhóm định hướng cải tiến theo các hướng sau để sản phẩm thực tế hơn và dễ triển khai:
