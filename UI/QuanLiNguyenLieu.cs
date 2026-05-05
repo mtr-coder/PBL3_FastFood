@@ -148,10 +148,20 @@ namespace PBL3
             {
                 return;
             }
+
+            // Kiểm tra trùng tên nguyên liệu
+            string tenNL = txtTenNL.Text.Trim();
+            if (_nguyenLieuTable is not null && _nguyenLieuTable.AsEnumerable().Any(r => 
+                string.Equals(Convert.ToString(r["TenNL"]), tenNL, StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show($"Nguyên liệu '{tenNL}' đã tồn tại.", "Trùng dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
                 _nguyenLieuService.Add(
-                    txtTenNL.Text,
+                    tenNL,
                     NormalizeDonViTinh(Convert.ToString(_cboDonViTinh.SelectedItem)),
                     ParseGiaNhapOrThrow());
 
@@ -172,11 +182,27 @@ namespace PBL3
                 return;
             }
 
+            // Kiểm tra trùng tên nguyên liệu (loại trừ chính nó)
+            string tenNL = txtTenNL.Text.Trim();
+            string maNlHienTai = _selectedMaNlDbValue ?? txtMaNL.Text.Trim();
+            
+            if (_nguyenLieuTable is not null && _nguyenLieuTable.AsEnumerable().Any(r =>
+            {
+                string maNl = Convert.ToString(r["MaNL"]) ?? string.Empty;
+                string ten = Convert.ToString(r["TenNL"]) ?? string.Empty;
+                return !string.Equals(maNl, maNlHienTai, StringComparison.OrdinalIgnoreCase) && 
+                       string.Equals(ten, tenNL, StringComparison.OrdinalIgnoreCase);
+            }))
+            {
+                MessageBox.Show($"Nguyên liệu '{tenNL}' đã tồn tại.", "Trùng dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
                 int rows = _nguyenLieuService.Update(
-                    _selectedMaNlDbValue ?? txtMaNL.Text.Trim(),
-                    txtTenNL.Text,
+                    maNlHienTai,
+                    tenNL,
                     NormalizeDonViTinh(Convert.ToString(_cboDonViTinh.SelectedItem)),
                     ParseGiaNhapOrThrow(),
                     _numNguongToiThieu.Value);

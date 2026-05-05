@@ -10,7 +10,7 @@ namespace PBL3
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             // Start the application with the login form.
-            Application.Run(new QuanLiNhanVien());
+            Application.Run(new TrangDangNhap());
         }
     }
 }

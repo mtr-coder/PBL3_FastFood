@@ -1107,52 +1107,30 @@ namespace PBL3
                 _bhBtnTraCuuKhachHang.Enabled = linked;
             }
 
-            if (linked)
+            if (!linked)
             {
-                int diem = GetSelectedKhachHangPointsData();
-                _bhLblDiemKhach.Text = $"Điểm tích lũy: {diem}";
-                UpdateHangInfoUi();
-                UpdateDiemDungMax(diem);
-            }
-            else
-            {
+                // Reset all customer info when unchecked
                 _bhLblDiemKhach.Text = "Điểm tích lũy: 0";
-                UpdateHangInfoUi();
-                UpdateDiemDungMax(0);
-            }
-        }
-
-        private void UpdateHangInfoUi()
-        {
-            if (_bhLblHangKhach is null || _bhLblGiamHang is null)
-            {
-                return;
-            }
-
-            if (_bhChkKhongLienKetKhach?.Checked != false || _bhCboKhachHang?.SelectedItem is not DataRowView rv)
-            {
-                _bhLblHangKhach.Text = "Hạng: ";
-                _bhLblGiamHang.Text = "Giảm: 0%";
-                return;
-            }
-
-            string tenHang = Convert.ToString(rv["TenHang"]) ?? string.Empty;
-            int phanTram = Convert.ToInt32(rv["PhanTramGiam"] ?? 0);
-            _bhLblHangKhach.Text = string.IsNullOrWhiteSpace(tenHang) ? "Hạng: " : $"Hạng: {tenHang}";
-            _bhLblGiamHang.Text = $"Giảm: {phanTram}%";
-        }
-
-        private void UpdateDiemDungMax(int diemHienTai)
-        {
-            if (_bhNudDiemDung is null)
-            {
-                return;
-            }
-
-            _bhNudDiemDung.Maximum = Math.Max(0, diemHienTai);
-            if (_bhNudDiemDung.Value > _bhNudDiemDung.Maximum)
-            {
-                _bhNudDiemDung.Value = _bhNudDiemDung.Maximum;
+                if (_bhLblHangKhach is not null)
+                {
+                    _bhLblHangKhach.Text = "Hạng: ";
+                }
+                if (_bhLblGiamHang is not null)
+                {
+                    _bhLblGiamHang.Text = "Giảm: 0%";
+                }
+                if (_bhNudDiemDung is not null)
+                {
+                    _bhNudDiemDung.Maximum = 0;
+                }
+                if (_bhCboKhachHang is not null)
+                {
+                    try
+                    {
+                        _bhCboKhachHang.SelectedIndex = -1;
+                    }
+                    catch { }
+                }
             }
         }
 
@@ -1240,6 +1218,52 @@ namespace PBL3
             return Convert.ToInt32(rv["DiemTichLuy"] ?? 0);
         }
 
+        private void UpdateCustomerInfoDisplay()
+        {
+            if (_bhChkKhongLienKetKhach?.Checked != false || _bhCboKhachHang?.SelectedItem is not DataRowView rv)
+            {
+                if (_bhLblDiemKhach is not null)
+                {
+                    _bhLblDiemKhach.Text = "Điểm tích lũy: 0";
+                }
+                if (_bhLblHangKhach is not null)
+                {
+                    _bhLblHangKhach.Text = "Hạng: ";
+                }
+                if (_bhLblGiamHang is not null)
+                {
+                    _bhLblGiamHang.Text = "Giảm: 0%";
+                }
+                if (_bhNudDiemDung is not null)
+                {
+                    _bhNudDiemDung.Maximum = 0;
+                }
+                return;
+            }
+
+            int diem = Convert.ToInt32(rv["DiemTichLuy"] ?? 0);
+            if (_bhLblDiemKhach is not null)
+            {
+                _bhLblDiemKhach.Text = $"Điểm tích lũy: {diem}";
+            }
+
+            string tenHang = Convert.ToString(rv["TenHang"]) ?? string.Empty;
+            int phanTram = Convert.ToInt32(rv["PhanTramGiam"] ?? 0);
+            if (_bhLblHangKhach is not null)
+            {
+                _bhLblHangKhach.Text = string.IsNullOrWhiteSpace(tenHang) ? "Hạng: " : $"Hạng: {tenHang}";
+            }
+            if (_bhLblGiamHang is not null)
+            {
+                _bhLblGiamHang.Text = $"Giảm: {phanTram}%";
+            }
+
+            if (_bhNudDiemDung is not null)
+            {
+                _bhNudDiemDung.Maximum = diem;
+            }
+        }
+
         private int? GetSelectedKhachHangIdData()
         {
             if (_bhChkKhongLienKetKhach?.Checked != false || _bhCboKhachHang?.SelectedValue is null)
@@ -1302,12 +1326,7 @@ namespace PBL3
 
         private void BhCboKhachHang_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            if (_bhCboKhachHang?.SelectedItem is DataRowView rv && _bhTxtSdtKhachHang is not null)
-            {
-                _bhTxtSdtKhachHang.Text = Convert.ToString(rv["SDT"]) ?? string.Empty;
-            }
-
-            UpdateKhachHangUiStateData();
+            // Don't auto-load customer info here - only load on explicit lookup
         }
 
         private void BhChkKhongLienKetKhach_CheckedChanged(object? sender, EventArgs e) => UpdateKhachHangUiStateData();
@@ -1374,8 +1393,7 @@ namespace PBL3
 
             _bhCboKhachHang.SelectedValue = matchedRow["MaKH"];
             _bhLblDiemKhach!.Text = $"Điểm tích lũy: {Convert.ToInt32(matchedRow["DiemTichLuy"] ?? 0)}";
-            UpdateHangInfoUi();
-            UpdateDiemDungMax(Convert.ToInt32(matchedRow["DiemTichLuy"] ?? 0));
+            UpdateCustomerInfoDisplay();
         }
 
         private void BhBtnThem_Click(object? sender, EventArgs e)

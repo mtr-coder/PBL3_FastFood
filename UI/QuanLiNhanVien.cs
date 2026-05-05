@@ -769,7 +769,7 @@ namespace PBL3
                 {
                     Text = $"Lịch trực - NV {_txtMaNV.Text}",
                     StartPosition = FormStartPosition.CenterParent,
-                    Size = new Size(760, 460),
+                    Size = new Size(950, 550),
                     MinimizeBox = false,
                     MaximizeBox = false
                 };
@@ -787,25 +787,6 @@ namespace PBL3
                     Width = 190,
                     BackColor = Color.FromArgb(248, 242, 235)
                 };
-
-                Button btnThoat = new Button
-                {
-                    Text = "Thoát",
-                    Size = new Size(70, 24),
-                    FlatStyle = FlatStyle.System,
-                    Location = new Point(12, 14)
-                };
-
-                Button btnThemCa = new Button
-                {
-                    Text = "Thêm ca làm",
-                    Size = new Size(92, 24),
-                    FlatStyle = FlatStyle.System,
-                    Location = new Point(92, 14)
-                };
-
-                pnlActionButtons.Controls.Add(btnThoat);
-                pnlActionButtons.Controls.Add(btnThemCa);
 
                 Label lblTongSoCa = new Label
                 {
@@ -827,11 +808,6 @@ namespace PBL3
                     Location = new Point(380, 17),
                     Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                 };
-
-                pnlSummary.Controls.Add(lblTongSoCa);
-                pnlSummary.Controls.Add(lblTongHeSo);
-                pnlSummary.Controls.Add(lblLuongDuKien);
-                pnlSummary.Controls.Add(pnlActionButtons);
 
                 DataGridView dgv = new DataGridView
                 {
@@ -861,6 +837,7 @@ namespace PBL3
                     }
                 };
 
+                // Now define local functions that use the controls
                 void ReloadSchedule()
                 {
                     DataTable dt = _trangNhanVienService.GetLichTruc(maNv);
@@ -907,170 +884,305 @@ namespace PBL3
                     lblLuongDuKien.Text = $"Tiền lương theo ca: {_lastLuongDuKien:N0} đ";
                 }
 
+                void FilterScheduleByPeriod(string filterType)
+                {
+                    DataTable dt = _trangNhanVienService.GetLichTruc(maNv);
+                    DateTime today = DateTime.Today;
+                    int todayDayOfWeek = (int)today.DayOfWeek;
+                    DateTime startOfWeek = today.AddDays(-todayDayOfWeek);
+                    DateTime startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                    DataView dv = dt.DefaultView;
+
+                    switch (filterType)
+                    {
+                        case "Tháng này":
+                            dv.RowFilter = $"NgayLam >= '{startOfMonth:yyyy-MM-dd}' AND NgayLam <= '{new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month)):yyyy-MM-dd}'";
+                            break;
+                        case "Tháng trước":
+                            DateTime lastMonth = today.AddMonths(-1);
+                            DateTime firstDayLastMonth = new DateTime(lastMonth.Year, lastMonth.Month, 1);
+                            DateTime lastDayLastMonth = new DateTime(lastMonth.Year, lastMonth.Month, DateTime.DaysInMonth(lastMonth.Year, lastMonth.Month));
+                            dv.RowFilter = $"NgayLam >= '{firstDayLastMonth:yyyy-MM-dd}' AND NgayLam <= '{lastDayLastMonth:yyyy-MM-dd}'";
+                            break;
+                        case "Tháng sau":
+                            DateTime nextMonth = today.AddMonths(1);
+                            DateTime firstDayNextMonth = new DateTime(nextMonth.Year, nextMonth.Month, 1);
+                            DateTime lastDayNextMonth = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                            dv.RowFilter = $"NgayLam >= '{firstDayNextMonth:yyyy-MM-dd}' AND NgayLam <= '{lastDayNextMonth:yyyy-MM-dd}'";
+                            break;
+                        case "Tuần này":
+                            DateTime endOfWeek = startOfWeek.AddDays(6);
+                            dv.RowFilter = $"NgayLam >= '{startOfWeek:yyyy-MM-dd}' AND NgayLam <= '{endOfWeek:yyyy-MM-dd}'";
+                            break;
+                        case "Tuần trước":
+                            DateTime startOfLastWeek = startOfWeek.AddDays(-7);
+                            DateTime endOfLastWeek = startOfLastWeek.AddDays(6);
+                            dv.RowFilter = $"NgayLam >= '{startOfLastWeek:yyyy-MM-dd}' AND NgayLam <= '{endOfLastWeek:yyyy-MM-dd}'";
+                            break;
+                        case "Tuần sau":
+                            DateTime startOfNextWeek = startOfWeek.AddDays(7);
+                            DateTime endOfNextWeek = startOfNextWeek.AddDays(6);
+                            dv.RowFilter = $"NgayLam >= '{startOfNextWeek:yyyy-MM-dd}' AND NgayLam <= '{endOfNextWeek:yyyy-MM-dd}'";
+                            break;
+                        default:
+                            dv.RowFilter = "";
+                            break;
+                    }
+
+                    DataTable filteredDt = dv.ToTable();
+                    decimal tongHeSo = filteredDt.Rows.Count > 0 ? filteredDt.AsEnumerable().Sum(r => Convert.ToDecimal(r["HeSoLuong"])) : 0m;
+                    int tongSoCa = filteredDt.Rows.Count;
+                    decimal luongDuKien = tongHeSo * donGiaCaTruc;
+
+                    dgv.DataSource = filteredDt;
+
+                    lblTongSoCa.Text = $"Tổng số ca làm: {tongSoCa}";
+                    lblTongHeSo.Text = $"Tổng hệ số: {tongHeSo:N2}";
+                    lblLuongDuKien.Text = $"Tiền lương theo ca: {luongDuKien:N0} đ";
+                }
+
                 void OpenAddShiftPopup()
                 {
-                    using Form addForm = new Form
+                    using Form addShiftForm = new Form
                     {
-                        Text = "Thêm ca làm",
-                        StartPosition = FormStartPosition.CenterParent,
+                        Text = $"Thêm ca làm - {tenNv}",
                         FormBorderStyle = FormBorderStyle.FixedDialog,
+                        StartPosition = FormStartPosition.CenterParent,
                         MinimizeBox = false,
                         MaximizeBox = false,
-                        ClientSize = new Size(540, 255)
+                        ClientSize = new Size(420, 300)
                     };
 
-                    Panel addBottomBar = new Panel
+                    Label lblEmployee = new Label
                     {
-                        Dock = DockStyle.Bottom,
-                        Height = 38,
-                        BackColor = Color.FromArgb(248, 242, 235)
+                        Text = $"Nhân viên: {tenNv}",
+                        Left = 12,
+                        Top = 15,
+                        AutoSize = true,
+                        Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                     };
 
-                    Panel addButtonArea = new Panel
+                    DateTime today = DateTime.Today;
+                    DateTime monthEnd = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+
+                    Label lblShift = new Label { Text = "Chọn ca:", Left = 12, Top = 45, AutoSize = true };
+                    ComboBox cboShift = new ComboBox
                     {
-                        Dock = DockStyle.Right,
-                        Width = 190,
-                        BackColor = Color.FromArgb(248, 242, 235)
+                        Left = 80,
+                        Top = 42,
+                        Width = 320,
+                        DropDownStyle = ComboBoxStyle.DropDownList
                     };
 
-                    Button btnThoatAdd = new Button
+                    DataTable caTrucTable = _trangNhanVienService.GetCaTruc();
+                    
+                    addShiftForm.Controls.Add(lblShift);
+                    addShiftForm.Controls.Add(cboShift);
+                    
+                    // Use BindingSource for proper data binding
+                    var bindingSource = new BindingSource(caTrucTable, null);
+                    cboShift.DataSource = bindingSource;
+                    cboShift.DisplayMember = "TenCa";
+                    cboShift.ValueMember = "MaCa";
+                    if (caTrucTable.Rows.Count > 0)
                     {
-                        Text = "Thoát",
-                        Size = new Size(70, 24),
-                        Location = new Point(12, 7)
+                        cboShift.SelectedIndex = 0;
+                    }
+
+                    Label lblNote = new Label
+                    {
+                        Text = $"Chọn các thứ để thêm lịch (từ hôm nay đến ngày {monthEnd:dd/MM/yyyy}):",
+                        Left = 12,
+                        Top = 75,
+                        AutoSize = true,
+                        Font = new Font("Segoe UI", 8F)
                     };
-                    Button btnLuu = new Button
+
+                    Panel pnlDays = new Panel { Left = 12, Top = 100, Width = 388, Height = 120, BorderStyle = BorderStyle.FixedSingle };
+
+                    string[] dayNames = { "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật" };
+                    CheckBox[] chkDays = new CheckBox[7];
+
+                    for (int i = 0; i < 7; i++)
                     {
-                        Text = "Lưu",
-                        Size = new Size(75, 24),
-                        Location = new Point(95, 7),
+                        chkDays[i] = new CheckBox
+                        {
+                            Text = dayNames[i],
+                            Left = (i % 4) * 95,
+                            Top = (i / 4) * 25,
+                            AutoSize = true
+                        };
+                        pnlDays.Controls.Add(chkDays[i]);
+                    }
+
+                    Button btnOk = new Button
+                    {
+                        Text = "Thêm",
+                        Left = 232,
+                        Top = 235,
+                        Width = 75,
+                        Height = 24,
                         DialogResult = DialogResult.OK
                     };
-                    btnThoatAdd.Click += (_, _) => addForm.Close();
-                    addButtonArea.Controls.Add(btnThoatAdd);
-                    addButtonArea.Controls.Add(btnLuu);
-                    addBottomBar.Controls.Add(addButtonArea);
 
-                    Label lblNhanVien = new Label { Left = 18, Top = 20, AutoSize = true, Text = "Nhân viên" };
-                    TextBox txtNhanVien = new TextBox
+                    Button btnCancel = new Button
                     {
-                        Left = 110,
-                        Top = 16,
-                        Width = 250,
-                        ReadOnly = true,
-                        Text = !string.IsNullOrWhiteSpace(tenNv) ? tenNv : _txtMaNV.Text
+                        Text = "Thoát",
+                        Left = 312,
+                        Top = 235,
+                        Width = 75,
+                        Height = 24,
+                        DialogResult = DialogResult.Cancel
                     };
 
-                    Label lblCa = new Label { Left = 18, Top = 56, AutoSize = true, Text = "Ca làm" };
-                    ComboBox cboCa = new ComboBox
+                    addShiftForm.Controls.Add(lblEmployee);
+                    addShiftForm.Controls.Add(lblNote);
+                    addShiftForm.Controls.Add(pnlDays);
+                    addShiftForm.Controls.Add(btnOk);
+                    addShiftForm.Controls.Add(btnCancel);
+                    addShiftForm.AcceptButton = btnOk;
+                    addShiftForm.CancelButton = btnCancel;
+
+                    if (addShiftForm.ShowDialog(null) == DialogResult.OK)
                     {
-                        Left = 110,
-                        Top = 52,
-                        Width = 250,
-                        DropDownStyle = ComboBoxStyle.DropDownList,
-                        DisplayMember = "TenCa",
-                        ValueMember = "MaCa",
-                        DataSource = _trangNhanVienService.GetCaTruc()
-                    };
-
-                    Label lblThu = new Label { Left = 18, Top = 92, AutoSize = true, Text = "Chọn thứ" };
-                    CheckBox cb2 = new CheckBox { Left = 110, Top = 90, AutoSize = true, Text = "Thứ 2" };
-                    CheckBox cb3 = new CheckBox { Left = 180, Top = 90, AutoSize = true, Text = "Thứ 3" };
-                    CheckBox cb4 = new CheckBox { Left = 250, Top = 90, AutoSize = true, Text = "Thứ 4" };
-                    CheckBox cb5 = new CheckBox { Left = 320, Top = 90, AutoSize = true, Text = "Thứ 5" };
-                    CheckBox cb6 = new CheckBox { Left = 390, Top = 90, AutoSize = true, Text = "Thứ 6" };
-                    CheckBox cb7 = new CheckBox { Left = 110, Top = 120, AutoSize = true, Text = "Thứ 7" };
-                    CheckBox cbCN = new CheckBox { Left = 180, Top = 120, AutoSize = true, Text = "Chủ nhật" };
-
-                    Label lblInfo = new Label
-                    {
-                        Left = 18,
-                        Top = 155,
-                        AutoSize = true,
-                        ForeColor = Color.DimGray,
-                        Text = "Lịch sẽ được tự động thêm từ hôm nay đến hết tháng theo các thứ đã chọn."
-                    };
-
-                    addForm.Controls.Add(lblNhanVien);
-                    addForm.Controls.Add(txtNhanVien);
-                    addForm.Controls.Add(lblCa);
-                    addForm.Controls.Add(cboCa);
-                    addForm.Controls.Add(lblThu);
-                    addForm.Controls.Add(cb2);
-                    addForm.Controls.Add(cb3);
-                    addForm.Controls.Add(cb4);
-                    addForm.Controls.Add(cb5);
-                    addForm.Controls.Add(cb6);
-                    addForm.Controls.Add(cb7);
-                    addForm.Controls.Add(cbCN);
-                    addForm.Controls.Add(lblInfo);
-                    addForm.Controls.Add(addBottomBar);
-                    addForm.AcceptButton = btnLuu;
-                    addForm.CancelButton = btnThoatAdd;
-
-                    if (addForm.ShowDialog(scheduleForm) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    if (cboCa.SelectedValue is null)
-                    {
-                        MessageBox.Show("Vui lòng chọn ca làm.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    List<DayOfWeek> selectedDays = new List<DayOfWeek>();
-                    if (cb2.Checked) selectedDays.Add(DayOfWeek.Monday);
-                    if (cb3.Checked) selectedDays.Add(DayOfWeek.Tuesday);
-                    if (cb4.Checked) selectedDays.Add(DayOfWeek.Wednesday);
-                    if (cb5.Checked) selectedDays.Add(DayOfWeek.Thursday);
-                    if (cb6.Checked) selectedDays.Add(DayOfWeek.Friday);
-                    if (cb7.Checked) selectedDays.Add(DayOfWeek.Saturday);
-                    if (cbCN.Checked) selectedDays.Add(DayOfWeek.Sunday);
-
-                    if (selectedDays.Count == 0)
-                    {
-                        MessageBox.Show("Vui lòng chọn ít nhất một thứ trong tuần.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    try
-                    {
-                        DateTime from = DateTime.Today;
-                        DateTime to = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
-                        string maCa = Convert.ToString(cboCa.SelectedValue) ?? string.Empty;
-                        int inserted = 0;
-
-                        for (DateTime day = from; day <= to; day = day.AddDays(1))
+                        string? maCa = cboShift.SelectedValue?.ToString();
+                        if (string.IsNullOrWhiteSpace(maCa))
                         {
-                            if (!selectedDays.Contains(day.DayOfWeek))
+                            MessageBox.Show("Vui lòng chọn ca làm.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        bool anyDaySelected = false;
+                        for (int i = 0; i < 7; i++)
+                        {
+                            if (chkDays[i].Checked)
                             {
-                                continue;
+                                anyDaySelected = true;
+                                break;
+                            }
+                        }
+
+                        if (!anyDaySelected)
+                        {
+                            MessageBox.Show("Vui lòng chọn ít nhất một thứ.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        try
+                        {
+                            int addedCount = 0;
+                            int duplicateCount = 0;
+
+                            for (DateTime date = today; date <= monthEnd; date = date.AddDays(1))
+                            {
+                                int dayOfWeek = (int)date.DayOfWeek;
+                                int arrayIndex = dayOfWeek == 0 ? 6 : dayOfWeek - 1;
+
+                                if (arrayIndex >= 0 && arrayIndex < 7 && chkDays[arrayIndex].Checked)
+                                {
+                                    int result = _trangNhanVienService.AddPhanCongCa(maNv, maCa, date);
+                                    if (result > 0)
+                                    {
+                                        addedCount++;
+                                    }
+                                    else
+                                    {
+                                        duplicateCount++;
+                                    }
+                                }
                             }
 
-                            inserted += _trangNhanVienService.AddPhanCongCa(maNv, maCa, day);
-                        }
+                            if (duplicateCount > 0)
+                            {
+                                MessageBox.Show($"Đã thêm {addedCount} lịch. ({duplicateCount} lịch bị trùng lặp)", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else if (addedCount > 0)
+                            {
+                                MessageBox.Show($"Đã thêm {addedCount} lịch thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Không có lịch nào được thêm (tất cả bị trùng lặp).", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
 
-                        if (inserted > 0)
-                        {
-                            MessageBox.Show($"Đã thêm {inserted} lịch trong tháng này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             ReloadSchedule();
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Đã có lịch rồi.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show($"Không thể thêm lịch làm.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Không thể thêm ca làm.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
 
+                Button btnThoat = new Button
+                {
+                    Text = "Thoát",
+                    Size = new Size(70, 24),
+                    FlatStyle = FlatStyle.System,
+                    Location = new Point(12, 14)
+                };
                 btnThoat.Click += (_, _) => scheduleForm.Close();
+
+                Button btnThemCa = new Button
+                {
+                    Text = "Thêm ca làm",
+                    Size = new Size(92, 24),
+                    FlatStyle = FlatStyle.System,
+                    Location = new Point(92, 14)
+                };
                 btnThemCa.Click += (_, _) => OpenAddShiftPopup();
 
+                pnlActionButtons.Controls.Add(btnThoat);
+                pnlActionButtons.Controls.Add(btnThemCa);
+
+                pnlSummary.Controls.Add(lblTongSoCa);
+                pnlSummary.Controls.Add(lblTongHeSo);
+                pnlSummary.Controls.Add(lblLuongDuKien);
+                pnlSummary.Controls.Add(pnlActionButtons);
+
+                Panel pnlFilter = new Panel
+                {
+                    Dock = DockStyle.Top,
+                    Height = 35,
+                    BackColor = Color.FromArgb(248, 242, 235),
+                    Padding = new Padding(12, 5, 12, 5)
+                };
+
+                Label lblFilter = new Label
+                {
+                    Text = "Lọc:",
+                    AutoSize = true,
+                    Location = new Point(12, 8),
+                    Font = new Font("Segoe UI", 9F)
+                };
+
+                ComboBox cboFilter = new ComboBox
+                {
+                    Left = 50,
+                    Top = 5,
+                    Width = 180,
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Items = { "Tất cả", "Tháng này", "Tháng trước", "Tháng sau", "Tuần này", "Tuần trước", "Tuần sau" }
+                };
+                cboFilter.SelectedIndex = 0;
+                cboFilter.SelectedIndexChanged += (_, _) =>
+                {
+                    if (cboFilter.SelectedItem is string selected && selected != "Tất cả")
+                    {
+                        FilterScheduleByPeriod(selected);
+                    }
+                    else
+                    {
+                        ReloadSchedule();
+                    }
+                };
+
+                pnlFilter.Controls.Add(lblFilter);
+                pnlFilter.Controls.Add(cboFilter);
+
                 scheduleForm.Controls.Add(dgv);
+                scheduleForm.Controls.Add(pnlFilter);
                 scheduleForm.Controls.Add(pnlSummary);
                 ReloadSchedule();
                 scheduleForm.ShowDialog(this);
