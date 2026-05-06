@@ -1,5 +1,6 @@
 using PBL3.DataAccess;
 using PBL3.Models;
+using System.Data;
 
 namespace PBL3.Business
 {
@@ -25,6 +26,21 @@ namespace PBL3.Business
         public List<string> GetHistory(int maNv)
         {
             return _repository.GetHistory(maNv);
+        }
+
+        public int GetApprovedLeaveCountForMonth(int maNv, DateTime month)
+        {
+            return _repository.GetApprovedLeaveCountForMonth(maNv, month);
+        }
+
+        public DataTable GetStaffingCounts(DateTime tuNgay, DateTime denNgay)
+        {
+            return _repository.GetStaffingCounts(tuNgay, denNgay);
+        }
+
+        public DataTable GetCaTruc()
+        {
+            return _repository.GetCaTruc();
         }
 
         public void ApproveRequest(HopThuYeuCauItem item, string phanHoi)

@@ -86,6 +86,21 @@ namespace PBL3.Business
             return _repository.GetCaTruc();
         }
 
+        public int GetApprovedLeaveCountForMonth(int maNv, DateTime month)
+        {
+            return _repository.GetApprovedLeaveCountForMonth(maNv, month);
+        }
+
+        public DataTable GetStaffingCounts(DateTime tuNgay, DateTime denNgay)
+        {
+            return _repository.GetStaffingCounts(tuNgay, denNgay);
+        }
+
+        public DataTable GetPhanCongCaRange(string maNv, DateTime tuNgay, DateTime denNgay)
+        {
+            return _repository.GetPhanCongCaRange(maNv, tuNgay, denNgay);
+        }
+
         public int AddPhanCongCa(string maNv, string maCa, DateTime ngayLam)
         {
             return _repository.AddPhanCongCa(maNv.Trim(), maCa.Trim(), ngayLam);

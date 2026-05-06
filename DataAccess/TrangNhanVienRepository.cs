@@ -286,7 +286,7 @@ ORDER BY pc.NgayLam DESC, pc.MaCa";
         public DataTable GetCaTruc()
         {
             const string sql = @"
-SELECT MaCa, TenCa, GioBatDau, GioKetThuc, HeSoLuong
+SELECT MaCa, TenCa, GioBatDau, GioKetThuc, HeSoLuong, SoNguoiToiThieu
 FROM dbo.CA_TRUC
 ORDER BY MaCa";
 
@@ -300,29 +300,130 @@ ORDER BY MaCa";
 
         public int AddPhanCongCa(string maNv, string maCa, DateTime ngayLam)
         {
-            const string sql = @"
-IF EXISTS (
-    SELECT 1
-    FROM dbo.PHAN_CONG_CA
-    WHERE MaNV = @MaNV AND NgayLam = @NgayLam
-)
-BEGIN
-    SELECT 0;
-    RETURN;
-END
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
 
+            string newShiftName = string.Empty;
+            using (SqlCommand cmdShift = new SqlCommand("SELECT TenCa FROM dbo.CA_TRUC WHERE MaCa = @MaCa", conn))
+            {
+                cmdShift.Parameters.Add("@MaCa", SqlDbType.VarChar, 20).Value = maCa;
+                newShiftName = Convert.ToString(cmdShift.ExecuteScalar()) ?? string.Empty;
+            }
+
+            List<(string MaCa, string TenCa)> existing = new();
+            using (SqlCommand cmdExisting = new SqlCommand(@"
+SELECT ct.MaCa, ct.TenCa
+FROM dbo.PHAN_CONG_CA pc
+INNER JOIN dbo.CA_TRUC ct ON ct.MaCa = pc.MaCa
+WHERE pc.MaNV = @MaNV AND pc.NgayLam = @NgayLam", conn))
+            {
+                cmdExisting.Parameters.Add("@MaNV", SqlDbType.VarChar, 20).Value = maNv;
+                cmdExisting.Parameters.Add("@NgayLam", SqlDbType.Date).Value = ngayLam.Date;
+                using SqlDataReader rd = cmdExisting.ExecuteReader();
+                while (rd.Read())
+                {
+                    existing.Add((Convert.ToString(rd[0]) ?? string.Empty, Convert.ToString(rd[1]) ?? string.Empty));
+                }
+            }
+
+            bool IsShift(string name, string keyword)
+                => name.Contains(keyword, StringComparison.OrdinalIgnoreCase);
+
+            bool newIsFull = IsShift(newShiftName, "Full");
+            bool newIsSang = IsShift(newShiftName, "Sáng") || IsShift(newShiftName, "Sang");
+            bool newIsChieu = IsShift(newShiftName, "Chiều") || IsShift(newShiftName, "Chieu");
+
+            foreach (var (existingMaCa, existingName) in existing)
+            {
+                if (string.Equals(existingMaCa, maCa, StringComparison.OrdinalIgnoreCase))
+                {
+                    return 0;
+                }
+
+                bool existingIsFull = IsShift(existingName, "Full");
+                bool existingIsSang = IsShift(existingName, "Sáng") || IsShift(existingName, "Sang");
+                bool existingIsChieu = IsShift(existingName, "Chiều") || IsShift(existingName, "Chieu");
+
+                if ((newIsFull && (existingIsSang || existingIsChieu))
+                    || (existingIsFull && (newIsSang || newIsChieu)))
+                {
+                    return 0;
+                }
+            }
+
+            using SqlCommand cmdInsert = new SqlCommand(@"
 INSERT INTO dbo.PHAN_CONG_CA (MaNV, MaCa, NgayLam)
 VALUES (@MaNV, @MaCa, @NgayLam);
-SELECT 1;";
+SELECT 1;", conn);
+            cmdInsert.Parameters.Add("@MaNV", SqlDbType.VarChar, 20).Value = maNv;
+            cmdInsert.Parameters.Add("@MaCa", SqlDbType.VarChar, 20).Value = maCa;
+            cmdInsert.Parameters.Add("@NgayLam", SqlDbType.Date).Value = ngayLam.Date;
+            object? result = cmdInsert.ExecuteScalar();
+            return result is null || result == DBNull.Value ? 0 : Convert.ToInt32(result);
+        }
+
+        public int GetApprovedLeaveCountForMonth(int maNv, DateTime month)
+        {
+            const string sql = @"
+SELECT COALESCE(SUM(DATEDIFF(DAY, COALESCE(TuNgay, NgayGui), COALESCE(DenNgay, NgayGui)) + 1), 0)
+FROM dbo.YEU_CAU
+WHERE MaNV = @MaNV
+  AND TrangThai = 1
+  AND YEAR(COALESCE(TuNgay, NgayGui)) = @Year
+  AND MONTH(COALESCE(TuNgay, NgayGui)) = @Month
+  AND LoaiYeuCau = N'Nghỉ phép'";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaNV", SqlDbType.Int).Value = maNv;
+            cmd.Parameters.Add("@Year", SqlDbType.Int).Value = month.Year;
+            cmd.Parameters.Add("@Month", SqlDbType.Int).Value = month.Month;
+            conn.Open();
+            return Convert.ToInt32(cmd.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+        }
+
+        public DataTable GetStaffingCounts(DateTime tuNgay, DateTime denNgay)
+        {
+            const string sql = @"
+SELECT NgayLam,
+       SUM(CASE WHEN MaCa = 1 THEN 1 ELSE 0 END) AS SoSang,
+       SUM(CASE WHEN MaCa = 2 THEN 1 ELSE 0 END) AS SoChieu,
+       SUM(CASE WHEN MaCa = 3 THEN 1 ELSE 0 END) AS SoToi,
+       SUM(CASE WHEN MaCa = 4 THEN 1 ELSE 0 END) AS SoFull
+FROM dbo.PHAN_CONG_CA
+WHERE NgayLam >= @TuNgay AND NgayLam <= @DenNgay
+GROUP BY NgayLam";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@TuNgay", SqlDbType.Date).Value = tuNgay.Date;
+            cmd.Parameters.Add("@DenNgay", SqlDbType.Date).Value = denNgay.Date;
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+
+        public DataTable GetPhanCongCaRange(string maNv, DateTime tuNgay, DateTime denNgay)
+        {
+            const string sql = @"
+SELECT pc.MaCa, ct.TenCa, pc.NgayLam
+FROM dbo.PHAN_CONG_CA pc
+INNER JOIN dbo.CA_TRUC ct ON ct.MaCa = pc.MaCa
+WHERE pc.MaNV = @MaNV
+  AND pc.NgayLam >= @TuNgay
+  AND pc.NgayLam <= @DenNgay
+ORDER BY pc.NgayLam";
 
             using SqlConnection conn = DbHelper.GetConnection();
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.Add("@MaNV", SqlDbType.VarChar, 20).Value = maNv;
-            cmd.Parameters.Add("@MaCa", SqlDbType.VarChar, 20).Value = maCa;
-            cmd.Parameters.Add("@NgayLam", SqlDbType.Date).Value = ngayLam.Date;
-            conn.Open();
-            object? result = cmd.ExecuteScalar();
-            return result is null || result == DBNull.Value ? 0 : Convert.ToInt32(result);
+            cmd.Parameters.Add("@TuNgay", SqlDbType.Date).Value = tuNgay.Date;
+            cmd.Parameters.Add("@DenNgay", SqlDbType.Date).Value = denNgay.Date;
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
         }
 
         public int DeletePhanCongCaByLeaveRange(string maNv, DateTime tuNgay, DateTime denNgay)

@@ -2,6 +2,7 @@ using PBL3.DataBase;
 using PBL3.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace PBL3.DataAccess
 {
@@ -95,6 +96,62 @@ ORDER BY NgayGui DESC";
             }
 
             return history;
+        }
+
+        public int GetApprovedLeaveCountForMonth(int maNv, DateTime month)
+        {
+            const string sql = @"
+SELECT COUNT(1)
+FROM dbo.YEU_CAU
+WHERE MaNV = @MaNV
+  AND TrangThai = 1
+  AND YEAR(COALESCE(TuNgay, NgayGui)) = @Year
+  AND MONTH(COALESCE(TuNgay, NgayGui)) = @Month";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@MaNV", maNv);
+            cmd.Parameters.AddWithValue("@Year", month.Year);
+            cmd.Parameters.AddWithValue("@Month", month.Month);
+            conn.Open();
+            return Convert.ToInt32(cmd.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+        }
+
+        public DataTable GetStaffingCounts(DateTime tuNgay, DateTime denNgay)
+        {
+            const string sql = @"
+SELECT NgayLam,
+       SUM(CASE WHEN MaCa = 1 THEN 1 ELSE 0 END) AS SoSang,
+       SUM(CASE WHEN MaCa = 2 THEN 1 ELSE 0 END) AS SoChieu,
+       SUM(CASE WHEN MaCa = 3 THEN 1 ELSE 0 END) AS SoToi,
+       SUM(CASE WHEN MaCa = 4 THEN 1 ELSE 0 END) AS SoFull
+FROM dbo.PHAN_CONG_CA
+WHERE NgayLam >= @TuNgay AND NgayLam <= @DenNgay
+GROUP BY NgayLam";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@TuNgay", SqlDbType.Date).Value = tuNgay.Date;
+            cmd.Parameters.Add("@DenNgay", SqlDbType.Date).Value = denNgay.Date;
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+
+        public DataTable GetCaTruc()
+        {
+            const string sql = @"
+SELECT MaCa, TenCa, GioBatDau, GioKetThuc, HeSoLuong, SoNguoiToiThieu
+FROM dbo.CA_TRUC
+ORDER BY MaCa";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
         }
 
         public void ApproveRequest(int maYeuCau, string phanHoi, bool setNghiViec, int maNv, DateTime? tuNgay, DateTime? denNgay)

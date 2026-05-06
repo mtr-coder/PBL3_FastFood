@@ -54,6 +54,7 @@ namespace PBL3
             lblSdt = new Label();
             _cboChucVu = new ComboBox();
             lblChucVu = new Label();
+            lblLeaveQuota = new Label();
             roundedPanel2 = new RoundedPanel();
             textBox1 = new TextBox();
             pnlDiaChiInput = new RoundedPanel();
@@ -137,10 +138,9 @@ namespace PBL3
             roundedPanel1.Controls.Add(lb_Admin);
             roundedPanel1.Controls.Add(hcnt_Khung);
             roundedPanel1.Controls.Add(hcnt_KhungMenuAD);
-            roundedPanel1.Location = new Point(14, 16);
-            roundedPanel1.Margin = new Padding(3, 4, 3, 4);
+            roundedPanel1.Location = new Point(12, 12);
             roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(1232, 811);
+            roundedPanel1.Size = new Size(1078, 608);
             roundedPanel1.TabIndex = 0;
             roundedPanel1.Paint += roundedPanel1_Paint;
             // 
@@ -148,10 +148,9 @@ namespace PBL3
             // 
             pb_Admin.BackColor = SystemColors.Control;
             pb_Admin.Image = Properties.Resources.nhanvien;
-            pb_Admin.Location = new Point(19, 11);
-            pb_Admin.Margin = new Padding(3, 4, 3, 4);
+            pb_Admin.Location = new Point(17, 8);
             pb_Admin.Name = "pb_Admin";
-            pb_Admin.Size = new Size(51, 51);
+            pb_Admin.Size = new Size(45, 38);
             pb_Admin.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_Admin.TabIndex = 2;
             pb_Admin.TabStop = false;
@@ -162,10 +161,9 @@ namespace PBL3
             btn_DangXuat.BackColor = Color.SandyBrown;
             btn_DangXuat.Controls.Add(lb_DangXuat);
             btn_DangXuat.Font = new Font("Segoe UI", 9F);
-            btn_DangXuat.Location = new Point(194, 16);
-            btn_DangXuat.Margin = new Padding(3, 4, 3, 4);
+            btn_DangXuat.Location = new Point(170, 12);
             btn_DangXuat.Name = "btn_DangXuat";
-            btn_DangXuat.Size = new Size(126, 33);
+            btn_DangXuat.Size = new Size(110, 25);
             btn_DangXuat.TabIndex = 3;
             btn_DangXuat.Click += btn_DangXuat_Click;
             btn_DangXuat.Paint += roundedPanel4_Paint;
@@ -177,9 +175,9 @@ namespace PBL3
             lb_DangXuat.AutoSize = true;
             lb_DangXuat.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lb_DangXuat.ForeColor = SystemColors.ButtonFace;
-            lb_DangXuat.Location = new Point(18, 4);
+            lb_DangXuat.Location = new Point(16, 3);
             lb_DangXuat.Name = "lb_DangXuat";
-            lb_DangXuat.Size = new Size(93, 23);
+            lb_DangXuat.Size = new Size(77, 19);
             lb_DangXuat.TabIndex = 2;
             lb_DangXuat.Text = "Đăng xuất";
             lb_DangXuat.Click += btn_DangXuat_Click;
@@ -190,9 +188,9 @@ namespace PBL3
             // 
             lb_Admin.AutoSize = true;
             lb_Admin.Font = new Font("Segoe UI", 12F);
-            lb_Admin.Location = new Point(66, 16);
+            lb_Admin.Location = new Point(58, 12);
             lb_Admin.Name = "lb_Admin";
-            lb_Admin.Size = new Size(100, 28);
+            lb_Admin.Size = new Size(81, 21);
             lb_Admin.TabIndex = 2;
             lb_Admin.Text = "Nhân viên";
             lb_Admin.Click += label1_Click;
@@ -203,10 +201,9 @@ namespace PBL3
             hcnt_Khung.Controls.Add(lb_QLNhanVienTitle);
             hcnt_Khung.Controls.Add(pnlFormNhanVien);
             hcnt_Khung.Controls.Add(pnlDanhSachNhanVien);
-            hcnt_Khung.Location = new Point(342, 65);
-            hcnt_Khung.Margin = new Padding(3, 4, 3, 4);
+            hcnt_Khung.Location = new Point(299, 49);
             hcnt_Khung.Name = "hcnt_Khung";
-            hcnt_Khung.Size = new Size(870, 717);
+            hcnt_Khung.Size = new Size(761, 538);
             hcnt_Khung.TabIndex = 1;
             // 
             // lb_QLNhanVienTitle
@@ -214,9 +211,9 @@ namespace PBL3
             lb_QLNhanVienTitle.AutoSize = true;
             lb_QLNhanVienTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lb_QLNhanVienTitle.ForeColor = Color.Salmon;
-            lb_QLNhanVienTitle.Location = new Point(364, 8);
+            lb_QLNhanVienTitle.Location = new Point(318, 6);
             lb_QLNhanVienTitle.Name = "lb_QLNhanVienTitle";
-            lb_QLNhanVienTitle.Size = new Size(226, 35);
+            lb_QLNhanVienTitle.Size = new Size(184, 28);
             lb_QLNhanVienTitle.TabIndex = 4;
             lb_QLNhanVienTitle.Text = "Thông tin cá nhân";
             // 
@@ -234,6 +231,7 @@ namespace PBL3
             pnlFormNhanVien.Controls.Add(lblSdt);
             pnlFormNhanVien.Controls.Add(_cboChucVu);
             pnlFormNhanVien.Controls.Add(lblChucVu);
+            pnlFormNhanVien.Controls.Add(lblLeaveQuota);
             pnlFormNhanVien.Controls.Add(roundedPanel2);
             pnlFormNhanVien.Controls.Add(pnlDiaChiInput);
             pnlFormNhanVien.Controls.Add(label1);
@@ -245,19 +243,22 @@ namespace PBL3
             pnlFormNhanVien.Controls.Add(pnlMaNVInput);
             pnlFormNhanVien.Controls.Add(lblMaNV);
             pnlFormNhanVien.CornerRadius = 16;
-            pnlFormNhanVien.Location = new Point(18, 52);
+            pnlFormNhanVien.Location = new Point(16, 39);
+            pnlFormNhanVien.Margin = new Padding(3, 2, 3, 2);
             pnlFormNhanVien.Name = "pnlFormNhanVien";
-            pnlFormNhanVien.Size = new Size(834, 640);
+            pnlFormNhanVien.Size = new Size(730, 480);
             pnlFormNhanVien.TabIndex = 5;
+            pnlFormNhanVien.Paint += pnlFormNhanVien_Paint;
             // 
             // _btnLamMoi
             // 
             _btnLamMoi.BackColor = Color.Peru;
             _btnLamMoi.Controls.Add(lblBtnLamMoi);
             _btnLamMoi.CornerRadius = 10;
-            _btnLamMoi.Location = new Point(742, 225);
+            _btnLamMoi.Location = new Point(649, 157);
+            _btnLamMoi.Margin = new Padding(3, 2, 3, 2);
             _btnLamMoi.Name = "_btnLamMoi";
-            _btnLamMoi.Size = new Size(86, 32);
+            _btnLamMoi.Size = new Size(75, 24);
             _btnLamMoi.TabIndex = 20;
             _btnLamMoi.Click += BtnLamMoi_Click;
             // 
@@ -266,9 +267,9 @@ namespace PBL3
             lblBtnLamMoi.AutoSize = true;
             lblBtnLamMoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblBtnLamMoi.ForeColor = Color.White;
-            lblBtnLamMoi.Location = new Point(2, 3);
+            lblBtnLamMoi.Location = new Point(2, 2);
             lblBtnLamMoi.Name = "lblBtnLamMoi";
-            lblBtnLamMoi.Size = new Size(81, 23);
+            lblBtnLamMoi.Size = new Size(67, 19);
             lblBtnLamMoi.TabIndex = 0;
             lblBtnLamMoi.Text = "Làm mới";
             lblBtnLamMoi.Click += BtnLamMoi_Click;
@@ -280,14 +281,15 @@ namespace PBL3
             dgvLichSuYeuCau.BackgroundColor = Color.WhiteSmoke;
             dgvLichSuYeuCau.BorderStyle = BorderStyle.None;
             dgvLichSuYeuCau.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLichSuYeuCau.Location = new Point(33, 279);
+            dgvLichSuYeuCau.Location = new Point(29, 217);
+            dgvLichSuYeuCau.Margin = new Padding(3, 2, 3, 2);
             dgvLichSuYeuCau.MultiSelect = false;
             dgvLichSuYeuCau.Name = "dgvLichSuYeuCau";
             dgvLichSuYeuCau.ReadOnly = true;
             dgvLichSuYeuCau.RowHeadersVisible = false;
             dgvLichSuYeuCau.RowHeadersWidth = 51;
             dgvLichSuYeuCau.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLichSuYeuCau.Size = new Size(795, 257);
+            dgvLichSuYeuCau.Size = new Size(696, 185);
             dgvLichSuYeuCau.TabIndex = 35;
             // 
             // pnlSdtInput
@@ -295,9 +297,10 @@ namespace PBL3
             pnlSdtInput.BackColor = Color.Bisque;
             pnlSdtInput.Controls.Add(_txtSdt);
             pnlSdtInput.CornerRadius = 8;
-            pnlSdtInput.Location = new Point(33, 125);
+            pnlSdtInput.Location = new Point(29, 94);
+            pnlSdtInput.Margin = new Padding(3, 2, 3, 2);
             pnlSdtInput.Name = "pnlSdtInput";
-            pnlSdtInput.Size = new Size(137, 33);
+            pnlSdtInput.Size = new Size(120, 25);
             pnlSdtInput.TabIndex = 25;
             pnlSdtInput.Paint += pnlSdtInput_Paint;
             // 
@@ -305,9 +308,10 @@ namespace PBL3
             // 
             _txtSdt.BackColor = Color.Bisque;
             _txtSdt.BorderStyle = BorderStyle.None;
-            _txtSdt.Location = new Point(10, 5);
+            _txtSdt.Location = new Point(9, 4);
+            _txtSdt.Margin = new Padding(3, 2, 3, 2);
             _txtSdt.Name = "_txtSdt";
-            _txtSdt.Size = new Size(197, 20);
+            _txtSdt.Size = new Size(172, 16);
             _txtSdt.TabIndex = 7;
             // 
             // _btnXemLichTruc
@@ -315,10 +319,9 @@ namespace PBL3
             _btnXemLichTruc.BackColor = Color.Peru;
             _btnXemLichTruc.Controls.Add(_lblBtnXemLichTruc);
             _btnXemLichTruc.CornerRadius = 10;
-            _btnXemLichTruc.Location = new Point(177, 220);
-            _btnXemLichTruc.Margin = new Padding(3, 4, 3, 4);
+            _btnXemLichTruc.Location = new Point(155, 153);
             _btnXemLichTruc.Name = "_btnXemLichTruc";
-            _btnXemLichTruc.Size = new Size(138, 37);
+            _btnXemLichTruc.Size = new Size(121, 28);
             _btnXemLichTruc.TabIndex = 31;
             _btnXemLichTruc.Click += BtnXemLichTruc_Click;
             // 
@@ -327,9 +330,9 @@ namespace PBL3
             _lblBtnXemLichTruc.AutoSize = true;
             _lblBtnXemLichTruc.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             _lblBtnXemLichTruc.ForeColor = Color.White;
-            _lblBtnXemLichTruc.Location = new Point(10, 6);
+            _lblBtnXemLichTruc.Location = new Point(9, 4);
             _lblBtnXemLichTruc.Name = "_lblBtnXemLichTruc";
-            _lblBtnXemLichTruc.Size = new Size(117, 23);
+            _lblBtnXemLichTruc.Size = new Size(97, 19);
             _lblBtnXemLichTruc.TabIndex = 0;
             _lblBtnXemLichTruc.Text = "Xem lịch trực";
             _lblBtnXemLichTruc.Click += BtnXemLichTruc_Click;
@@ -339,9 +342,10 @@ namespace PBL3
             _btnSua.BackColor = Color.SandyBrown;
             _btnSua.Controls.Add(lblBtnSua);
             _btnSua.CornerRadius = 10;
-            _btnSua.Location = new Point(631, 225);
+            _btnSua.Location = new Point(558, 157);
+            _btnSua.Margin = new Padding(3, 2, 3, 2);
             _btnSua.Name = "_btnSua";
-            _btnSua.Size = new Size(86, 32);
+            _btnSua.Size = new Size(75, 24);
             _btnSua.TabIndex = 18;
             _btnSua.Click += BtnSua_Click;
             // 
@@ -350,9 +354,9 @@ namespace PBL3
             lblBtnSua.AutoSize = true;
             lblBtnSua.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblBtnSua.ForeColor = Color.White;
-            lblBtnSua.Location = new Point(24, 3);
+            lblBtnSua.Location = new Point(21, 2);
             lblBtnSua.Name = "lblBtnSua";
-            lblBtnSua.Size = new Size(40, 23);
+            lblBtnSua.Size = new Size(34, 19);
             lblBtnSua.TabIndex = 0;
             lblBtnSua.Text = "Sửa";
             lblBtnSua.Click += BtnSua_Click;
@@ -362,10 +366,9 @@ namespace PBL3
             _btnDatLaiMatKhau.BackColor = Color.SandyBrown;
             _btnDatLaiMatKhau.Controls.Add(_lblBtnDatLaiMatKhau);
             _btnDatLaiMatKhau.CornerRadius = 10;
-            _btnDatLaiMatKhau.Location = new Point(33, 220);
-            _btnDatLaiMatKhau.Margin = new Padding(3, 4, 3, 4);
+            _btnDatLaiMatKhau.Location = new Point(29, 153);
             _btnDatLaiMatKhau.Name = "_btnDatLaiMatKhau";
-            _btnDatLaiMatKhau.Size = new Size(118, 37);
+            _btnDatLaiMatKhau.Size = new Size(103, 28);
             _btnDatLaiMatKhau.TabIndex = 30;
             _btnDatLaiMatKhau.Click += BtnDatLaiMatKhau_Click;
             // 
@@ -374,9 +377,9 @@ namespace PBL3
             _lblBtnDatLaiMatKhau.AutoSize = true;
             _lblBtnDatLaiMatKhau.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             _lblBtnDatLaiMatKhau.ForeColor = Color.White;
-            _lblBtnDatLaiMatKhau.Location = new Point(11, 7);
+            _lblBtnDatLaiMatKhau.Location = new Point(10, 5);
             _lblBtnDatLaiMatKhau.Name = "_lblBtnDatLaiMatKhau";
-            _lblBtnDatLaiMatKhau.Size = new Size(95, 23);
+            _lblBtnDatLaiMatKhau.Size = new Size(78, 19);
             _lblBtnDatLaiMatKhau.TabIndex = 0;
             _lblBtnDatLaiMatKhau.Text = "Đặt lại MK";
             _lblBtnDatLaiMatKhau.Click += BtnDatLaiMatKhau_Click;
@@ -387,9 +390,10 @@ namespace PBL3
             _btnYeuCauNghiPhep.FlatStyle = FlatStyle.Flat;
             _btnYeuCauNghiPhep.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             _btnYeuCauNghiPhep.ForeColor = Color.White;
-            _btnYeuCauNghiPhep.Location = new Point(43, 552);
+            _btnYeuCauNghiPhep.Location = new Point(38, 414);
+            _btnYeuCauNghiPhep.Margin = new Padding(3, 2, 3, 2);
             _btnYeuCauNghiPhep.Name = "_btnYeuCauNghiPhep";
-            _btnYeuCauNghiPhep.Size = new Size(189, 60);
+            _btnYeuCauNghiPhep.Size = new Size(165, 45);
             _btnYeuCauNghiPhep.TabIndex = 33;
             _btnYeuCauNghiPhep.Text = "Yêu cầu nghỉ phép";
             _btnYeuCauNghiPhep.UseVisualStyleBackColor = false;
@@ -401,9 +405,10 @@ namespace PBL3
             _btnYeuCauNghiHan.FlatStyle = FlatStyle.Flat;
             _btnYeuCauNghiHan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             _btnYeuCauNghiHan.ForeColor = Color.White;
-            _btnYeuCauNghiHan.Location = new Point(638, 552);
+            _btnYeuCauNghiHan.Location = new Point(558, 414);
+            _btnYeuCauNghiHan.Margin = new Padding(3, 2, 3, 2);
             _btnYeuCauNghiHan.Name = "_btnYeuCauNghiHan";
-            _btnYeuCauNghiHan.Size = new Size(178, 60);
+            _btnYeuCauNghiHan.Size = new Size(156, 45);
             _btnYeuCauNghiHan.TabIndex = 34;
             _btnYeuCauNghiHan.Text = "Yêu cầu nghỉ hẳn";
             _btnYeuCauNghiHan.UseVisualStyleBackColor = false;
@@ -413,9 +418,9 @@ namespace PBL3
             // 
             lblSdt.AutoSize = true;
             lblSdt.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblSdt.Location = new Point(18, 97);
+            lblSdt.Location = new Point(16, 73);
             lblSdt.Name = "lblSdt";
-            lblSdt.Size = new Size(43, 23);
+            lblSdt.Size = new Size(35, 19);
             lblSdt.TabIndex = 6;
             lblSdt.Text = "SĐT";
             // 
@@ -426,38 +431,53 @@ namespace PBL3
             _cboChucVu.Enabled = false;
             _cboChucVu.FlatStyle = FlatStyle.Flat;
             _cboChucVu.FormattingEnabled = true;
-            _cboChucVu.Location = new Point(696, 44);
+            _cboChucVu.Location = new Point(609, 33);
+            _cboChucVu.Margin = new Padding(3, 2, 3, 2);
             _cboChucVu.Name = "_cboChucVu";
-            _cboChucVu.Size = new Size(92, 28);
+            _cboChucVu.Size = new Size(81, 23);
             _cboChucVu.TabIndex = 15;
             // 
             // lblChucVu
             // 
             lblChucVu.AutoSize = true;
             lblChucVu.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblChucVu.Location = new Point(663, 16);
+            lblChucVu.Location = new Point(580, 12);
             lblChucVu.Name = "lblChucVu";
-            lblChucVu.Size = new Size(74, 23);
+            lblChucVu.Size = new Size(62, 19);
             lblChucVu.TabIndex = 14;
             lblChucVu.Text = "Chức vụ";
+            // 
+            // lblLeaveQuota
+            // 
+            lblLeaveQuota.BackColor = Color.FromArgb(248, 242, 235);
+            lblLeaveQuota.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblLeaveQuota.ForeColor = Color.DimGray;
+            lblLeaveQuota.Location = new Point(29, 190);
+            lblLeaveQuota.Name = "lblLeaveQuota";
+            lblLeaveQuota.Size = new Size(260, 25);
+            lblLeaveQuota.TabIndex = 36;
+            lblLeaveQuota.Text = "Số ngày đã nghỉ tháng này: 0/3";
+            lblLeaveQuota.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // roundedPanel2
             // 
             roundedPanel2.BackColor = Color.Bisque;
             roundedPanel2.Controls.Add(textBox1);
             roundedPanel2.CornerRadius = 8;
-            roundedPanel2.Location = new Point(235, 125);
+            roundedPanel2.Location = new Point(206, 94);
+            roundedPanel2.Margin = new Padding(3, 2, 3, 2);
             roundedPanel2.Name = "roundedPanel2";
-            roundedPanel2.Size = new Size(239, 33);
+            roundedPanel2.Size = new Size(209, 25);
             roundedPanel2.TabIndex = 26;
             // 
             // textBox1
             // 
             textBox1.BackColor = Color.Bisque;
             textBox1.BorderStyle = BorderStyle.None;
-            textBox1.Location = new Point(13, 5);
+            textBox1.Location = new Point(11, 4);
+            textBox1.Margin = new Padding(3, 2, 3, 2);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(211, 20);
+            textBox1.Size = new Size(185, 16);
             textBox1.TabIndex = 9;
             // 
             // pnlDiaChiInput
@@ -465,27 +485,29 @@ namespace PBL3
             pnlDiaChiInput.BackColor = Color.Bisque;
             pnlDiaChiInput.Controls.Add(_txtDiaChi);
             pnlDiaChiInput.CornerRadius = 8;
-            pnlDiaChiInput.Location = new Point(550, 125);
+            pnlDiaChiInput.Location = new Point(481, 94);
+            pnlDiaChiInput.Margin = new Padding(3, 2, 3, 2);
             pnlDiaChiInput.Name = "pnlDiaChiInput";
-            pnlDiaChiInput.Size = new Size(278, 33);
+            pnlDiaChiInput.Size = new Size(243, 25);
             pnlDiaChiInput.TabIndex = 26;
             // 
             // _txtDiaChi
             // 
             _txtDiaChi.BackColor = Color.Bisque;
             _txtDiaChi.BorderStyle = BorderStyle.None;
-            _txtDiaChi.Location = new Point(13, 5);
+            _txtDiaChi.Location = new Point(11, 4);
+            _txtDiaChi.Margin = new Padding(3, 2, 3, 2);
             _txtDiaChi.Name = "_txtDiaChi";
-            _txtDiaChi.Size = new Size(207, 20);
+            _txtDiaChi.Size = new Size(181, 16);
             _txtDiaChi.TabIndex = 9;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            label1.Location = new Point(210, 97);
+            label1.Location = new Point(184, 73);
             label1.Name = "label1";
-            label1.Size = new Size(54, 23);
+            label1.Size = new Size(45, 19);
             label1.TabIndex = 8;
             label1.Text = "Email";
             label1.Click += lblDiaChi_Click;
@@ -494,9 +516,9 @@ namespace PBL3
             // 
             lblDiaChi.AutoSize = true;
             lblDiaChi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblDiaChi.Location = new Point(513, 97);
+            lblDiaChi.Location = new Point(449, 73);
             lblDiaChi.Name = "lblDiaChi";
-            lblDiaChi.Size = new Size(65, 23);
+            lblDiaChi.Size = new Size(54, 19);
             lblDiaChi.TabIndex = 8;
             lblDiaChi.Text = "Địa chỉ";
             lblDiaChi.Click += lblDiaChi_Click;
@@ -506,18 +528,19 @@ namespace PBL3
             _dtpNgaySinh.CalendarMonthBackground = Color.Bisque;
             _dtpNgaySinh.CustomFormat = "dd/MM/yyyy";
             _dtpNgaySinh.Format = DateTimePickerFormat.Custom;
-            _dtpNgaySinh.Location = new Point(513, 44);
+            _dtpNgaySinh.Location = new Point(449, 33);
+            _dtpNgaySinh.Margin = new Padding(3, 2, 3, 2);
             _dtpNgaySinh.Name = "_dtpNgaySinh";
-            _dtpNgaySinh.Size = new Size(108, 27);
+            _dtpNgaySinh.Size = new Size(95, 23);
             _dtpNgaySinh.TabIndex = 5;
             // 
             // lblNgaySinh
             // 
             lblNgaySinh.AutoSize = true;
             lblNgaySinh.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblNgaySinh.Location = new Point(467, 16);
+            lblNgaySinh.Location = new Point(409, 12);
             lblNgaySinh.Name = "lblNgaySinh";
-            lblNgaySinh.Size = new Size(89, 23);
+            lblNgaySinh.Size = new Size(75, 19);
             lblNgaySinh.TabIndex = 4;
             lblNgaySinh.Text = "Ngày sinh";
             lblNgaySinh.Click += lblNgaySinh_Click;
@@ -527,27 +550,29 @@ namespace PBL3
             pnlHoTenInput.BackColor = Color.Bisque;
             pnlHoTenInput.Controls.Add(_txtHoTen);
             pnlHoTenInput.CornerRadius = 8;
-            pnlHoTenInput.Location = new Point(210, 44);
+            pnlHoTenInput.Location = new Point(184, 33);
+            pnlHoTenInput.Margin = new Padding(3, 2, 3, 2);
             pnlHoTenInput.Name = "pnlHoTenInput";
-            pnlHoTenInput.Size = new Size(219, 33);
+            pnlHoTenInput.Size = new Size(192, 25);
             pnlHoTenInput.TabIndex = 24;
             // 
             // _txtHoTen
             // 
             _txtHoTen.BackColor = Color.Bisque;
             _txtHoTen.BorderStyle = BorderStyle.None;
-            _txtHoTen.Location = new Point(11, 5);
+            _txtHoTen.Location = new Point(10, 4);
+            _txtHoTen.Margin = new Padding(3, 2, 3, 2);
             _txtHoTen.Name = "_txtHoTen";
-            _txtHoTen.Size = new Size(197, 20);
+            _txtHoTen.Size = new Size(172, 16);
             _txtHoTen.TabIndex = 3;
             // 
             // lblHoTen
             // 
             lblHoTen.AutoSize = true;
             lblHoTen.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblHoTen.Location = new Point(185, 16);
+            lblHoTen.Location = new Point(162, 12);
             lblHoTen.Name = "lblHoTen";
-            lblHoTen.Size = new Size(64, 23);
+            lblHoTen.Size = new Size(54, 19);
             lblHoTen.TabIndex = 2;
             lblHoTen.Text = "Họ tên";
             lblHoTen.Click += lblHoTen_Click;
@@ -557,9 +582,10 @@ namespace PBL3
             pnlMaNVInput.BackColor = Color.Gainsboro;
             pnlMaNVInput.Controls.Add(_txtMaNV);
             pnlMaNVInput.CornerRadius = 8;
-            pnlMaNVInput.Location = new Point(33, 44);
+            pnlMaNVInput.Location = new Point(29, 33);
+            pnlMaNVInput.Margin = new Padding(3, 2, 3, 2);
             pnlMaNVInput.Name = "pnlMaNVInput";
-            pnlMaNVInput.Size = new Size(86, 33);
+            pnlMaNVInput.Size = new Size(75, 25);
             pnlMaNVInput.TabIndex = 23;
             // 
             // _txtMaNV
@@ -567,10 +593,11 @@ namespace PBL3
             _txtMaNV.BackColor = Color.Gainsboro;
             _txtMaNV.BorderStyle = BorderStyle.None;
             _txtMaNV.Enabled = false;
-            _txtMaNV.Location = new Point(10, 5);
+            _txtMaNV.Location = new Point(9, 4);
+            _txtMaNV.Margin = new Padding(3, 2, 3, 2);
             _txtMaNV.Name = "_txtMaNV";
             _txtMaNV.ReadOnly = true;
-            _txtMaNV.Size = new Size(65, 20);
+            _txtMaNV.Size = new Size(57, 16);
             _txtMaNV.TabIndex = 1;
             _txtMaNV.TabStop = false;
             // 
@@ -578,9 +605,9 @@ namespace PBL3
             // 
             lblMaNV.AutoSize = true;
             lblMaNV.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblMaNV.Location = new Point(18, 16);
+            lblMaNV.Location = new Point(16, 12);
             lblMaNV.Name = "lblMaNV";
-            lblMaNV.Size = new Size(64, 23);
+            lblMaNV.Size = new Size(54, 19);
             lblMaNV.TabIndex = 0;
             lblMaNV.Text = "Mã NV";
             // 
@@ -591,9 +618,10 @@ namespace PBL3
             pnlDanhSachNhanVien.Controls.Add(_dgvNhanVien);
             pnlDanhSachNhanVien.Controls.Add(lb_DSNhanVien);
             pnlDanhSachNhanVien.CornerRadius = 16;
-            pnlDanhSachNhanVien.Location = new Point(18, 315);
+            pnlDanhSachNhanVien.Location = new Point(16, 236);
+            pnlDanhSachNhanVien.Margin = new Padding(3, 2, 3, 2);
             pnlDanhSachNhanVien.Name = "pnlDanhSachNhanVien";
-            pnlDanhSachNhanVien.Size = new Size(834, 385);
+            pnlDanhSachNhanVien.Size = new Size(730, 289);
             pnlDanhSachNhanVien.TabIndex = 6;
             pnlDanhSachNhanVien.Visible = false;
             // 
@@ -604,9 +632,10 @@ namespace PBL3
             _cboTimTheo.DropDownWidth = 120;
             _cboTimTheo.FormattingEnabled = true;
             _cboTimTheo.Items.AddRange(new object[] { "MãNV", "HọTên", "NgàySinh", "SĐT", "ĐịaChỉ", "ChứcVụ", "TrạngThái" });
-            _cboTimTheo.Location = new Point(217, 12);
+            _cboTimTheo.Location = new Point(190, 9);
+            _cboTimTheo.Margin = new Padding(3, 2, 3, 2);
             _cboTimTheo.Name = "_cboTimTheo";
-            _cboTimTheo.Size = new Size(98, 28);
+            _cboTimTheo.Size = new Size(86, 23);
             _cboTimTheo.TabIndex = 1;
             _cboTimTheo.SelectedIndexChanged += SearchControl_Changed;
             // 
@@ -616,14 +645,15 @@ namespace PBL3
             _dgvNhanVien.BackgroundColor = Color.WhiteSmoke;
             _dgvNhanVien.BorderStyle = BorderStyle.None;
             _dgvNhanVien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _dgvNhanVien.Location = new Point(18, 55);
+            _dgvNhanVien.Location = new Point(16, 41);
+            _dgvNhanVien.Margin = new Padding(3, 2, 3, 2);
             _dgvNhanVien.MultiSelect = false;
             _dgvNhanVien.Name = "_dgvNhanVien";
             _dgvNhanVien.ReadOnly = true;
             _dgvNhanVien.RowHeadersVisible = false;
             _dgvNhanVien.RowHeadersWidth = 51;
             _dgvNhanVien.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _dgvNhanVien.Size = new Size(798, 311);
+            _dgvNhanVien.Size = new Size(698, 233);
             _dgvNhanVien.TabIndex = 1;
             _dgvNhanVien.CellClick += DgvNhanVien_CellClick;
             _dgvNhanVien.CellContentClick += _dgvNhanVien_CellContentClick;
@@ -633,9 +663,9 @@ namespace PBL3
             lb_DSNhanVien.AutoSize = true;
             lb_DSNhanVien.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lb_DSNhanVien.ForeColor = Color.FromArgb(110, 92, 75);
-            lb_DSNhanVien.Location = new Point(18, 12);
+            lb_DSNhanVien.Location = new Point(16, 9);
             lb_DSNhanVien.Name = "lb_DSNhanVien";
-            lb_DSNhanVien.Size = new Size(194, 25);
+            lb_DSNhanVien.Size = new Size(153, 20);
             lb_DSNhanVien.TabIndex = 0;
             lb_DSNhanVien.Text = "Danh sách nhân viên";
             // 
@@ -648,10 +678,9 @@ namespace PBL3
             hcnt_KhungMenuAD.Controls.Add(btn_QLNCC);
             hcnt_KhungMenuAD.Controls.Add(btn_QLNV);
             hcnt_KhungMenuAD.Controls.Add(lb_DMQL);
-            hcnt_KhungMenuAD.Location = new Point(19, 65);
-            hcnt_KhungMenuAD.Margin = new Padding(3, 4, 3, 4);
+            hcnt_KhungMenuAD.Location = new Point(17, 49);
             hcnt_KhungMenuAD.Name = "hcnt_KhungMenuAD";
-            hcnt_KhungMenuAD.Size = new Size(301, 717);
+            hcnt_KhungMenuAD.Size = new Size(263, 538);
             hcnt_KhungMenuAD.TabIndex = 0;
             // 
             // btn_QLHDN
@@ -659,20 +688,18 @@ namespace PBL3
             btn_QLHDN.BackColor = Color.Bisque;
             btn_QLHDN.Controls.Add(pb_QLHDN);
             btn_QLHDN.Controls.Add(label8);
-            btn_QLHDN.Location = new Point(21, 369);
-            btn_QLHDN.Margin = new Padding(3, 4, 3, 4);
+            btn_QLHDN.Location = new Point(18, 277);
             btn_QLHDN.Name = "btn_QLHDN";
-            btn_QLHDN.Size = new Size(256, 53);
+            btn_QLHDN.Size = new Size(224, 40);
             btn_QLHDN.TabIndex = 1;
             btn_QLHDN.Click += btn_QLHDN_Click;
             // 
             // pb_QLHDN
             // 
             pb_QLHDN.Image = Properties.Resources.nguyenlieu;
-            pb_QLHDN.Location = new Point(10, 0);
-            pb_QLHDN.Margin = new Padding(3, 4, 3, 4);
+            pb_QLHDN.Location = new Point(9, 0);
             pb_QLHDN.Name = "pb_QLHDN";
-            pb_QLHDN.Size = new Size(51, 51);
+            pb_QLHDN.Size = new Size(45, 38);
             pb_QLHDN.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLHDN.TabIndex = 2;
             pb_QLHDN.TabStop = false;
@@ -683,9 +710,9 @@ namespace PBL3
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 12F);
             label8.ForeColor = SystemColors.ControlText;
-            label8.Location = new Point(58, 11);
+            label8.Location = new Point(51, 8);
             label8.Name = "label8";
-            label8.Size = new Size(114, 28);
+            label8.Size = new Size(91, 21);
             label8.TabIndex = 0;
             label8.Text = "Khách hàng";
             label8.TextAlign = ContentAlignment.TopCenter;
@@ -696,20 +723,18 @@ namespace PBL3
             btn_QLMA.BackColor = Color.Bisque;
             btn_QLMA.Controls.Add(pb_QLMA);
             btn_QLMA.Controls.Add(label7);
-            btn_QLMA.Location = new Point(21, 296);
-            btn_QLMA.Margin = new Padding(3, 4, 3, 4);
+            btn_QLMA.Location = new Point(18, 222);
             btn_QLMA.Name = "btn_QLMA";
-            btn_QLMA.Size = new Size(256, 53);
+            btn_QLMA.Size = new Size(224, 40);
             btn_QLMA.TabIndex = 1;
             btn_QLMA.Click += btn_QLMA_Click;
             // 
             // pb_QLMA
             // 
             pb_QLMA.Image = Properties.Resources.monan;
-            pb_QLMA.Location = new Point(10, 1);
-            pb_QLMA.Margin = new Padding(3, 4, 3, 4);
+            pb_QLMA.Location = new Point(9, 1);
             pb_QLMA.Name = "pb_QLMA";
-            pb_QLMA.Size = new Size(51, 51);
+            pb_QLMA.Size = new Size(45, 38);
             pb_QLMA.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLMA.TabIndex = 2;
             pb_QLMA.TabStop = false;
@@ -720,9 +745,9 @@ namespace PBL3
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 12F);
             label7.ForeColor = SystemColors.ControlText;
-            label7.Location = new Point(58, 11);
+            label7.Location = new Point(51, 8);
             label7.Name = "label7";
-            label7.Size = new Size(100, 28);
+            label7.Size = new Size(80, 21);
             label7.TabIndex = 0;
             label7.Text = "Mua hàng";
             label7.Click += btn_QLMA_Click;
@@ -732,10 +757,9 @@ namespace PBL3
             btn_QLKH.BackColor = Color.Bisque;
             btn_QLKH.Controls.Add(pb_QLKH);
             btn_QLKH.Controls.Add(label6);
-            btn_QLKH.Location = new Point(21, 223);
-            btn_QLKH.Margin = new Padding(3, 4, 3, 4);
+            btn_QLKH.Location = new Point(18, 167);
             btn_QLKH.Name = "btn_QLKH";
-            btn_QLKH.Size = new Size(256, 53);
+            btn_QLKH.Size = new Size(224, 40);
             btn_QLKH.TabIndex = 1;
             btn_QLKH.Click += btn_QLKH_Click;
             btn_QLKH.Paint += btn_QLKH_Paint;
@@ -743,10 +767,9 @@ namespace PBL3
             // pb_QLKH
             // 
             pb_QLKH.Image = Properties.Resources.khachhang;
-            pb_QLKH.Location = new Point(10, 0);
-            pb_QLKH.Margin = new Padding(3, 4, 3, 4);
+            pb_QLKH.Location = new Point(9, 0);
             pb_QLKH.Name = "pb_QLKH";
-            pb_QLKH.Size = new Size(51, 51);
+            pb_QLKH.Size = new Size(45, 38);
             pb_QLKH.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLKH.TabIndex = 2;
             pb_QLKH.TabStop = false;
@@ -757,9 +780,9 @@ namespace PBL3
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F);
             label6.ForeColor = SystemColors.ControlText;
-            label6.Location = new Point(58, 11);
+            label6.Location = new Point(51, 8);
             label6.Name = "label6";
-            label6.Size = new Size(93, 28);
+            label6.Size = new Size(75, 21);
             label6.TabIndex = 0;
             label6.Text = "Bán hàng";
             label6.Click += btn_QLKH_Click;
@@ -769,10 +792,9 @@ namespace PBL3
             btn_QLNCC.BackColor = Color.Bisque;
             btn_QLNCC.Controls.Add(pb_QLNCC);
             btn_QLNCC.Controls.Add(label5);
-            btn_QLNCC.Location = new Point(21, 149);
-            btn_QLNCC.Margin = new Padding(3, 4, 3, 4);
+            btn_QLNCC.Location = new Point(18, 112);
             btn_QLNCC.Name = "btn_QLNCC";
-            btn_QLNCC.Size = new Size(256, 53);
+            btn_QLNCC.Size = new Size(224, 40);
             btn_QLNCC.TabIndex = 1;
             btn_QLNCC.Click += btn_QLNCC_Click;
             btn_QLNCC.Paint += btn_QLNCC_Paint;
@@ -780,10 +802,9 @@ namespace PBL3
             // pb_QLNCC
             // 
             pb_QLNCC.Image = Properties.Resources.ncc;
-            pb_QLNCC.Location = new Point(10, 0);
-            pb_QLNCC.Margin = new Padding(3, 4, 3, 4);
+            pb_QLNCC.Location = new Point(9, 0);
             pb_QLNCC.Name = "pb_QLNCC";
-            pb_QLNCC.Size = new Size(51, 51);
+            pb_QLNCC.Size = new Size(45, 38);
             pb_QLNCC.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLNCC.TabIndex = 2;
             pb_QLNCC.TabStop = false;
@@ -794,9 +815,9 @@ namespace PBL3
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 12F);
             label5.ForeColor = SystemColors.ControlText;
-            label5.Location = new Point(58, 11);
+            label5.Location = new Point(51, 8);
             label5.Name = "label5";
-            label5.Size = new Size(88, 28);
+            label5.Size = new Size(70, 21);
             label5.TabIndex = 0;
             label5.Text = "Hóa đơn";
             label5.Click += btn_QLNCC_Click;
@@ -806,19 +827,17 @@ namespace PBL3
             btn_QLNV.BackColor = Color.Coral;
             btn_QLNV.Controls.Add(pb_QLNV);
             btn_QLNV.Controls.Add(label4);
-            btn_QLNV.Location = new Point(21, 76);
-            btn_QLNV.Margin = new Padding(3, 4, 3, 4);
+            btn_QLNV.Location = new Point(18, 57);
             btn_QLNV.Name = "btn_QLNV";
-            btn_QLNV.Size = new Size(256, 53);
+            btn_QLNV.Size = new Size(224, 40);
             btn_QLNV.TabIndex = 1;
             // 
             // pb_QLNV
             // 
             pb_QLNV.Image = Properties.Resources.nhanvien;
-            pb_QLNV.Location = new Point(10, 0);
-            pb_QLNV.Margin = new Padding(3, 4, 3, 4);
+            pb_QLNV.Location = new Point(9, 0);
             pb_QLNV.Name = "pb_QLNV";
-            pb_QLNV.Size = new Size(51, 51);
+            pb_QLNV.Size = new Size(45, 38);
             pb_QLNV.SizeMode = PictureBoxSizeMode.StretchImage;
             pb_QLNV.TabIndex = 2;
             pb_QLNV.TabStop = false;
@@ -829,9 +848,9 @@ namespace PBL3
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 12F);
             label4.ForeColor = SystemColors.ControlText;
-            label4.Location = new Point(58, 11);
+            label4.Location = new Point(51, 8);
             label4.Name = "label4";
-            label4.Size = new Size(168, 28);
+            label4.Size = new Size(134, 21);
             label4.TabIndex = 0;
             label4.Text = "Thông tin cá nhân";
             label4.Click += label4_Click;
@@ -841,9 +860,9 @@ namespace PBL3
             lb_DMQL.AutoSize = true;
             lb_DMQL.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lb_DMQL.ForeColor = Color.Salmon;
-            lb_DMQL.Location = new Point(40, 12);
+            lb_DMQL.Location = new Point(35, 9);
             lb_DMQL.Name = "lb_DMQL";
-            lb_DMQL.Size = new Size(260, 35);
+            lb_DMQL.Size = new Size(211, 28);
             lb_DMQL.TabIndex = 0;
             lb_DMQL.Text = "Danh mục Nhân viên";
             // 
@@ -866,7 +885,7 @@ namespace PBL3
             lblBtnXoa.ForeColor = Color.White;
             lblBtnXoa.Location = new Point(23, 4);
             lblBtnXoa.Name = "lblBtnXoa";
-            lblBtnXoa.Size = new Size(40, 23);
+            lblBtnXoa.Size = new Size(35, 19);
             lblBtnXoa.TabIndex = 0;
             lblBtnXoa.Text = "Xóa";
             lblBtnXoa.Click += BtnXoa_Click;
@@ -890,7 +909,7 @@ namespace PBL3
             lblBtnThem.ForeColor = Color.White;
             lblBtnThem.Location = new Point(17, 4);
             lblBtnThem.Name = "lblBtnThem";
-            lblBtnThem.Size = new Size(55, 23);
+            lblBtnThem.Size = new Size(46, 19);
             lblBtnThem.TabIndex = 0;
             lblBtnThem.Text = "Thêm";
             lblBtnThem.Click += BtnThem_Click;
@@ -913,7 +932,7 @@ namespace PBL3
             _txtTimKiem.Location = new Point(11, 8);
             _txtTimKiem.Name = "_txtTimKiem";
             _txtTimKiem.PlaceholderText = "Tìm kiếm";
-            _txtTimKiem.Size = new Size(257, 20);
+            _txtTimKiem.Size = new Size(257, 16);
             _txtTimKiem.TabIndex = 0;
             _txtTimKiem.TextChanged += SearchControl_Changed;
             // 
@@ -925,7 +944,7 @@ namespace PBL3
             _cboTrangThai.Items.AddRange(new object[] { "Đang làm", "Nghỉ" });
             _cboTrangThai.Location = new Point(10000, 10000);
             _cboTrangThai.Name = "_cboTrangThai";
-            _cboTrangThai.Size = new Size(1, 28);
+            _cboTrangThai.Size = new Size(1, 23);
             _cboTrangThai.TabIndex = 13;
             _cboTrangThai.Visible = false;
             _cboTrangThai.SelectedIndexChanged += _cboTrangThai_SelectedIndexChanged;
@@ -944,14 +963,13 @@ namespace PBL3
             // 
             // TrangNhanVien1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = Properties.Resources.mt;
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(1258, 837);
+            ClientSize = new Size(1101, 628);
             Controls.Add(roundedPanel1);
             DoubleBuffered = true;
-            Margin = new Padding(3, 4, 3, 4);
             Name = "TrangNhanVien1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Nhân viên";
@@ -1082,8 +1100,46 @@ namespace PBL3
         private RoundedPanel roundedPanel2;
         private TextBox textBox1;
         private Label label1;
+        private Label lblLeaveQuota;
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

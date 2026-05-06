@@ -1,5 +1,6 @@
 using PBL3.Business;
 using PBL3.Models;
+using System.Data;
 
 namespace PBL3
 {
@@ -117,8 +118,89 @@ namespace PBL3
             _txtPhanHoi.Text = item.PhanHoiAdmin;
 
             _lblCaGanNhat.Text = "Ca gần nhất: -";
+            _lblLeaveQuota.Text = "Số ngày đã nghỉ: -";
+            _lblStaffingImpact.Text = "Ảnh hưởng nhân sự: -";
             LoadLatestShift(item.MaNV);
             LoadHistory(item.MaNV);
+            LoadLeaveQuota(item.MaNV);
+            LoadStaffingImpact(item);
+        }
+
+        private void LoadLeaveQuota(int maNv)
+        {
+            try
+            {
+                int count = _service.GetApprovedLeaveCountForMonth(maNv, DateTime.Today);
+                _lblLeaveQuota.Text = $"Số ngày đã nghỉ: {count}/3";
+            }
+            catch
+            {
+                _lblLeaveQuota.Text = "Số ngày đã nghỉ: -";
+            }
+        }
+
+        private void LoadStaffingImpact(HopThuYeuCauItem item)
+        {
+            if (!item.TuNgay.HasValue || !item.DenNgay.HasValue)
+            {
+                _lblStaffingImpact.Text = "Ảnh hưởng nhân sự: -";
+                return;
+            }
+
+            try
+            {
+                DateTime ngay = item.TuNgay.Value.Date;
+                DataTable counts = _service.GetStaffingCounts(ngay, ngay);
+                int sang = 0;
+                int chieu = 0;
+                int toi = 0;
+                int full = 0;
+                if (counts.Rows.Count > 0)
+                {
+                    DataRow row = counts.Rows[0];
+                    sang = row["SoSang"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoSang"]);
+                    chieu = row["SoChieu"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoChieu"]);
+                    toi = row["SoToi"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoToi"]);
+                    full = row["SoFull"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoFull"]);
+                }
+
+                DataTable caTruc = _service.GetCaTruc();
+                int toiThieuSang = GetSoNguoiToiThieu(caTruc, "1");
+                int toiThieuChieu = GetSoNguoiToiThieu(caTruc, "2");
+
+                int thucTeSang = sang + full;
+                int thucTeChieu = chieu + full;
+
+                if (item.LoaiYeuCau.Contains("nghỉ phép", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (thucTeSang > 0) thucTeSang--;
+                    if (thucTeChieu > 0) thucTeChieu--;
+                }
+
+                string impact = $"Nếu duyệt, ca Sáng {ngay:dd/MM/yyyy} còn {thucTeSang}/{toiThieuSang}, ca Chiều còn {thucTeChieu}/{toiThieuChieu}";
+                if (thucTeSang < toiThieuSang || thucTeChieu < toiThieuChieu)
+                {
+                    impact += " (Thiếu người)";
+                    _lblStaffingImpact.ForeColor = Color.IndianRed;
+                }
+                else
+                {
+                    _lblStaffingImpact.ForeColor = Color.DarkGreen;
+                }
+
+                _lblStaffingImpact.Text = impact;
+            }
+            catch
+            {
+                _lblStaffingImpact.Text = "Ảnh hưởng nhân sự: -";
+            }
+        }
+
+        private static int GetSoNguoiToiThieu(DataTable dt, string maCa)
+        {
+            DataRow? row = dt.AsEnumerable().FirstOrDefault(r => Convert.ToString(r["MaCa"]) == maCa);
+            if (row is null || row["SoNguoiToiThieu"] == DBNull.Value) return 0;
+            return Convert.ToInt32(row["SoNguoiToiThieu"]);
         }
 
         private void LoadLatestShift(int maNv)
@@ -227,6 +309,8 @@ namespace PBL3
             _lblNhanVien.Text = "Nhân viên: -";
             _lblChucVu.Text = "Chức vụ: -";
             _lblCaGanNhat.Text = "Ca gần nhất: -";
+            _lblLeaveQuota.Text = "Số ngày đã nghỉ: -";
+            _lblStaffingImpact.Text = "Ảnh hưởng nhân sự: -";
             _lblLoai.Text = "Loại yêu cầu: -";
             _lblThoiGian.Text = "Thời gian gửi: -";
             _lblKhoangNgay.Text = "Thời gian nghỉ: -";

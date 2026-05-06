@@ -47,8 +47,10 @@ namespace PBL3
                 _isEditingExisting = true;
                 UpdatePasswordUiState();
                 EnsureLeaveRequestButtons();
+                EnsureLeaveQuotaLabel();
                 ConfigureLichSuYeuCauGrid();
                 LoadLichSuYeuCau();
+                UpdateLeaveQuotaUi();
             }
             catch (Exception ex)
             {
@@ -392,6 +394,8 @@ namespace PBL3
             ClearForm();
             LoadNhanVien();
             LoadLichSuYeuCau();
+            _isEditingExisting = true;
+            UpdatePasswordUiState();
         }
 
         private void ClearForm()
@@ -667,6 +671,22 @@ namespace PBL3
                 return;
             }
 
+            int? maNvInt = ParseMaNvToInt(_selectedMaNvDbValue ?? _loggedInMaNV);
+            if (maNvInt is null)
+            {
+                MessageBox.Show("Mã nhân viên không hợp lệ để gửi yêu cầu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Check leave quota: only approved (TrangThai = 1) leaves count toward quota
+            int approvedLeaveCount = _trangNhanVienService.GetApprovedLeaveCountForMonth(maNvInt.Value, DateTime.Today);
+
+            if (loaiYeuCau == "Nghỉ phép" && approvedLeaveCount >= 3)
+            {
+                MessageBox.Show("Bạn đã hết lượt nghỉ phép trong tháng này (tối đa 3 ngày/tháng).", "Hết lượt nghỉ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (!TryPromptLeaveReason(loaiYeuCau, hasDateRange, out string lyDo, out DateTime? tuNgay, out DateTime? denNgay, out int tongNgayNghi))
             {
                 return;
@@ -683,19 +703,13 @@ namespace PBL3
                 return;
             }
 
-            int? maNvInt = ParseMaNvToInt(_selectedMaNvDbValue ?? _loggedInMaNV);
-            if (maNvInt is null)
-            {
-                MessageBox.Show("Mã nhân viên không hợp lệ để gửi yêu cầu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             try
             {
                 _trangNhanVienService.InsertYeuCau(maNvInt.Value, loaiYeuCau, lyDo, tuNgay, denNgay);
 
                 MessageBox.Show("Đã gửi yêu cầu thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadLichSuYeuCau();
+                UpdateLeaveQuotaUi();
             }
             catch (Exception ex)
             {
@@ -1089,6 +1103,54 @@ namespace PBL3
             _txtEmail ??= textBox1;
         }
 
+        private void EnsureLeaveQuotaLabel()
+        {
+            if (lblLeaveQuota == null)
+            {
+                return;
+            }
+
+            lblLeaveQuota.Text = "Số ngày đã nghỉ tháng này: 0/3";
+            lblLeaveQuota.Visible = true;
+        }
+
+        private void UpdateLeaveQuotaUi()
+        {
+            int? maNvInt = ParseMaNvToInt(_selectedMaNvDbValue ?? _loggedInMaNV);
+            if (lblLeaveQuota == null || maNvInt is null)
+            {
+                return;
+            }
+
+            int count = 0;
+            try
+            {
+                count = _trangNhanVienService.GetApprovedLeaveCountForMonth(maNvInt.Value, DateTime.Today);
+            }
+            catch
+            {
+                count = 0;
+            }
+
+            if (count < 0) count = 0;
+            if (count > 3) count = 3;
+
+            lblLeaveQuota.Text = $"Số ngày đã nghỉ tháng này: {count}/3";
+            bool canRequest = count < 3;
+            _btnYeuCauNghiPhep.Enabled = canRequest;
+
+            if (!canRequest)
+            {
+                _btnYeuCauNghiPhep.BackColor = Color.Gray;
+                _btnYeuCauNghiPhep.Text = "Hết lượt nghỉ";
+            }
+            else
+            {
+                _btnYeuCauNghiPhep.BackColor = Color.SandyBrown;
+                _btnYeuCauNghiPhep.Text = "Yêu cầu nghỉ phép";
+            }
+        }
+
         private static int? ParseMaNvToInt(string? value)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
@@ -1262,6 +1324,11 @@ namespace PBL3
         }
 
         private void btn_QLKH_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void pnlFormNhanVien_Paint(object sender, PaintEventArgs e)
         {
 
         }

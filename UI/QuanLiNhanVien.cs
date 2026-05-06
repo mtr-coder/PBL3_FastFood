@@ -835,9 +835,73 @@ namespace PBL3
                             e.FormattingApplied = true;
                         }
                     }
+                    else if (dgv.Columns[e.ColumnIndex].Name == "TinhTrangCa")
+                    {
+                        if (dgv.Rows[e.RowIndex].DataBoundItem is DataRowView rowView)
+                        {
+                            int thucTe = rowView.Row.Field<int>("SoNguoiThucTe");
+                            int toiThieu = rowView.Row.Field<int>("SoNguoiToiThieu");
+                            bool du = thucTe >= toiThieu;
+                            e.Value = du ? "Đủ người" : "Thiếu người";
+                            dgv.Rows[e.RowIndex].DefaultCellStyle.BackColor = du ? Color.Honeydew : Color.MistyRose;
+                            dgv.Rows[e.RowIndex].DefaultCellStyle.ForeColor = du ? Color.DarkGreen : Color.DarkRed;
+                            e.FormattingApplied = true;
+                        }
+                    }
                 };
 
                 // Now define local functions that use the controls
+                DataTable BuildScheduleTable(DataTable source)
+                {
+                    DataTable dt = source.Copy();
+                    DataTable caTrucTable = _trangNhanVienService.GetCaTruc();
+                    var minByCa = caTrucTable.AsEnumerable().ToDictionary(r => Convert.ToString(r["MaCa"]) ?? string.Empty, r => Convert.ToInt32(r["SoNguoiToiThieu"]));
+
+                    DataTable staffingCounts = _trangNhanVienService.GetStaffingCounts(DateTime.Today.AddMonths(-2), DateTime.Today.AddMonths(2));
+                    var staffingByDate = new Dictionary<DateTime, (int Sang, int Chieu, int Toi, int Full)>();
+                    foreach (DataRow row in staffingCounts.Rows)
+                    {
+                        DateTime ngay = Convert.ToDateTime(row["NgayLam"]).Date;
+                        int sang = row["SoSang"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoSang"]);
+                        int chieu = row["SoChieu"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoChieu"]);
+                        int toi = row["SoToi"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoToi"]);
+                        int full = row["SoFull"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoFull"]);
+                        staffingByDate[ngay] = (sang, chieu, toi, full);
+                    }
+
+                    if (!dt.Columns.Contains("SoNguoiToiThieu"))
+                    {
+                        dt.Columns.Add("SoNguoiToiThieu", typeof(int));
+                    }
+                    if (!dt.Columns.Contains("SoNguoiThucTe"))
+                    {
+                        dt.Columns.Add("SoNguoiThucTe", typeof(int));
+                    }
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string maCaRow = Convert.ToString(row["MaCa"]) ?? string.Empty;
+                        DateTime ngay = Convert.ToDateTime(row["NgayLam"]).Date;
+                        int min = minByCa.TryGetValue(maCaRow, out int val) ? val : 0;
+                        int thucTe = 0;
+                        if (staffingByDate.TryGetValue(ngay, out var counts))
+                        {
+                            thucTe = maCaRow switch
+                            {
+                                "1" => counts.Sang + counts.Full,
+                                "2" => counts.Chieu + counts.Full,
+                                "3" => counts.Toi,
+                                "4" => counts.Full,
+                                _ => 0
+                            };
+                        }
+                        row["SoNguoiToiThieu"] = min;
+                        row["SoNguoiThucTe"] = thucTe;
+                    }
+
+                    return dt;
+                }
+
                 void ReloadSchedule()
                 {
                     DataTable dt = _trangNhanVienService.GetLichTruc(maNv);
@@ -845,7 +909,8 @@ namespace PBL3
                     int tongSoCa = dt.Rows.Count;
                     _lastLuongDuKien = tongHeSo * donGiaCaTruc;
 
-                    dgv.DataSource = dt;
+                    DataTable displayDt = BuildScheduleTable(dt);
+                    dgv.DataSource = displayDt;
 
                     if (dgv.Columns["NgayLam"] is not null)
                     {
@@ -877,6 +942,26 @@ namespace PBL3
                     if (dgv.Columns["TenCa"] is not null)
                     {
                         dgv.Columns["TenCa"].HeaderText = "Tên ca";
+                    }
+
+                    if (dgv.Columns["SoNguoiToiThieu"] is not null)
+                    {
+                        dgv.Columns["SoNguoiToiThieu"].Visible = false;
+                    }
+
+                    if (dgv.Columns["SoNguoiThucTe"] is not null)
+                    {
+                        dgv.Columns["SoNguoiThucTe"].Visible = false;
+                    }
+
+                    if (dgv.Columns["TinhTrangCa"] is null)
+                    {
+                        dgv.Columns.Add(new DataGridViewTextBoxColumn
+                        {
+                            Name = "TinhTrangCa",
+                            HeaderText = "Tình trạng ca",
+                            AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                        });
                     }
 
                     lblTongSoCa.Text = $"Tổng số ca làm: {tongSoCa}";
@@ -935,7 +1020,8 @@ namespace PBL3
                     int tongSoCa = filteredDt.Rows.Count;
                     decimal luongDuKien = tongHeSo * donGiaCaTruc;
 
-                    dgv.DataSource = filteredDt;
+                    DataTable displayDt = BuildScheduleTable(filteredDt);
+                    dgv.DataSource = displayDt;
 
                     lblTongSoCa.Text = $"Tổng số ca làm: {tongSoCa}";
                     lblTongHeSo.Text = $"Tổng hệ số: {tongHeSo:N2}";
@@ -951,7 +1037,7 @@ namespace PBL3
                         StartPosition = FormStartPosition.CenterParent,
                         MinimizeBox = false,
                         MaximizeBox = false,
-                        ClientSize = new Size(420, 300)
+                        ClientSize = new Size(420, 350)
                     };
 
                     Label lblEmployee = new Label
@@ -975,10 +1061,25 @@ namespace PBL3
                         DropDownStyle = ComboBoxStyle.DropDownList
                     };
 
+                    DateTimePicker dtpNgayLam = new DateTimePicker
+                    {
+                        Left = 80,
+                        Top = 70,
+                        Width = 140,
+                        Format = DateTimePickerFormat.Custom,
+                        CustomFormat = "dd/MM/yyyy",
+                        MinDate = DateTime.Today,
+                        Value = DateTime.Today
+                    };
+
+                    Label lblNgayLam = new Label { Text = "Lịch:", Left = 12, Top = 73, AutoSize = true };
+
                     DataTable caTrucTable = _trangNhanVienService.GetCaTruc();
                     
                     addShiftForm.Controls.Add(lblShift);
                     addShiftForm.Controls.Add(cboShift);
+                    addShiftForm.Controls.Add(lblNgayLam);
+                    addShiftForm.Controls.Add(dtpNgayLam);
                     
                     // Use BindingSource for proper data binding
                     var bindingSource = new BindingSource(caTrucTable, null);
@@ -990,16 +1091,27 @@ namespace PBL3
                         cboShift.SelectedIndex = 0;
                     }
 
+                    Label lblStaffing = new Label
+                    {
+                        Left = 12,
+                        Top = 100,
+                        AutoSize = true,
+                        ForeColor = Color.DarkSlateBlue,
+                        Font = new Font("Segoe UI", 8.5F, FontStyle.Italic),
+                        Text = ""
+                    };
+                    addShiftForm.Controls.Add(lblStaffing);
+
                     Label lblNote = new Label
                     {
                         Text = $"Chọn các thứ để thêm lịch (từ hôm nay đến ngày {monthEnd:dd/MM/yyyy}):",
                         Left = 12,
-                        Top = 75,
+                        Top = 120,
                         AutoSize = true,
                         Font = new Font("Segoe UI", 8F)
                     };
 
-                    Panel pnlDays = new Panel { Left = 12, Top = 100, Width = 388, Height = 120, BorderStyle = BorderStyle.FixedSingle };
+                    Panel pnlDays = new Panel { Left = 12, Top = 145, Width = 388, Height = 120, BorderStyle = BorderStyle.FixedSingle };
 
                     string[] dayNames = { "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật" };
                     CheckBox[] chkDays = new CheckBox[7];
@@ -1020,7 +1132,7 @@ namespace PBL3
                     {
                         Text = "Thêm",
                         Left = 232,
-                        Top = 235,
+                        Top = 275,
                         Width = 75,
                         Height = 24,
                         DialogResult = DialogResult.OK
@@ -1030,7 +1142,7 @@ namespace PBL3
                     {
                         Text = "Thoát",
                         Left = 312,
-                        Top = 235,
+                        Top = 275,
                         Width = 75,
                         Height = 24,
                         DialogResult = DialogResult.Cancel
@@ -1043,6 +1155,57 @@ namespace PBL3
                     addShiftForm.Controls.Add(btnCancel);
                     addShiftForm.AcceptButton = btnOk;
                     addShiftForm.CancelButton = btnCancel;
+
+                    void KiemTraDinhBien()
+                    {
+                        if (cboShift.SelectedValue is null)
+                        {
+                            lblStaffing.Text = string.Empty;
+                            return;
+                        }
+
+                        string maCaCheck = cboShift.SelectedValue.ToString() ?? string.Empty;
+                        DateTime ngay = dtpNgayLam.Value.Date;
+                        DataTable counts = _trangNhanVienService.GetStaffingCounts(ngay, ngay);
+                        int sang = 0;
+                        int chieu = 0;
+                        int toi = 0;
+                        int full = 0;
+                        if (counts.Rows.Count > 0)
+                        {
+                            DataRow row = counts.Rows[0];
+                            sang = row["SoSang"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoSang"]);
+                            chieu = row["SoChieu"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoChieu"]);
+                            toi = row["SoToi"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoToi"]);
+                            full = row["SoFull"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoFull"]);
+                        }
+
+                        int thucTe = maCaCheck switch
+                        {
+                            "1" => sang + full,
+                            "2" => chieu + full,
+                            "3" => toi,
+                            "4" => full,
+                            _ => 0
+                        };
+
+                        int toiThieu = 0;
+                        if (caTrucTable.Rows.Count > 0)
+                        {
+                            DataRow? row = caTrucTable.AsEnumerable().FirstOrDefault(r => Convert.ToString(r["MaCa"]) == maCaCheck);
+                            if (row is not null && row["SoNguoiToiThieu"] != DBNull.Value)
+                            {
+                                toiThieu = Convert.ToInt32(row["SoNguoiToiThieu"]);
+                            }
+                        }
+
+                        int thieu = Math.Max(0, toiThieu - thucTe);
+                        lblStaffing.Text = $"Ca này hiện có {thucTe}/{toiThieu} người (Còn thiếu {thieu})";
+                    }
+
+                    cboShift.SelectedIndexChanged += (_, __) => KiemTraDinhBien();
+                    dtpNgayLam.ValueChanged += (_, __) => KiemTraDinhBien();
+                    KiemTraDinhBien();
 
                     if (addShiftForm.ShowDialog(null) == DialogResult.OK)
                     {

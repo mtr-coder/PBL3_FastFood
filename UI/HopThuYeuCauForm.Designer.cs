@@ -30,22 +30,24 @@ namespace PBL3
             label1 = new Label();
             _btnDuyet = new PBL3.UI.RoundedPanel();
             lblBtnThem = new Label();
-            _lstHistory = new ListBox();
             _txtPhanHoi = new TextBox();
-            lblPhanHoi = new Label();
-            _txtNoiDung = new TextBox();
             roundedPanel1 = new PBL3.UI.RoundedPanel();
             _lblTitle = new Label();
             _btnXoa = new PBL3.UI.RoundedPanel();
             label2 = new Label();
+            _lstHistory = new ListBox();
+            _txtNoiDung = new TextBox();
             _lblNhanVien = new Label();
             _lblChucVu = new Label();
+            lblPhanHoi = new Label();
             _lblTrangThai = new Label();
             lblHistory = new Label();
             _lblThoiGian = new Label();
             _lblLoai = new Label();
             _lblCaGanNhat = new Label();
             _lblKhoangNgay = new Label();
+            _lblLeaveQuota = new Label();
+            _lblStaffingImpact = new Label();
             lblLyDo = new Label();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -76,7 +78,7 @@ namespace PBL3
             // 
             splitContainer1.Panel2.Controls.Add(pnlRight);
             splitContainer1.Size = new Size(934, 488);
-            splitContainer1.SplitterDistance = 193;
+            splitContainer1.SplitterDistance = 192;
             splitContainer1.TabIndex = 0;
             // 
             // _flpCards
@@ -87,7 +89,7 @@ namespace PBL3
             _flpCards.FlowDirection = FlowDirection.TopDown;
             _flpCards.Location = new Point(0, 64);
             _flpCards.Name = "_flpCards";
-            _flpCards.Size = new Size(193, 424);
+            _flpCards.Size = new Size(192, 424);
             _flpCards.TabIndex = 1;
             _flpCards.WrapContents = false;
             // 
@@ -98,7 +100,7 @@ namespace PBL3
             pnlFilter.Dock = DockStyle.Top;
             pnlFilter.Location = new Point(0, 0);
             pnlFilter.Name = "pnlFilter";
-            pnlFilter.Size = new Size(193, 64);
+            pnlFilter.Size = new Size(192, 64);
             pnlFilter.TabIndex = 0;
             // 
             // roundedPanel2
@@ -162,16 +164,13 @@ namespace PBL3
             pnlRight.BackColor = Color.Bisque;
             pnlRight.Controls.Add(_btnTuChoi);
             pnlRight.Controls.Add(_btnDuyet);
-            pnlRight.Controls.Add(_lstHistory);
             pnlRight.Controls.Add(_txtPhanHoi);
-            pnlRight.Controls.Add(lblPhanHoi);
-            pnlRight.Controls.Add(_txtNoiDung);
             pnlRight.Controls.Add(roundedPanel1);
             pnlRight.Dock = DockStyle.Fill;
             pnlRight.Location = new Point(0, 0);
             pnlRight.Name = "pnlRight";
             pnlRight.Padding = new Padding(12, 12, 12, 12);
-            pnlRight.Size = new Size(737, 488);
+            pnlRight.Size = new Size(738, 488);
             pnlRight.TabIndex = 0;
             // 
             // _btnTuChoi
@@ -218,56 +217,33 @@ namespace PBL3
             lblBtnThem.TabIndex = 0;
             lblBtnThem.Text = "Duyệt";
             // 
-            // _lstHistory
-            // 
-            _lstHistory.FormattingEnabled = true;
-            _lstHistory.Location = new Point(32, 267);
-            _lstHistory.Name = "_lstHistory";
-            _lstHistory.Size = new Size(671, 64);
-            _lstHistory.TabIndex = 13;
-            // 
             // _txtPhanHoi
             // 
-            _txtPhanHoi.Location = new Point(35, 358);
+            _txtPhanHoi.Location = new Point(35, 369);
             _txtPhanHoi.Multiline = true;
             _txtPhanHoi.Name = "_txtPhanHoi";
             _txtPhanHoi.ScrollBars = ScrollBars.Vertical;
-            _txtPhanHoi.Size = new Size(668, 68);
+            _txtPhanHoi.Size = new Size(668, 56);
             _txtPhanHoi.TabIndex = 11;
-            // 
-            // lblPhanHoi
-            // 
-            lblPhanHoi.AutoSize = true;
-            lblPhanHoi.BackColor = Color.Linen;
-            lblPhanHoi.Location = new Point(12, 340);
-            lblPhanHoi.Name = "lblPhanHoi";
-            lblPhanHoi.Size = new Size(115, 15);
-            lblPhanHoi.TabIndex = 10;
-            lblPhanHoi.Text = "Phản hồi của Admin";
-            // 
-            // _txtNoiDung
-            // 
-            _txtNoiDung.Location = new Point(32, 170);
-            _txtNoiDung.Multiline = true;
-            _txtNoiDung.Name = "_txtNoiDung";
-            _txtNoiDung.ReadOnly = true;
-            _txtNoiDung.ScrollBars = ScrollBars.Vertical;
-            _txtNoiDung.Size = new Size(671, 68);
-            _txtNoiDung.TabIndex = 9;
             // 
             // roundedPanel1
             // 
             roundedPanel1.BackColor = Color.Linen;
             roundedPanel1.Controls.Add(_lblTitle);
             roundedPanel1.Controls.Add(_btnXoa);
+            roundedPanel1.Controls.Add(_lstHistory);
+            roundedPanel1.Controls.Add(_txtNoiDung);
             roundedPanel1.Controls.Add(_lblNhanVien);
             roundedPanel1.Controls.Add(_lblChucVu);
+            roundedPanel1.Controls.Add(lblPhanHoi);
             roundedPanel1.Controls.Add(_lblTrangThai);
             roundedPanel1.Controls.Add(lblHistory);
             roundedPanel1.Controls.Add(_lblThoiGian);
             roundedPanel1.Controls.Add(_lblLoai);
             roundedPanel1.Controls.Add(_lblCaGanNhat);
             roundedPanel1.Controls.Add(_lblKhoangNgay);
+            roundedPanel1.Controls.Add(_lblLeaveQuota);
+            roundedPanel1.Controls.Add(_lblStaffingImpact);
             roundedPanel1.Controls.Add(lblLyDo);
             roundedPanel1.Location = new Point(12, 12);
             roundedPanel1.Margin = new Padding(3, 2, 3, 2);
@@ -309,6 +285,24 @@ namespace PBL3
             label2.TabIndex = 0;
             label2.Text = "Xóa";
             // 
+            // _lstHistory
+            // 
+            _lstHistory.FormattingEnabled = true;
+            _lstHistory.Location = new Point(20, 286);
+            _lstHistory.Name = "_lstHistory";
+            _lstHistory.Size = new Size(671, 49);
+            _lstHistory.TabIndex = 13;
+            // 
+            // _txtNoiDung
+            // 
+            _txtNoiDung.Location = new Point(20, 201);
+            _txtNoiDung.Multiline = true;
+            _txtNoiDung.Name = "_txtNoiDung";
+            _txtNoiDung.ReadOnly = true;
+            _txtNoiDung.ScrollBars = ScrollBars.Vertical;
+            _txtNoiDung.Size = new Size(671, 62);
+            _txtNoiDung.TabIndex = 9;
+            // 
             // _lblNhanVien
             // 
             _lblNhanVien.AutoSize = true;
@@ -331,6 +325,16 @@ namespace PBL3
             _lblChucVu.TabIndex = 2;
             _lblChucVu.Text = "Chức vụ: -";
             // 
+            // lblPhanHoi
+            // 
+            lblPhanHoi.AutoSize = true;
+            lblPhanHoi.BackColor = Color.Linen;
+            lblPhanHoi.Location = new Point(10, 339);
+            lblPhanHoi.Name = "lblPhanHoi";
+            lblPhanHoi.Size = new Size(115, 15);
+            lblPhanHoi.TabIndex = 10;
+            lblPhanHoi.Text = "Phản hồi của Admin";
+            // 
             // _lblTrangThai
             // 
             _lblTrangThai.AutoSize = true;
@@ -346,7 +350,7 @@ namespace PBL3
             // 
             lblHistory.AutoSize = true;
             lblHistory.BackColor = Color.Linen;
-            lblHistory.Location = new Point(10, 237);
+            lblHistory.Location = new Point(7, 268);
             lblHistory.Name = "lblHistory";
             lblHistory.Size = new Size(88, 15);
             lblHistory.TabIndex = 12;
@@ -397,12 +401,36 @@ namespace PBL3
             _lblKhoangNgay.TabIndex = 6;
             _lblKhoangNgay.Text = "Thời gian nghỉ: -";
             // 
+            // _lblLeaveQuota
+            // 
+            _lblLeaveQuota.AutoSize = true;
+            _lblLeaveQuota.BackColor = Color.Linen;
+            _lblLeaveQuota.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            _lblLeaveQuota.ForeColor = Color.DimGray;
+            _lblLeaveQuota.Location = new Point(10, 134);
+            _lblLeaveQuota.Name = "_lblLeaveQuota";
+            _lblLeaveQuota.Size = new Size(104, 15);
+            _lblLeaveQuota.TabIndex = 20;
+            _lblLeaveQuota.Text = "Số ngày đã nghỉ: -";
+            // 
+            // _lblStaffingImpact
+            // 
+            _lblStaffingImpact.AutoSize = true;
+            _lblStaffingImpact.BackColor = Color.Linen;
+            _lblStaffingImpact.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            _lblStaffingImpact.ForeColor = Color.DimGray;
+            _lblStaffingImpact.Location = new Point(10, 149);
+            _lblStaffingImpact.Name = "_lblStaffingImpact";
+            _lblStaffingImpact.Size = new Size(124, 15);
+            _lblStaffingImpact.TabIndex = 21;
+            _lblStaffingImpact.Text = "Ảnh hưởng nhân sự: -";
+            // 
             // lblLyDo
             // 
             lblLyDo.AutoSize = true;
             lblLyDo.BackColor = Color.Linen;
             lblLyDo.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblLyDo.Location = new Point(10, 140);
+            lblLyDo.Location = new Point(10, 183);
             lblLyDo.Name = "lblLyDo";
             lblLyDo.Size = new Size(35, 15);
             lblLyDo.TabIndex = 8;
@@ -415,7 +443,7 @@ namespace PBL3
             BackgroundImage = Properties.Resources.mt;
             ClientSize = new Size(934, 488);
             Controls.Add(splitContainer1);
-            MinimumSize = new Size(702, 460);
+            MinimumSize = new Size(702, 458);
             Name = "HopThuYeuCauForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Hộp thư yêu cầu";
@@ -459,6 +487,8 @@ namespace PBL3
         private Label _lblLoai;
         private Label _lblThoiGian;
         private Label _lblKhoangNgay;
+        private Label _lblLeaveQuota;
+        private Label _lblStaffingImpact;
         private Label _lblTrangThai;
         private TextBox _txtNoiDung;
         private TextBox _txtPhanHoi;
