@@ -1,6 +1,7 @@
 using PBL3.DataBase;
 using System.Data;
 using System.Data.SqlClient;
+using BCrypt.Net;
 
 namespace PBL3.DataAccess
 {
@@ -29,6 +30,9 @@ namespace PBL3.DataAccess
 
         public int UpdatePassword(string account, string newPassword)
         {
+            // Hash password using BCrypt
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
 
@@ -44,7 +48,7 @@ namespace PBL3.DataAccess
             }
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 100).Value = newPassword;
+            cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 255).Value = hashedPassword;
             cmd.Parameters.Add("@Account", SqlDbType.NVarChar, 100).Value = account;
             return cmd.ExecuteNonQuery();
         }

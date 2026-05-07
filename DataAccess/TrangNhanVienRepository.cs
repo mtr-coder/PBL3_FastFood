@@ -69,6 +69,9 @@ WHERE nv.MaNV = @MaNV";
 
         public void AddNhanVien(string hoTen, DateTime ngaySinh, string sdt, string email, string diaChi, string matKhau, string trangThai, string maCv)
         {
+            // Hash password using BCrypt
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(matKhau);
+
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
 
@@ -117,7 +120,7 @@ WHERE nv.MaNV = @MaNV";
                 cmd.Parameters.Add("@SDT", SqlDbType.VarChar, 20).Value = sdt;
                 cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = email;
                 cmd.Parameters.Add("@DiaChi", SqlDbType.NVarChar, 200).Value = diaChi;
-                cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 100).Value = matKhau;
+                cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 100).Value = hashedPassword;
                 cmd.Parameters.Add("@TrangThai", SqlDbType.NVarChar, 30).Value = trangThai;
                 cmd.Parameters.Add("@MaCV", SqlDbType.VarChar, 20).Value = maCv;
                 cmd.ExecuteNonQuery();
@@ -151,7 +154,11 @@ WHERE MaNV = @MaNV";
             cmd.Parameters.Add("@SDT", SqlDbType.VarChar, 20).Value = sdt;
             cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = email;
             cmd.Parameters.Add("@DiaChi", SqlDbType.NVarChar, 200).Value = diaChi;
-            cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 100).Value = matKhau ?? string.Empty;
+            
+            // Hash password using BCrypt if provided
+            string hashedPassword = string.IsNullOrWhiteSpace(matKhau) ? string.Empty : BCrypt.Net.BCrypt.HashPassword(matKhau);
+            cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 100).Value = hashedPassword;
+            
             conn.Open();
             return cmd.ExecuteNonQuery();
         }
@@ -454,9 +461,12 @@ WHERE MaNV = @MaNV
 
         public int ResetPassword(string maNv, string newPassword)
         {
+            // Hash password using BCrypt
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
             using SqlConnection conn = DbHelper.GetConnection();
             using SqlCommand cmd = new SqlCommand("UPDATE dbo.NHAN_VIEN SET MatKhau = @MatKhau WHERE MaNV = @MaNV", conn);
-            cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 100).Value = newPassword;
+            cmd.Parameters.Add("@MatKhau", SqlDbType.NVarChar, 255).Value = hashedPassword;
             cmd.Parameters.Add("@MaNV", SqlDbType.VarChar, 20).Value = maNv;
             conn.Open();
             return cmd.ExecuteNonQuery();

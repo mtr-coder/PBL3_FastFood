@@ -1,6 +1,8 @@
 using PBL3.DataBase;
 using PBL3.Models;
+using PBL3.Business;
 using System.Data.SqlClient;
+using BCrypt.Net;
 
 namespace PBL3.DataAccess
 {
@@ -15,20 +17,20 @@ namespace PBL3.DataAccess
         public NhanVienDangNhapInfo? GetByPhoneAndPassword(string soDienThoai, string matKhau)
         {
             const string query = @"
-SELECT nv.MaNV, nv.MaCV
+SELECT nv.MaNV, nv.MaCV, nv.MatKhau
 FROM dbo.NHAN_VIEN nv
-WHERE nv.SDT = @sdt AND nv.MatKhau = @mk";
+WHERE nv.SDT = @sdt";
 
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
 
             using SqlCommand cmd = new SqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@sdt", soDienThoai);
-            cmd.Parameters.AddWithValue("@mk", matKhau);
 
             using SqlDataReader reader = cmd.ExecuteReader();
             if (!reader.Read())
             {
+                System.Diagnostics.Debug.WriteLine($"[AUTH] Không tìm th?y user v?i SDT: {soDienThoai}");
                 return null;
             }
 
