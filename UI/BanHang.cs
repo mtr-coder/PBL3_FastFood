@@ -55,7 +55,6 @@ namespace PBL3
         private Image? _printQrImage;
 
         private string _loggedInMaNV;
-        private bool _isNavigating;
 
         public BanHang()
         {
@@ -1901,6 +1900,12 @@ namespace PBL3
             _lblBtnXemLichTruc.Location = new Point(22, 7);
         }
 
+        private void OpenAndClose(Form target)
+        {
+            Form currentForm = FindForm() ?? this;
+            AdminNavigationManager.Navigate(currentForm, target);
+        }
+
         private void EnsureLeaveRequestButtons()
         {
             if (_btnYeuCauNghiPhep is null)
@@ -2277,9 +2282,6 @@ namespace PBL3
 
         }
 
-        private void OpenAndClose(Form target)
-        {
-            AdminNavigationManager.Navigate(this, target);
-        }
+
     }
 }

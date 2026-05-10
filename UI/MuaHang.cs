@@ -16,8 +16,6 @@ namespace PBL3
         private CheckBox? _chkNguyenLieuMoi;
         private TextBox? _txtNguyenLieuMoi;
         private Label? _lblNguyenLieuMoi;
-        private bool _isNavigating;
-
         public MuaHang() : this("1")
         {
         }
@@ -202,7 +200,8 @@ namespace PBL3
 
         private void OpenAndClose(Form target)
         {
-            AdminNavigationManager.Navigate(this, target);
+            Form currentForm = FindForm() ?? this;
+            AdminNavigationManager.Navigate(currentForm, target);
         }
 
         private void InitPhieuNhapGrid()

@@ -11,7 +11,6 @@ namespace PBL3
         private bool _isEditingExisting;
         private string? _selectedMaNvDbValue;
         private BanHang? _banHangEmbedded;
-        private bool _isNavigating;
 
         private string _loggedInMaNV;
         private TextBox? _txtEmail;
@@ -548,7 +547,8 @@ namespace PBL3
 
         private void OpenAndClose(Form target)
         {
-            AdminNavigationManager.Navigate(this, target);
+            Form currentForm = FindForm() ?? this;
+            AdminNavigationManager.Navigate(currentForm, target);
         }
 
         private void ShowBanHangInRightPanel()

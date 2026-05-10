@@ -519,10 +519,10 @@ namespace PBL3.UI
             }
         }
 
-        private void ThongTinCaNhan_Click(object sender, EventArgs e) => OpenAndClose(new TrangNhanVien1(_loggedInMaNV));
+        private void ThongTinCaNhan_Click(object sender, EventArgs e) => OpenAndClose(new BanHang(_loggedInMaNV, "ThongTinCaNhan"));
         private void btn_QLKH_Click(object sender, EventArgs e) => OpenAndClose(new BanHang(_loggedInMaNV));
-        private void btn_QLMA_Click(object sender, EventArgs e) => OpenAndClose(new MuaHang(_loggedInMaNV));
-        private void btn_QLHDN_Click(object sender, EventArgs e) => OpenAndClose(new KhachHang(_loggedInMaNV));
+        private void btn_QLMA_Click(object sender, EventArgs e) => OpenAndClose(new BanHang(_loggedInMaNV, "MuaHang"));
+        private void btn_QLHDN_Click(object sender, EventArgs e) => OpenAndClose(new BanHang(_loggedInMaNV, "KhachHang"));
         private void btn_QLNCC_Click(object sender, EventArgs e) => _btnLamMoi_Click(sender, e);
 
         private void btn_DangXuat_Click(object sender, EventArgs e)
@@ -533,7 +533,11 @@ namespace PBL3.UI
             }
         }
 
-        private void OpenAndClose(Form target) => PBL3.AdminNavigationManager.Navigate(this, target);
+        private void OpenAndClose(Form target)
+        {
+            Form currentForm = FindForm() ?? this;
+            PBL3.AdminNavigationManager.Navigate(currentForm, target);
+        }
 
         private void lblHoTen_Click(object sender, EventArgs e) { }
         private void lblMatKhau_Click(object sender, EventArgs e) { }

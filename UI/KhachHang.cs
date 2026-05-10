@@ -47,7 +47,8 @@ namespace PBL3
 
         private void OpenAndClose(Form target)
         {
-            AdminNavigationManager.Navigate(this, target);
+            Form currentForm = FindForm() ?? this;
+            AdminNavigationManager.Navigate(currentForm, target);
         }
 
         private void btnLamMoi_Click(object? sender, EventArgs e)
