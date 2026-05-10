@@ -33,6 +33,11 @@ namespace PBL3.Business
             return _repository.GetDetailData(invoiceType, maHd);
         }
 
+        public decimal GetTienHangGoc(string maHd)
+        {
+            return _repository.GetTienHangGoc(maHd);
+        }
+
         public int GetCanceledCount(DateTime fromDate, DateTime toDate, LichSuHoaDonSchemaInfo schema)
         {
             return _repository.GetCanceledCount(fromDate, toDate, schema);

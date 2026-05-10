@@ -369,7 +369,7 @@ namespace PBL3
 
         private void UpdateTongTien()
         {
-            decimal total = _phieuNhapTable.AsEnumerable().Sum(r => r.Field<decimal>("ThanhTien"));
+            decimal total = _phieuNhapTable.AsEnumerable().Sum(r => r.Field<decimal>("Thành tiền"));
             lblTongTien.Text = $"Tổng tiền: {total:N0} đ";
         }
 
@@ -387,12 +387,17 @@ namespace PBL3
                 return;
             }
 
-            decimal tongTien = _phieuNhapTable.AsEnumerable().Sum(r => r.Field<decimal>("ThanhTien"));
+            decimal tongTien = _phieuNhapTable.AsEnumerable().Sum(r => r.Field<decimal>("Thành tiền"));
             object maNcc = int.TryParse(Convert.ToString(cboNhaCungCap.SelectedValue), out int maNccInt) ? maNccInt : (Convert.ToString(cboNhaCungCap.SelectedValue) ?? string.Empty);
+            string tenNcc = cboNhaCungCap.Text ?? "-";
 
             try
             {
-                _muaHangService.SavePhieuNhap(_maNv, maNcc, tongTien, _phieuNhapTable);
+                DataTable printTable = _phieuNhapTable.Copy();
+                object maHdn = _muaHangService.SavePhieuNhap(_maNv, maNcc, tongTien, _phieuNhapTable);
+
+                ShowPhieuNhapPreview(maHdn, printTable, tongTien, tenNcc);
+
                 _phieuNhapTable.Clear();
                 if (_chkNguyenLieuMoi != null)
                 {
@@ -408,6 +413,222 @@ namespace PBL3
             {
                 MessageBox.Show($"Lưu phiếu nhập thất bại.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ShowPhieuNhapPreview(object maHdn, DataTable detailTable, decimal tongTien, string tenNcc)
+        {
+            DateTime thoiGian = DateTime.Now;
+            string qrPayload = $"PNK-{thoiGian:yyyy-MM-dd}-{maHdn}";
+
+            Image? qrImage = null;
+            try
+            {
+                string url = $"https://api.qrserver.com/v1/create-qr-code/?size=170x170&data={Uri.EscapeDataString(qrPayload)}";
+                using System.Net.Http.HttpClient client = new();
+                byte[] bytes = client.GetByteArrayAsync(url).GetAwaiter().GetResult();
+                using System.IO.MemoryStream ms = new(bytes);
+                using Image tmp = Image.FromStream(ms);
+                qrImage = new Bitmap(tmp);
+            }
+            catch { }
+
+            System.Drawing.Printing.PrintDocument doc = new();
+            doc.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Receipt", 315, 1400);
+            doc.DefaultPageSettings.Margins = new System.Drawing.Printing.Margins(10, 10, 10, 10);
+            doc.PrintPage += (s, e) =>
+            {
+                using Font brandFont = new("Segoe UI", 11, FontStyle.Bold);
+                using Font titleFont = new("Segoe UI", 10, FontStyle.Bold);
+                using Font normalFont = new("Segoe UI", 8.5f);
+                using Font monoFont = new("Consolas", 8.5f);
+                using Font totalFont = new("Segoe UI", 10f, FontStyle.Bold);
+
+                float left = e.MarginBounds.Left;
+                float right = e.MarginBounds.Right;
+                float width = e.MarginBounds.Width;
+                float y = e.MarginBounds.Top;
+
+                using System.Drawing.StringFormat rightFmt = new() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Near };
+
+                void DrawCentered(string text, Font font)
+                {
+                    SizeF sz = e.Graphics.MeasureString(text, font);
+                    e.Graphics.DrawString(text, font, Brushes.Black, left + (width - sz.Width) / 2f, y);
+                    y += sz.Height + 1f;
+                }
+
+                void DrawLineRA(string label, string amount, Font font, Brush brush)
+                {
+                    e.Graphics.DrawString(label, font, brush, left, y);
+                    RectangleF ar = new(left, y, width, font.GetHeight(e.Graphics));
+                    e.Graphics.DrawString(amount, font, brush, ar, rightFmt);
+                    y += font.GetHeight(e.Graphics) + 1f;
+                }
+
+                // Header
+                DrawCentered("TỨ ĐẠI THIÊN LONG", brandFont);
+                DrawCentered("169 Nguyễn Lương Bằng", normalFont);
+                DrawCentered("SĐT: 0374895922", normalFont);
+                y += 2f;
+                e.Graphics.DrawLine(Pens.Gray, left, y, right, y);
+                y += 4f;
+
+                // Thông tin chung
+                DrawCentered("PHIẾU NHẬP KHO", titleFont);
+                e.Graphics.DrawString($"Mã phiếu: {maHdn}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
+                e.Graphics.DrawString($"Ngày: {thoiGian:dd/MM/yyyy HH:mm}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
+                e.Graphics.DrawString($"Nhà cung cấp: {tenNcc}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
+                y += 2f;
+                e.Graphics.DrawLine(Pens.Gray, left, y, right, y);
+                y += 4f;
+
+                // Bảng: Tên hàng | ĐVT | SL | Đơn giá | T.Tiền
+                float dvtW = 40f; float qtyW = 24f; float priceW = 52f; float totalW = 62f;
+                const float gap = 4f;
+                float nameW = width - dvtW - qtyW - priceW - totalW - (gap * 3f);
+
+                RectangleF nR = new(left, y, nameW, 16f);
+                RectangleF dR = new(nR.Right + gap, y, dvtW, 16f);
+                RectangleF qR = new(dR.Right + gap, y, qtyW, 16f);
+                RectangleF pR = new(qR.Right + gap, y, priceW, 16f);
+                RectangleF tR = new(pR.Right, y, totalW, 16f);
+
+                e.Graphics.DrawString("Tên hàng", monoFont, Brushes.Black, nR);
+                e.Graphics.DrawString("ĐVT", monoFont, Brushes.Black, dR);
+                e.Graphics.DrawString("SL", monoFont, Brushes.Black, qR, rightFmt);
+                e.Graphics.DrawString("Đơn giá", monoFont, Brushes.Black, pR, rightFmt);
+                e.Graphics.DrawString("T.Tiền", monoFont, Brushes.Black, tR, rightFmt);
+                y += 15f;
+                e.Graphics.DrawLine(Pens.LightGray, left, y, right, y);
+                y += 3f;
+
+                foreach (DataRow row in detailTable.Rows)
+                {
+                    string ten = Convert.ToString(row["Tên nguyên liệu"]) ?? "";
+                    string dvt = Convert.ToString(row["Đơn vị tính"]) ?? "";
+                    decimal sl = Convert.ToDecimal(row["Số lượng"]);
+                    decimal dg = Convert.ToDecimal(row["Đơn giá"]);
+                    decimal tt = Convert.ToDecimal(row["Thành tiền"]);
+
+                    nR = new(left, y, nameW, 14f);
+                    dR = new(nR.Right + gap, y, dvtW, 14f);
+                    qR = new(dR.Right + gap, y, qtyW, 14f);
+                    pR = new(qR.Right + gap, y, priceW, 14f);
+                    tR = new(pR.Right, y, totalW, 14f);
+
+                    e.Graphics.DrawString(ten, monoFont, Brushes.Black, nR);
+                    e.Graphics.DrawString(dvt, monoFont, Brushes.Black, dR);
+                    e.Graphics.DrawString($"{sl:N0}", monoFont, Brushes.Black, qR, rightFmt);
+                    e.Graphics.DrawString($"{dg:N0}", monoFont, Brushes.Black, pR, rightFmt);
+                    e.Graphics.DrawString($"{tt:N0}", monoFont, Brushes.Black, tR, rightFmt);
+                    y += 14f;
+                }
+
+                y += 2f;
+                e.Graphics.DrawLine(Pens.Gray, left, y, right, y);
+                y += 4f;
+
+                // Tổng tiền
+                DrawLineRA("TỔNG TIỀN:", $"{tongTien:N0} VNĐ", totalFont, Brushes.Black);
+
+                // Bằng chữ
+                string bangChu = DocSoTienBangChu(tongTien);
+                e.Graphics.DrawString($"Bằng chữ: {bangChu}", normalFont, Brushes.Black, left, y);
+                y += normalFont.GetHeight(e.Graphics) + 4f;
+
+                // QR
+                if (qrImage is not null)
+                {
+                    y += 3f;
+                    DrawCentered("Mã xác thực nhập kho", normalFont);
+                    const float qrSz = 74f;
+                    e.Graphics.DrawImage(qrImage, left + (width - qrSz) / 2f, y, qrSz, qrSz);
+                    y += qrSz + 6f;
+                }
+
+                // Chữ ký
+                y += 4f;
+                float signY = y;
+                float half = width / 2f;
+                e.Graphics.DrawString("Người giao hàng", normalFont, Brushes.Black, left, signY);
+                e.Graphics.DrawString("Người nhận", normalFont, Brushes.Black, left + half, signY);
+                signY += normalFont.GetHeight(e.Graphics) + 16f;
+                e.Graphics.DrawLine(Pens.Black, left, signY, left + half - 12f, signY);
+                e.Graphics.DrawLine(Pens.Black, left + half, signY, right, signY);
+            };
+
+            using PrintPreviewDialog preview = new()
+            {
+                Document = doc,
+                Width = 900,
+                Height = 700
+            };
+            preview.ShowDialog(this);
+
+            qrImage?.Dispose();
+        }
+
+        /// <summary>Đọc số tiền ra chữ tiếng Việt.</summary>
+        private static string DocSoTienBangChu(decimal soTien)
+        {
+            long so = (long)Math.Round(soTien, 0, MidpointRounding.AwayFromZero);
+            if (so == 0) return "Không đồng";
+
+            string[] donVi = { "", "nghìn", "triệu", "tỷ" };
+            string[] chu = { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
+
+            string DocBaChuSo(int n)
+            {
+                int tram = n / 100;
+                int chuc = (n % 100) / 10;
+                int dv = n % 10;
+                string result = "";
+                if (tram > 0) result = chu[tram] + " trăm";
+                if (chuc > 1)
+                {
+                    result += " " + chu[chuc] + " mươi";
+                    if (dv == 1) result += " mốt";
+                    else if (dv == 4) result += " tư";
+                    else if (dv == 5) result += " lăm";
+                    else if (dv > 0) result += " " + chu[dv];
+                }
+                else if (chuc == 1)
+                {
+                    result += " mười";
+                    if (dv == 5) result += " lăm";
+                    else if (dv > 0) result += " " + chu[dv];
+                }
+                else if (dv > 0)
+                {
+                    if (tram > 0) result += " lẻ";
+                    result += " " + chu[dv];
+                }
+                return result.Trim();
+            }
+
+            if (so < 0) return "Âm " + DocSoTienBangChu(-soTien);
+
+            var parts = new System.Collections.Generic.List<string>();
+            int groupIndex = 0;
+            long temp = so;
+            while (temp > 0)
+            {
+                int group = (int)(temp % 1000);
+                temp /= 1000;
+                if (group > 0)
+                {
+                    string s = DocBaChuSo(group);
+                    if (groupIndex < donVi.Length && !string.IsNullOrWhiteSpace(donVi[groupIndex]))
+                        s += " " + donVi[groupIndex];
+                    parts.Insert(0, s);
+                }
+                groupIndex++;
+            }
+
+            string ketQua = string.Join(" ", parts).Trim();
+            if (ketQua.Length > 0)
+                ketQua = char.ToUpper(ketQua[0]) + ketQua[1..];
+            return ketQua + " đồng chẵn";
         }
 
         private void btn_QLKH_Paint(object sender, PaintEventArgs e)

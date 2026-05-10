@@ -31,5 +31,10 @@ namespace PBL3.Business
         {
             return _repository.ValidateManagerPassword(password);
         }
+
+        public decimal GetTienHangGoc(string maHd)
+        {
+            return _repository.GetTienHangGoc(maHd);
+        }
     }
 }

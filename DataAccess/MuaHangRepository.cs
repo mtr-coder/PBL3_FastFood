@@ -65,7 +65,7 @@ ORDER BY DonViTinh";
             return dt;
         }
 
-        public void SavePhieuNhap(string maNv, object maNcc, decimal tongTien, DataTable phieuNhapTable)
+        public object SavePhieuNhap(string maNv, object maNcc, decimal tongTien, DataTable phieuNhapTable)
         {
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
@@ -78,20 +78,21 @@ ORDER BY DonViTinh";
                 object maNlValue = row["MaNL"];
                 if (string.IsNullOrWhiteSpace(Convert.ToString(maNlValue)))
                 {
-                    string tenNlMoi = Convert.ToString(row["TenNL"]) ?? string.Empty;
-                    string dvtMoi = Convert.ToString(row["DonViTinh"]) ?? string.Empty;
-                    decimal donGiaMoi = Convert.ToDecimal(row["DonGia"]);
+                    string tenNlMoi = Convert.ToString(row["Tên nguyên liệu"]) ?? string.Empty;
+                    string dvtMoi = Convert.ToString(row["Đơn vị tính"]) ?? string.Empty;
+                    decimal donGiaMoi = Convert.ToDecimal(row["Đơn giá"]);
                     maNlValue = EnsureNguyenLieuExists(conn, tran, tenNlMoi, dvtMoi, donGiaMoi);
                 }
 
-                decimal soLuong = Convert.ToDecimal(row["SoLuong"]);
-                decimal donGia = Convert.ToDecimal(row["DonGia"]);
+                decimal soLuong = Convert.ToDecimal(row["Số lượng"]);
+                decimal donGia = Convert.ToDecimal(row["Đơn giá"]);
 
                 InsertChiTietNhap(conn, tran, maHdn, maNlValue, soLuong, donGia);
                 UpdateSoLuongTon(conn, tran, maNlValue, soLuong, donGia);
             }
 
             tran.Commit();
+            return maHdn;
         }
 
         private static int EnsureNguyenLieuExists(SqlConnection conn, SqlTransaction tran, string tenNl, string donViTinh, decimal donGia)

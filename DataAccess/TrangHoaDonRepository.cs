@@ -9,15 +9,25 @@ namespace PBL3.DataAccess
         public DataTable GetHoaDonMaster(string loaiHoaDon, string maNv)
         {
             string sql = loaiHoaDon == "ban"
-                ? @"SELECT hdb.MaHDB AS MaHD, hdb.NgayBan AS ThoiGian, ISNULL(kh.SDT, N'Khách lẻ') AS DoiTac,
-                          ISNULL(kh.SDT, N'') AS SDT, ISNULL(hdb.TongTien,0) AS TongTien, ISNULL(nv.HoTen, N'-') AS NhanVien
+                ? @"SELECT hdb.MaHDB AS MaHD, hdb.NgayBan AS ThoiGian, ISNULL(kh.SDT, N'Kh' + NCHAR(225) + N'ch l' + NCHAR(7867)) AS DoiTac,
+                          ISNULL(kh.SDT, N'') AS SDT, ISNULL(hdb.TongTien,0) AS TongTien, ISNULL(nv.HoTen, N'-') AS NhanVien,
+                          ISNULL(hv.TenHang, N'') AS TenHang, ISNULL(hv.PhanTramGiam, 0) AS PhanTramGiam,
+                          ISNULL(kh.DiemTichLuy, 0) AS DiemTichLuy
                    FROM HOA_DON_BAN hdb
                    LEFT JOIN KHACH_HANG kh ON kh.MaKH = hdb.MaKH
                    LEFT JOIN NHAN_VIEN nv ON nv.MaNV = hdb.MaNV
+                   OUTER APPLY (
+                       SELECT TOP 1 hv2.TenHang, hv2.PhanTramGiam
+                       FROM dbo.HANG_THANH_VIEN hv2
+                       WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuyTronDoi, 0)
+                       ORDER BY hv2.DiemToiThieu DESC, hv2.MaHang DESC
+                   ) hv
                    WHERE hdb.MaNV = @MaNV
                    ORDER BY hdb.MaHDB DESC"
                 : @"SELECT hdn.MaHDN AS MaHD, hdn.NgayNhap AS ThoiGian, ISNULL(ncc.TenNCC, N'-') AS DoiTac,
-                          CAST(N'' AS NVARCHAR(20)) AS SDT, ISNULL(hdn.TongTien,0) AS TongTien, ISNULL(nv.HoTen, N'-') AS NhanVien
+                          ISNULL(ncc.SDT, N'') AS SDT, ISNULL(hdn.TongTien,0) AS TongTien, ISNULL(nv.HoTen, N'-') AS NhanVien,
+                          CAST(N'' AS NVARCHAR(50)) AS TenHang, CAST(0 AS INT) AS PhanTramGiam,
+                          CAST(0 AS INT) AS DiemTichLuy
                    FROM HOA_DON_NHAP hdn
                    LEFT JOIN NHA_CUNG_CAP ncc ON ncc.MaNCC = hdn.MaNCC
                    LEFT JOIN NHAN_VIEN nv ON nv.MaNV = hdn.MaNV
@@ -31,6 +41,53 @@ namespace PBL3.DataAccess
             DataTable dt = new DataTable();
             da.Fill(dt);
             return dt;
+        }
+
+        /// <summary>Tính tổng tiền hàng gốc (trước giảm giá) từ chi tiết hóa đơn bán.</summary>
+        public decimal GetTienHangGoc(string maHd)
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+
+            string? thanhTienCol = DetectFirstColumn(conn, "CT_HOA_DON_BAN", "ThanhTien", "TongTien", "Tien", "GiaTien");
+            string? donGiaCol = DetectFirstColumn(conn, "CT_HOA_DON_BAN", "DonGia", "DonGiaBan", "Gia", "GiaBan", "DonGiaCT", "DonGiaBanLe", "GiaTien");
+            string? mdvGiaCol = DetectFirstColumn(conn, "MON_DON_VI_PHUC_VU", "DonGia", "GiaBan", "Gia", "DonGiaBan", "GiaTien");
+            string? mdvMaDvpvCol = DetectFirstColumn(conn, "MON_DON_VI_PHUC_VU", "MaDVPV", "MaDV", "MaDonViPhucVu");
+            bool hasCtMaDvpv = TableColumnExists(conn, "CT_HOA_DON_BAN", "MaDVPV");
+
+            string donGiaExpr;
+            string mdvJoin = string.Empty;
+            if (donGiaCol is not null)
+            {
+                donGiaExpr = $"ISNULL(ct.[{donGiaCol}], 0)";
+            }
+            else if (mdvGiaCol is not null && hasCtMaDvpv && !string.IsNullOrWhiteSpace(mdvMaDvpvCol))
+            {
+                mdvJoin = $"\nLEFT JOIN dbo.MON_DON_VI_PHUC_VU mdv ON mdv.MaMon = ct.MaMon AND mdv.[{mdvMaDvpvCol}] = ct.MaDVPV";
+                string? monGiaCol = DetectFirstColumn(conn, "MON_BAN", "DonGia", "GiaBan", "Gia", "DonGiaBan", "DonGiaBanLe", "GiaTien");
+                string monGiaExpr = monGiaCol is null ? "CAST(0 AS DECIMAL(18,2))" : $"ISNULL(mb.[{monGiaCol}], 0)";
+                donGiaExpr = $"ISNULL(mdv.[{mdvGiaCol}], {monGiaExpr})";
+            }
+            else
+            {
+                string? monGiaCol = DetectFirstColumn(conn, "MON_BAN", "DonGia", "GiaBan", "Gia", "DonGiaBan", "DonGiaBanLe", "GiaTien");
+                donGiaExpr = monGiaCol is null ? "CAST(0 AS DECIMAL(18,2))" : $"ISNULL(mb.[{monGiaCol}], 0)";
+            }
+
+            string thanhTienExpr = thanhTienCol is not null
+                ? $"ISNULL(ct.[{thanhTienCol}], ISNULL(ct.SoLuong,0) * {donGiaExpr})"
+                : $"ISNULL(ct.SoLuong,0) * {donGiaExpr}";
+
+            string sql = $@"SELECT ISNULL(SUM({thanhTienExpr}), 0)
+FROM CT_HOA_DON_BAN ct
+LEFT JOIN MON_BAN mb ON mb.MaMon = ct.MaMon
+{mdvJoin}
+WHERE ct.MaHDB = @MaHD";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaHD", SqlDbType.VarChar, 20).Value = maHd;
+            object? result = cmd.ExecuteScalar();
+            return result is null || result == DBNull.Value ? 0m : Convert.ToDecimal(result, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public DataTable GetHoaDonDetail(string loaiHoaDon, string maHd)
@@ -86,6 +143,7 @@ WHERE ct.MaHDB = @MaHD";
 
                 sql = $@"
 SELECT ISNULL(nl.TenNL, CONVERT(NVARCHAR(100), ct.MaNL)) AS TenHang,
+       ISNULL(nl.DonViTinh, N'') AS DonViTinh,
        ISNULL(ct.SoLuong, 0) AS SoLuong,
        CASE WHEN {donGiaExpr} = 0 AND ISNULL(ct.SoLuong,0) > 0 THEN ({thanhTienExpr} / NULLIF(ISNULL(ct.SoLuong,0),0)) ELSE {donGiaExpr} END AS DonGia,
        {thanhTienExpr} AS ThanhTien

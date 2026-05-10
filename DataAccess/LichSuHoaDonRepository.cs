@@ -100,15 +100,25 @@ WHERE NgayAny IS NOT NULL";
 SELECT h.MaHDB AS MaHD,
        h.NgayBan AS ThoiGian,
        ISNULL(nv.HoTen, N'') AS NguoiThucHien,
-       ISNULL(kh.SDT, N'Khách lẻ') AS DoiTac,
+       ISNULL(kh.SDT, N'Kh' + NCHAR(225) + N'ch l' + NCHAR(7867)) AS DoiTac,
        ISNULL(kh.SDT, N'') AS SDTKhach,
        ISNULL(h.TongTien, 0) AS TongTien,
+       ISNULL(hv.TenHang, N'') AS TenHang,
+       ISNULL(hv.PhanTramGiam, 0) AS PhanTramGiam,
+       ISNULL(kh.DiemTichLuy, 0) AS DiemTichLuy,
+       CAST(N'' AS NVARCHAR(20)) AS SDT,
        {statusExpr} AS TrangThai,
        CONVERT(VARCHAR(20), h.MaNV) AS MaNV,
        CONVERT(VARCHAR(20), h.MaKH) AS MaDoiTac
 FROM dbo.HOA_DON_BAN h
 LEFT JOIN dbo.NHAN_VIEN nv ON nv.MaNV = h.MaNV
 LEFT JOIN dbo.KHACH_HANG kh ON kh.MaKH = h.MaKH
+OUTER APPLY (
+    SELECT TOP 1 hv2.TenHang, hv2.PhanTramGiam
+    FROM dbo.HANG_THANH_VIEN hv2
+    WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuyTronDoi, 0)
+    ORDER BY hv2.DiemToiThieu DESC, hv2.MaHang DESC
+) hv
 WHERE h.NgayBan >= @FromDate AND h.NgayBan < @ToDate";
 
                 if (schema.HasTrangThaiHdb)
@@ -134,6 +144,10 @@ SELECT h.MaHDN AS MaHD,
        ISNULL(ncc.TenNCC, N'') AS DoiTac,
        CAST(N'' AS NVARCHAR(20)) AS SDTKhach,
        ISNULL(h.TongTien, 0) AS TongTien,
+       CAST(N'' AS NVARCHAR(50)) AS TenHang,
+       CAST(0 AS INT) AS PhanTramGiam,
+       CAST(0 AS INT) AS DiemTichLuy,
+       ISNULL(ncc.SDT, N'') AS SDT,
        {statusExpr} AS TrangThai,
        CONVERT(VARCHAR(20), h.MaNV) AS MaNV,
        CONVERT(VARCHAR(20), h.MaNCC) AS MaDoiTac
@@ -237,6 +251,52 @@ WHERE ct.MaHDN = @MaHD";
             DataTable detail = new DataTable();
             da.Fill(detail);
             return detail;
+        }
+
+        public decimal GetTienHangGoc(string maHd)
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+
+            string? thanhTienCol = DetectFirstColumn(conn, "CT_HOA_DON_BAN", "ThanhTien", "TongTien", "Tien", "GiaTien");
+            string? donGiaCol = DetectFirstColumn(conn, "CT_HOA_DON_BAN", "DonGia", "DonGiaBan", "Gia", "GiaBan", "DonGiaCT", "DonGiaBanLe", "GiaTien");
+            string? mdvGiaCol = DetectFirstColumn(conn, "MON_DON_VI_PHUC_VU", "DonGia", "GiaBan", "Gia", "DonGiaBan", "GiaTien");
+            string? mdvMaDvpvCol = DetectFirstColumn(conn, "MON_DON_VI_PHUC_VU", "MaDVPV", "MaDV", "MaDonViPhucVu");
+            bool hasCtMaDvpv = TableColumnExists(conn, "CT_HOA_DON_BAN", "MaDVPV");
+
+            string donGiaExpr;
+            string mdvJoin = string.Empty;
+            if (donGiaCol is not null)
+            {
+                donGiaExpr = $"ISNULL(ct.[{donGiaCol}], 0)";
+            }
+            else if (mdvGiaCol is not null && hasCtMaDvpv && !string.IsNullOrWhiteSpace(mdvMaDvpvCol))
+            {
+                mdvJoin = $"\nLEFT JOIN dbo.MON_DON_VI_PHUC_VU mdv ON mdv.MaMon = ct.MaMon AND mdv.[{mdvMaDvpvCol}] = ct.MaDVPV";
+                string? monGiaCol = DetectFirstColumn(conn, "MON_BAN", "DonGia", "GiaBan", "Gia", "DonGiaBan", "DonGiaBanLe", "GiaTien");
+                string monGiaExpr = monGiaCol is null ? "CAST(0 AS DECIMAL(18,2))" : $"ISNULL(mb.[{monGiaCol}], 0)";
+                donGiaExpr = $"ISNULL(mdv.[{mdvGiaCol}], {monGiaExpr})";
+            }
+            else
+            {
+                string? monGiaCol = DetectFirstColumn(conn, "MON_BAN", "DonGia", "GiaBan", "Gia", "DonGiaBan", "DonGiaBanLe", "GiaTien");
+                donGiaExpr = monGiaCol is null ? "CAST(0 AS DECIMAL(18,2))" : $"ISNULL(mb.[{monGiaCol}], 0)";
+            }
+
+            string thanhTienExpr = thanhTienCol is not null
+                ? $"ISNULL(ct.[{thanhTienCol}], ISNULL(ct.SoLuong,0) * {donGiaExpr})"
+                : $"ISNULL(ct.SoLuong,0) * {donGiaExpr}";
+
+            string sql = $@"SELECT ISNULL(SUM({thanhTienExpr}), 0)
+FROM CT_HOA_DON_BAN ct
+LEFT JOIN MON_BAN mb ON mb.MaMon = ct.MaMon
+{mdvJoin}
+WHERE ct.MaHDB = @MaHD";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaHD", SqlDbType.VarChar, 20).Value = maHd;
+            object? result = cmd.ExecuteScalar();
+            return Convert.ToDecimal(result ?? 0m);
         }
 
         public int GetCanceledCount(DateTime fromDate, DateTime toDate, LichSuHoaDonSchemaInfo schema)

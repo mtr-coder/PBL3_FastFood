@@ -27,9 +27,9 @@ namespace PBL3.Business
             return _repository.GetDonViTinh();
         }
 
-        public void SavePhieuNhap(string maNv, object maNcc, decimal tongTien, DataTable phieuNhapTable)
+        public object SavePhieuNhap(string maNv, object maNcc, decimal tongTien, DataTable phieuNhapTable)
         {
-            _repository.SavePhieuNhap(maNv, maNcc, tongTien, phieuNhapTable);
+            return _repository.SavePhieuNhap(maNv, maNcc, tongTien, phieuNhapTable);
         }
     }
 }

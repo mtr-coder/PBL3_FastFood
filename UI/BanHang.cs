@@ -1551,10 +1551,24 @@ namespace PBL3
             _printContent = string.Empty;
 
             string khachHang = "Khách lẻ";
-            if (_bhChkKhongLienKetKhach?.Checked == false && _bhCboKhachHang?.Text is not null)
+            string tenHang = string.Empty;
+            int phanTramGiam = 0;
+            int diemTichLuy = 0;
+            if (_bhChkKhongLienKetKhach?.Checked == false && _bhCboKhachHang?.SelectedItem is DataRowView rv)
             {
-                khachHang = _bhCboKhachHang.Text.Trim();
+                khachHang = (_bhCboKhachHang.Text ?? "").Trim();
+                tenHang = Convert.ToString(rv["TenHang"]) ?? string.Empty;
+                phanTramGiam = Convert.ToInt32(rv["PhanTramGiam"] ?? 0);
+                diemTichLuy = Convert.ToInt32(rv["DiemTichLuy"] ?? 0);
             }
+
+            // Tính tiền hàng gốc từ detailTable
+            decimal tienHangGoc = detailTable.AsEnumerable().Sum(r => r.Field<decimal>("ThanhTien"));
+            decimal giamHang = phanTramGiam > 0 ? tienHangGoc * phanTramGiam / 100m : 0m;
+            int diemDung = _bhNudDiemDung is null ? 0 : (int)_bhNudDiemDung.Value;
+            decimal giamDiem = diemDung * 1000m;
+            decimal tongGiam = giamHang + giamDiem;
+            bool coGiamGia = tongGiam > 0;
 
             PrintDocument doc = new PrintDocument();
             doc.DefaultPageSettings.PaperSize = new PaperSize("Receipt", 315, 1200);
@@ -1565,12 +1579,15 @@ namespace PBL3
                 using Font titleFont = new Font("Segoe UI", 10, FontStyle.Bold);
                 using Font normalFont = new Font("Segoe UI", 8.5f);
                 using Font monoFont = new Font("Consolas", 8.5f);
-                using Font totalFont = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+                using Font totalFont = new Font("Segoe UI", 10f, FontStyle.Bold);
+                using Font discountFont = new Font("Segoe UI", 8.5f, FontStyle.Italic);
 
                 float left = e.MarginBounds.Left;
                 float right = e.MarginBounds.Right;
                 float width = e.MarginBounds.Width;
                 float y = e.MarginBounds.Top;
+
+                using StringFormat rightFormat = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Near };
 
                 void DrawCentered(string text, Font font)
                 {
@@ -1580,6 +1597,15 @@ namespace PBL3
                     y += s2.Height + 1f;
                 }
 
+                void DrawLineRightAligned(string label, string amount, Font font, Brush brush)
+                {
+                    e.Graphics.DrawString(label, font, brush, left, y);
+                    RectangleF amountRect = new RectangleF(left, y, width, font.GetHeight(e.Graphics));
+                    e.Graphics.DrawString(amount, font, brush, amountRect, rightFormat);
+                    y += font.GetHeight(e.Graphics) + 1f;
+                }
+
+                // === HEADER ===
                 DrawCentered("TỨ ĐẠI THIÊN LONG", brandFont);
                 DrawCentered("169 Nguyễn Lương Bằng", normalFont);
                 DrawCentered("SĐT: 0374895922", normalFont);
@@ -1588,15 +1614,26 @@ namespace PBL3
                 e.Graphics.DrawLine(Pens.Gray, left, y, right, y);
                 y += 4f;
 
+                // === THÔNG TIN CHUNG ===
                 DrawCentered("HÓA ĐƠN BÁN HÀNG", titleFont);
                 e.Graphics.DrawString($"Mã hóa đơn: {maHdb}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
                 e.Graphics.DrawString($"Ngày: {thoiGian:dd/MM/yyyy HH:mm}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
+                // Nhân viên lên trước Khách hàng
+                e.Graphics.DrawString($"Nhân viên: {_txtHoTen.Text.Trim()}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
                 e.Graphics.DrawString($"Khách hàng: {khachHang}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
-                e.Graphics.DrawString($"Nhân viên: {_txtHoTen.Text.Trim()}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 3f;
+
+                // Hiện hạng thành viên + điểm nếu có
+                if (!string.IsNullOrWhiteSpace(tenHang))
+                {
+                    e.Graphics.DrawString($"Hạng thành viên: {tenHang}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
+                    e.Graphics.DrawString($"Điểm tích lũy: {diemTichLuy:N0}", normalFont, Brushes.Black, left, y); y += normalFont.GetHeight(e.Graphics) + 1f;
+                }
+                y += 2f;
 
                 e.Graphics.DrawLine(Pens.Gray, left, y, right, y);
                 y += 4f;
 
+                // === BẢNG DANH SÁCH MÓN ĂN ===
                 float qtyW = 24f;
                 float priceW = 52f;
                 float totalW = 62f;
@@ -1607,7 +1644,6 @@ namespace PBL3
                 RectangleF qtyRect = new RectangleF(nameRect.Right + colGap, y, qtyW, 16f);
                 RectangleF priceRect = new RectangleF(qtyRect.Right + colGap, y, priceW, 16f);
                 RectangleF totalRect = new RectangleF(priceRect.Right, y, totalW, 16f);
-                using StringFormat rightFormat = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Near };
 
                 e.Graphics.DrawString("Tên món", monoFont, Brushes.Black, nameRect);
                 e.Graphics.DrawString("SL", monoFont, Brushes.Black, qtyRect, rightFormat);
@@ -1641,8 +1677,32 @@ namespace PBL3
                 e.Graphics.DrawLine(Pens.Gray, left, y, right, y);
                 y += 4f;
 
-                e.Graphics.DrawString($"TỔNG CỘNG: {tongTien:N0} đ", totalFont, Brushes.Black, left, y);
-                y += totalFont.GetHeight(e.Graphics) + 4f;
+                // === PHẦN THANH TOÁN ===
+                if (coGiamGia)
+                {
+                    // Tiền hàng gốc
+                    DrawLineRightAligned("Tiền hàng:", $"{tienHangGoc:N0} đ", normalFont, Brushes.Black);
+
+                    // Giảm giá hạng (chỉ hiện nếu PhanTramGiam > 0)
+                    if (phanTramGiam > 0)
+                    {
+                        DrawLineRightAligned($"Giảm giá hạng ({tenHang} - {phanTramGiam}%):", $"- {giamHang:N0} đ", discountFont, Brushes.Black);
+                    }
+
+                    // Tiêu điểm (hiện nếu khách có dùng điểm)
+                    if (diemDung > 0)
+                    {
+                        DrawLineRightAligned($"Tiêu điểm ({diemDung} điểm):", $"- {giamDiem:N0} đ", discountFont, Brushes.Black);
+                    }
+
+                    // Tổng giảm giá
+                    DrawLineRightAligned("Tổng giảm giá:", $"- {tongGiam:N0} đ", normalFont, Brushes.Black);
+                    y += 2f;
+                }
+
+                // TỔNG CỘNG - in đậm, cỡ to, căn phải
+                DrawLineRightAligned("TỔNG CỘNG:", $"{tongTien:N0} đ", totalFont, Brushes.Black);
+                y += 2f;
 
                 if (_printQrImage is not null)
                 {
