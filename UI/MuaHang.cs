@@ -225,6 +225,12 @@ namespace PBL3
             DataTable dt = _muaHangService.GetNguyenLieu();
             dgvNguyenLieu.DataSource = dt;
 
+            SetNguyenLieuHeaderText("MaNL", "Mã NL");
+            SetNguyenLieuHeaderText("TenNL", "Tên");
+            SetNguyenLieuHeaderText("DonViTinh", "Đơn vị tính");
+            SetNguyenLieuHeaderText("GiaNhap", "Giá nhập");
+            SetNguyenLieuHeaderText("SoLuongTon", "Số lượng tồn");
+
             if (dgvNguyenLieu.Columns.Contains("GiaNhap"))
             {
                 dgvNguyenLieu.Columns["GiaNhap"].DefaultCellStyle.Format = "N0";
@@ -234,6 +240,14 @@ namespace PBL3
             {
                 dgvNguyenLieu.Rows[0].Selected = true;
                 SyncInputFromSelectedNguyenLieu();
+            }
+        }
+
+        private void SetNguyenLieuHeaderText(string columnName, string headerText)
+        {
+            if (dgvNguyenLieu.Columns.Contains(columnName))
+            {
+                dgvNguyenLieu.Columns[columnName].HeaderText = headerText;
             }
         }
 

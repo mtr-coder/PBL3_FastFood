@@ -27,6 +27,11 @@ namespace PBL3.Business
             _repository.DeleteHoaDon(loaiHoaDon, maHd);
         }
 
+        public bool RequestCancelBanInvoice(string maHd, string lyDoHuy)
+        {
+            return _repository.RequestCancelBanInvoice(maHd, lyDoHuy);
+        }
+
         public bool ValidateManagerPassword(string password)
         {
             return _repository.ValidateManagerPassword(password);

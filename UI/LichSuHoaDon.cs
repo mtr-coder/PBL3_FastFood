@@ -401,6 +401,272 @@ namespace PBL3
         {
             int soDonHuy = _lichSuHoaDonService.GetCanceledCount(_dtpTuNgay.Value.Date, _dtpDenNgay.Value.Date, _schemaInfo);
             _lblSoDonHuyValue.Text = soDonHuy.ToString(CultureInfo.InvariantCulture);
+
+            if (!_isAdmin)
+            {
+                pnlChoDuyetHuy.Visible = false;
+                return;
+            }
+
+            int pendingCount = _lichSuHoaDonService.GetPendingCancelCount(_dtpTuNgay.Value.Date, _dtpDenNgay.Value.Date, _schemaInfo);
+
+            pnlChoDuyetHuy.Visible = true;
+            lblChoDuyetHuyTitle.Text = $"Đơn chờ duyệt ({pendingCount})";
+        }
+
+        private void pnlChoDuyetHuy_Click(object? sender, EventArgs e)
+        {
+            if (!_isAdmin)
+            {
+                return;
+            }
+
+            ShowPendingCancelPopup();
+        }
+
+        private void ShowPendingCancelPopup()
+        {
+            DataTable pending = _lichSuHoaDonService.GetPendingCancelList(_dtpTuNgay.Value.Date, _dtpDenNgay.Value.Date, _schemaInfo);
+
+            using Form popup = new Form
+            {
+                Text = "Duyệt hóa đơn hủy",
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                Width = 1080, // Tăng chiều rộng Form từ 940 lên 1080 để xem hết các cột
+                Height = 540
+            };
+
+            // Chỉnh lại Panel trái nhỏ hơn 1 chút để nhường không gian cho Panel chi tiết bên phải
+            Panel leftPanel = new Panel { Dock = DockStyle.Left, Width = 560, Padding = new Padding(10) };
+            Panel rightPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10) };
+
+            Label lblLeft = new Label { Text = $"Danh sách đơn chờ ({pending.Rows.Count})", Dock = DockStyle.Top, Height = 26, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
+            DataGridView dgvPending = new DataGridView
+            {
+                Dock = DockStyle.Fill,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                RowHeadersVisible = false,
+                BackgroundColor = Color.WhiteSmoke,
+                BorderStyle = BorderStyle.None,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells
+            };
+
+            leftPanel.Controls.Add(dgvPending);
+            leftPanel.Controls.Add(lblLeft);
+
+            Label lblRight = new Label { Text = "Chi tiết hóa đơn", Dock = DockStyle.Top, Height = 26, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
+            DataGridView dgvDetail = new DataGridView
+            {
+                Dock = DockStyle.Top,
+                Height = 260,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                RowHeadersVisible = false,
+                BackgroundColor = Color.WhiteSmoke,
+                BorderStyle = BorderStyle.None,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells
+            };
+
+            Label lblReason = new Label { Text = "Lý do hủy", Dock = DockStyle.Top, Height = 22 };
+            TextBox txtReason = new TextBox
+            {
+                Dock = DockStyle.Top,
+                Height = 70,
+                Multiline = true,
+                ReadOnly = true,
+                ScrollBars = ScrollBars.Vertical
+            };
+
+            FlowLayoutPanel buttonPanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 50,
+                FlowDirection = FlowDirection.RightToLeft // Vẫn giữ RightToLeft để neo các nút sát mép phải
+            };
+
+            Button btnApprove = new Button { Text = "Đồng ý hủy", Width = 110, Height = 32, BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            // Đổi màu nút Từ chối sang màu đỏ (IndianRed)
+            Button btnReject = new Button { Text = "Từ chối", Width = 90, Height = 32, BackColor = Color.IndianRed, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            Button btnClose = new Button { Text = "Thoát", Width = 80, Height = 32, BackColor = Color.Silver, ForeColor = Color.Black, FlatStyle = FlatStyle.Flat };
+
+            // Add ngược thứ tự do FlowDirection là RightToLeft
+            // Nút nào Add trước sẽ nằm sát bên phải. Thứ tự xuất hiện sẽ là: Đồng ý (trái) -> Từ chối (giữa) -> Thoát (phải)
+            buttonPanel.Controls.Add(btnClose);
+            buttonPanel.Controls.Add(btnReject);
+            buttonPanel.Controls.Add(btnApprove);
+
+            rightPanel.Controls.Add(buttonPanel);
+            rightPanel.Controls.Add(txtReason);
+            rightPanel.Controls.Add(lblReason);
+            rightPanel.Controls.Add(dgvDetail);
+            rightPanel.Controls.Add(lblRight);
+
+            popup.Controls.Add(rightPanel);
+            popup.Controls.Add(leftPanel);
+
+            dgvPending.DataSource = pending;
+            ConfigurePendingGrid(dgvPending);
+
+            void LoadSelectedPending()
+            {
+                if (dgvPending.CurrentRow is null)
+                {
+                    dgvDetail.DataSource = null;
+                    txtReason.Text = string.Empty;
+                    return;
+                }
+
+                string maHd = Convert.ToString(dgvPending.CurrentRow.Cells["MaHD"].Value) ?? string.Empty;
+                txtReason.Text = Convert.ToString(dgvPending.CurrentRow.Cells["LyDoHuy"].Value) ?? string.Empty;
+                // Chi tiết hóa đơn
+                DataTable detail = _lichSuHoaDonService.GetDetailData("BAN", maHd);
+                dgvDetail.DataSource = detail;
+                ConfigurePopupDetailGrid(dgvDetail);
+            }
+
+            dgvPending.SelectionChanged += (_, __) => LoadSelectedPending();
+
+            btnReject.Click += (_, __) =>
+            {
+                if (dgvPending.CurrentRow is null) return;
+
+                string maHd = Convert.ToString(dgvPending.CurrentRow.Cells["MaHD"].Value) ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(maHd)) return;
+
+                try
+                {
+                    _lichSuHoaDonService.RejectCancelRequest(maHd);
+                    pending.Rows.RemoveAt(dgvPending.CurrentRow.Index);
+                    LoadTopMetrics();
+                    LoadMasterData();
+                    LoadSelectedPending();
+                    MessageBox.Show("Đã từ chối hủy hóa đơn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Từ chối yêu cầu thất bại.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
+            btnClose.Click += (_, __) => popup.Close();
+
+            btnApprove.Click += (_, __) =>
+            {
+                if (dgvPending.CurrentRow is null) return;
+
+                string maHd = Convert.ToString(dgvPending.CurrentRow.Cells["MaHD"].Value) ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(maHd)) return;
+
+                try
+                {
+                    _lichSuHoaDonService.CancelInvoice("BAN", maHd, _schemaInfo);
+                    pending.Rows.RemoveAt(dgvPending.CurrentRow.Index);
+                    LoadTopMetrics();
+                    LoadMasterData();
+                    LoadSelectedPending();
+                    MessageBox.Show("Đã hủy hóa đơn thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Duyệt hủy hóa đơn thất bại.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
+            if (dgvPending.Rows.Count > 0)
+            {
+                dgvPending.Rows[0].Selected = true;
+                dgvPending.CurrentCell = dgvPending.Rows[0].Cells[0];
+                LoadSelectedPending();
+            }
+
+            popup.ShowDialog(this);
+        }
+
+        private static void ConfigurePendingGrid(DataGridView dgv)
+        {
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+
+            if (dgv.Columns.Contains("MaHD")) dgv.Columns["MaHD"].HeaderText = "Mã HĐ";
+            if (dgv.Columns.Contains("ThoiGian"))
+            {
+                dgv.Columns["ThoiGian"].HeaderText = "Thời gian";
+                dgv.Columns["ThoiGian"].DefaultCellStyle.Format = "HH:mm - dd/MM";
+                dgv.Columns["ThoiGian"].Width = 110;
+            }
+
+            if (dgv.Columns.Contains("NhanVien"))
+            {
+                dgv.Columns["NhanVien"].HeaderText = "Nhân viên";
+                dgv.Columns["NhanVien"].Width = 130;
+            }
+
+            if (dgv.Columns.Contains("DoiTac"))
+            {
+                dgv.Columns["DoiTac"].HeaderText = "Khách hàng";
+                dgv.Columns["DoiTac"].Width = 120;
+            }
+
+            if (dgv.Columns.Contains("TongTien"))
+            {
+                dgv.Columns["TongTien"].HeaderText = "Tổng tiền";
+                dgv.Columns["TongTien"].DefaultCellStyle.Format = "N0";
+                dgv.Columns["TongTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgv.Columns["TongTien"].Width = 100;
+            }
+
+            if (dgv.Columns.Contains("LyDoHuy"))
+            {
+                dgv.Columns["LyDoHuy"].Visible = false;
+            }
+        }
+
+        private static void ConfigurePopupDetailGrid(DataGridView dgv)
+        {
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+
+            if (dgv.Columns.Contains("TenHang"))
+            {
+                dgv.Columns["TenHang"].HeaderText = "Tên món";
+                dgv.Columns["TenHang"].Width = 180;
+            }
+
+            if (dgv.Columns.Contains("SoLuong"))
+            {
+                dgv.Columns["SoLuong"].HeaderText = "SL";
+                dgv.Columns["SoLuong"].Width = 45;
+                dgv.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+
+            if (dgv.Columns.Contains("DonGia"))
+            {
+                dgv.Columns["DonGia"].HeaderText = "Đơn giá";
+                dgv.Columns["DonGia"].Width = 90;
+                dgv.Columns["DonGia"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgv.Columns["DonGia"].DefaultCellStyle.Format = "N0";
+            }
+
+            if (dgv.Columns.Contains("ThanhTien"))
+            {
+                dgv.Columns["ThanhTien"].HeaderText = "Thành tiền";
+                dgv.Columns["ThanhTien"].Width = 100;
+                dgv.Columns["ThanhTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgv.Columns["ThanhTien"].DefaultCellStyle.Format = "N0";
+            }
+
+            if (dgv.Columns.Contains("GhiChu"))
+            {
+                dgv.Columns["GhiChu"].Visible = false;
+            }
         }
 
         private void BtnLamMoi_Click(object? sender, EventArgs e)

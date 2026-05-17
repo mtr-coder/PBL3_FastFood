@@ -43,6 +43,21 @@ namespace PBL3.Business
             return _repository.GetCanceledCount(fromDate, toDate, schema);
         }
 
+        public int GetPendingCancelCount(DateTime fromDate, DateTime toDate, LichSuHoaDonSchemaInfo schema)
+        {
+            return _repository.GetPendingCancelCount(fromDate, toDate, schema);
+        }
+
+        public DataTable GetPendingCancelList(DateTime fromDate, DateTime toDate, LichSuHoaDonSchemaInfo schema)
+        {
+            return _repository.GetPendingCancelList(fromDate, toDate, schema);
+        }
+
+        public void RejectCancelRequest(string maHd)
+        {
+            _repository.RejectCancelRequest(maHd);
+        }
+
         public void CancelInvoice(string invoiceType, string maHd, LichSuHoaDonSchemaInfo schema)
         {
             _repository.CancelInvoice(invoiceType, maHd, schema);

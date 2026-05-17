@@ -210,6 +210,12 @@ namespace PBL3.UI
 
         private void _btnHuyHoaDon_Click(object? sender, EventArgs e)
         {
+            if (_loaiHoaDon != "ban")
+            {
+                MessageBox.Show("Chỉ hỗ trợ yêu cầu hủy hóa đơn bán.");
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(_selectedMaHD))
             {
                 MessageBox.Show("Vui lòng chọn hóa đơn cần hủy.");
@@ -224,22 +230,33 @@ namespace PBL3.UI
 
             if (DateTime.Now.Subtract(createdAt).TotalMinutes > 10)
             {
-                string? pass = PromptForPassword("Hóa đơn quá 10 phút. Nhập mật khẩu Quản lý/Admin để xác nhận.");
-                if (string.IsNullOrWhiteSpace(pass) || !ValidateManagerPassword(pass))
-                {
-                    MessageBox.Show("Không đủ quyền hủy hóa đơn.");
-                    return;
-                }
+                MessageBox.Show("Hóa đơn đã quá 10 phút nên không thể yêu cầu hủy.");
+                return;
             }
 
-            if (MessageBox.Show($"Xác nhận hủy hóa đơn [{_selectedMaHD}]?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            string? lyDo = PromptForCancelReason();
+            if (string.IsNullOrWhiteSpace(lyDo))
+            {
                 return;
+            }
 
-            _trangHoaDonService.DeleteHoaDon(_loaiHoaDon, _selectedMaHD);
+            try
+            {
+                bool updated = _trangHoaDonService.RequestCancelBanInvoice(_selectedMaHD, lyDo);
+                if (!updated)
+                {
+                    MessageBox.Show("Không thể gửi yêu cầu hủy. Vui lòng kiểm tra lại.");
+                    return;
+                }
 
-            LoadHoaDonMaster();
-            ClearReceipt();
-            MessageBox.Show("Đã hủy hóa đơn.");
+                LoadHoaDonMaster();
+                ClearReceipt();
+                MessageBox.Show("Đã gửi yêu cầu hủy hóa đơn.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không thể gửi yêu cầu hủy hóa đơn.\n{ex.Message}");
+            }
         }
 
         private bool TryGetSelectedInvoiceTime(out DateTime invoiceTime)
@@ -277,6 +294,30 @@ namespace PBL3.UI
             prompt.CancelButton = cancel;
 
             return prompt.ShowDialog() == DialogResult.OK ? txt.Text : null;
+        }
+
+        private static string? PromptForCancelReason()
+        {
+            using Form prompt = new Form();
+            prompt.Width = 420;
+            prompt.Height = 260;
+            prompt.Text = "Lý do hủy";
+            prompt.FormBorderStyle = FormBorderStyle.FixedDialog;
+            prompt.StartPosition = FormStartPosition.CenterParent;
+
+            Label lbl = new Label { Left = 16, Top = 16, Width = 380, Text = "Nhập lý do hủy:" };
+            RichTextBox rtb = new RichTextBox { Left = 16, Top = 46, Width = 380, Height = 110 };
+            Button ok = new Button { Text = "Xác nhận", Left = 216, Width = 80, Top = 170, DialogResult = DialogResult.OK };
+            Button cancel = new Button { Text = "Hủy", Left = 306, Width = 80, Top = 170, DialogResult = DialogResult.Cancel };
+
+            prompt.Controls.Add(lbl);
+            prompt.Controls.Add(rtb);
+            prompt.Controls.Add(ok);
+            prompt.Controls.Add(cancel);
+            prompt.AcceptButton = ok;
+            prompt.CancelButton = cancel;
+
+            return prompt.ShowDialog() == DialogResult.OK ? rtb.Text.Trim() : null;
         }
 
         private bool ValidateManagerPassword(string password)

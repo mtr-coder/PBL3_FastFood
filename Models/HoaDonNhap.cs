@@ -7,5 +7,7 @@
         public string MaNV { get; set; }
         public string MaNCC { get; set; }
         public decimal TongTien { get; set; }
+        public bool TrangThai { get; set; }
+        public string LyDoHuy { get; set; }
     }
 }

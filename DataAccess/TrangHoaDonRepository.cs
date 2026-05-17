@@ -8,6 +8,16 @@ namespace PBL3.DataAccess
     {
         public DataTable GetHoaDonMaster(string loaiHoaDon, string maNv)
         {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+
+            bool hasLyDoHuy = false;
+            if (loaiHoaDon == "ban")
+            {
+                EnsureLyDoHuyColumn(conn);
+                hasLyDoHuy = TableColumnExists(conn, "HOA_DON_BAN", "LyDoHuy");
+            }
+
             string sql = loaiHoaDon == "ban"
                 ? @"SELECT hdb.MaHDB AS MaHD, hdb.NgayBan AS ThoiGian, ISNULL(kh.SDT, N'Kh' + NCHAR(225) + N'ch l' + NCHAR(7867)) AS DoiTac,
                           ISNULL(kh.SDT, N'') AS SDT, ISNULL(hdb.TongTien,0) AS TongTien, ISNULL(nv.HoTen, N'-') AS NhanVien,
@@ -22,7 +32,7 @@ namespace PBL3.DataAccess
                        WHERE hv2.DiemToiThieu <= ISNULL(kh.DiemTichLuyTronDoi, 0)
                        ORDER BY hv2.DiemToiThieu DESC, hv2.MaHang DESC
                    ) hv
-                   WHERE hdb.MaNV = @MaNV
+                   WHERE hdb.MaNV = @MaNV" + (hasLyDoHuy ? " AND hdb.LyDoHuy IS NULL" : string.Empty) + @"
                    ORDER BY hdb.MaHDB DESC"
                 : @"SELECT hdn.MaHDN AS MaHD, hdn.NgayNhap AS ThoiGian, ISNULL(ncc.TenNCC, N'-') AS DoiTac,
                           ISNULL(ncc.SDT, N'') AS SDT, ISNULL(hdn.TongTien,0) AS TongTien, ISNULL(nv.HoTen, N'-') AS NhanVien,
@@ -34,7 +44,6 @@ namespace PBL3.DataAccess
                    WHERE hdn.MaNV = @MaNV
                    ORDER BY hdn.MaHDN DESC";
 
-            using SqlConnection conn = DbHelper.GetConnection();
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@MaNV", maNv);
             using SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -88,6 +97,23 @@ WHERE ct.MaHDB = @MaHD";
             cmd.Parameters.Add("@MaHD", SqlDbType.VarChar, 20).Value = maHd;
             object? result = cmd.ExecuteScalar();
             return result is null || result == DBNull.Value ? 0m : Convert.ToDecimal(result, System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        public bool RequestCancelBanInvoice(string maHd, string lyDoHuy)
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+            EnsureLyDoHuyColumn(conn);
+            EnsureTrangThaiColumn(conn);
+
+            using SqlCommand cmd = new SqlCommand(@"
+UPDATE dbo.HOA_DON_BAN
+SET LyDoHuy = @LyDo,
+    TrangThai = 0
+WHERE MaHDB = @MaHD AND LyDoHuy IS NULL", conn);
+            cmd.Parameters.Add("@LyDo", SqlDbType.NVarChar, 500).Value = lyDoHuy;
+            cmd.Parameters.Add("@MaHD", SqlDbType.VarChar, 20).Value = maHd;
+            return cmd.ExecuteNonQuery() > 0;
         }
 
         public DataTable GetHoaDonDetail(string loaiHoaDon, string maHd)
@@ -236,6 +262,30 @@ SELECT CASE WHEN EXISTS (
             cmd.Parameters.AddWithValue("@Col", columnName);
             object? res = cmd.ExecuteScalar();
             return res is not null && Convert.ToInt32(res) == 1;
+        }
+
+        private static void EnsureLyDoHuyColumn(SqlConnection conn)
+        {
+            const string sql = @"
+IF COL_LENGTH('dbo.HOA_DON_BAN', 'LyDoHuy') IS NULL
+BEGIN
+    ALTER TABLE dbo.HOA_DON_BAN
+    ADD LyDoHuy NVARCHAR(500) NULL;
+END";
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+        }
+
+        private static void EnsureTrangThaiColumn(SqlConnection conn)
+        {
+            const string sql = @"
+IF COL_LENGTH('dbo.HOA_DON_BAN', 'TrangThai') IS NULL
+BEGIN
+    ALTER TABLE dbo.HOA_DON_BAN
+    ADD TrangThai bit NOT NULL CONSTRAINT DF_HOA_DON_BAN_TrangThai DEFAULT (1) WITH VALUES;
+END";
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.ExecuteNonQuery();
         }
     }
 }

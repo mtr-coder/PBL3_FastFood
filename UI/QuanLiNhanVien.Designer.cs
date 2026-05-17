@@ -694,10 +694,10 @@ namespace PBL3
             roundedPanel3.BackColor = Color.Peru;
             roundedPanel3.Controls.Add(label2);
             roundedPanel3.CornerRadius = 10;
-            roundedPanel3.Location = new Point(669, 7);
+            roundedPanel3.Location = new Point(644, 7);
             roundedPanel3.Margin = new Padding(3, 4, 3, 4);
             roundedPanel3.Name = "roundedPanel3";
-            roundedPanel3.Size = new Size(162, 32);
+            roundedPanel3.Size = new Size(187, 32);
             roundedPanel3.TabIndex = 0;
             roundedPanel3.Click += label2_Click;
             // 
@@ -708,9 +708,9 @@ namespace PBL3
             label2.ForeColor = Color.White;
             label2.Location = new Point(5, 4);
             label2.Name = "label2";
-            label2.Size = new Size(142, 23);
+            label2.Size = new Size(169, 23);
             label2.TabIndex = 0;
-            label2.Text = "Hộp thư yêu cầu";
+            label2.Text = "Hộp thư yêu cầu (0)";
             label2.Click += label2_Click;
             // 
             // _cboTimTheo

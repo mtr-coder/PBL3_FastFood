@@ -1363,11 +1363,11 @@ namespace PBL3
                 int pending = _trangNhanVienService.GetPendingYeuCauCount();
                 label2.Text = pending > 0
                     ? $"Hộp thư yêu cầu ({pending})"
-                    : "Hộp thư yêu cầu";
+                    : "Hộp thư yêu cầu (0)";
             }
             catch
             {
-                label2.Text = "Hộp thư yêu cầu";
+                label2.Text = "Hộp thư yêu cầu (0)";
             }
         }
 

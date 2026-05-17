@@ -176,12 +176,12 @@ namespace PBL3
             {
                 string fn = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"ThongKe_{DateTime.Now:yyyyMMddHHmm}.csv");
                 using StreamWriter sw = new StreamWriter(fn, false, new System.Text.UTF8Encoding(true));
-                sw.WriteLine("Metric,Value");
-                sw.WriteLine($"FromDate,{dtpFrom.Value:yyyy-MM-dd}");
-                sw.WriteLine($"ToDate,{dtpTo.Value:yyyy-MM-dd}");
-                sw.WriteLine($"TotalRevenue,{ExtractNumberFromLabel(lblTotalRevenue.Text)}");
-                sw.WriteLine($"TotalProfit,{ExtractNumberFromLabel(lblTotalProfit.Text)}");
-                sw.WriteLine($"TotalOrders,{ExtractNumberFromLabel(lblTotalOrders.Text)}");
+                sw.WriteLine("Chỉ số,Giá trị");
+                sw.WriteLine($"Từ ngày,{dtpFrom.Value:dd/MM/yyyy}");
+                sw.WriteLine($"Đến ngày,{dtpTo.Value:dd/MM/yyyy}");
+                sw.WriteLine($"Tổng doanh thu,{ExtractNumberFromLabel(lblTotalRevenue.Text)}");
+                sw.WriteLine($"Tổng lợi nhuận,{ExtractNumberFromLabel(lblTotalProfit.Text)}");
+                sw.WriteLine($"Tổng số đơn,{ExtractNumberFromLabel(lblTotalOrders.Text)}");
                 MessageBox.Show($"Xuất CSV thành công: {fn}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -257,7 +257,7 @@ namespace PBL3
                     dgvRevenue.Columns["DoanhThu"].DefaultCellStyle.Format = "N0";
                     dgvRevenue.Columns["DoanhThu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 }
-                BindRevenueChart(dashboard.RevenueTable);
+                BindRevenueChart(dashboard.RevenueTable, from, to);
 
                 dgvTopItems.DataSource = dashboard.TopItemsTable;
                 if (dgvTopItems.Columns.Contains("MaMon"))
@@ -380,30 +380,45 @@ namespace PBL3
             }
         }
 
-        private void BindRevenueChart(DataTable dt)
+        private void BindRevenueChart(DataTable dt, DateTime from, DateTime to)
         {
             if (_chartRevenue == null) return;
             var series = _chartRevenue.Series[0];
             series.Points.Clear();
             bool byHour = dt.Columns.Contains("Gio");
             series.XValueType = byHour ? ChartValueType.Int32 : ChartValueType.String;
-            foreach (DataRow row in dt.Rows)
+            if (byHour)
             {
-                decimal revenue = row["DoanhThu"] == DBNull.Value ? 0m : Convert.ToDecimal(row["DoanhThu"], CultureInfo.InvariantCulture);
-                if (byHour)
+                foreach (DataRow row in dt.Rows)
                 {
+                    decimal revenue = row["DoanhThu"] == DBNull.Value ? 0m : Convert.ToDecimal(row["DoanhThu"], CultureInfo.InvariantCulture);
                     int hour = row["Gio"] == DBNull.Value ? 0 : Convert.ToInt32(row["Gio"]);
                     series.Points.AddXY(hour, revenue);
                 }
-                else
+            }
+            else
+            {
+                Dictionary<DateTime, decimal> revenueByDate = new Dictionary<DateTime, decimal>();
+                foreach (DataRow row in dt.Rows)
                 {
-                    DateTime day = Convert.ToDateTime(row["Ngay"]);
-                    series.Points.AddXY(day.Day.ToString(CultureInfo.InvariantCulture), revenue);
+                    DateTime day = Convert.ToDateTime(row["Ngay"]).Date;
+                    decimal revenue = row["DoanhThu"] == DBNull.Value ? 0m : Convert.ToDecimal(row["DoanhThu"], CultureInfo.InvariantCulture);
+                    revenueByDate[day] = revenue;
+                }
+
+                DateTime current = from.Date;
+                DateTime end = to.Date;
+                while (current <= end)
+                {
+                    revenueByDate.TryGetValue(current, out decimal revenue);
+                    series.Points.AddXY(current.Day.ToString(CultureInfo.InvariantCulture), revenue);
+                    current = current.AddDays(1);
                 }
             }
             _chartRevenue.ChartAreas[0].AxisX.Interval = 1;
             _chartRevenue.ChartAreas[0].AxisX.LabelStyle.Format = byHour ? "0h" : string.Empty;
             _chartRevenue.ChartAreas[0].AxisY.LabelStyle.Format = "#,##0 đ";
+            _chartRevenue.ChartAreas[0].AxisY.Minimum = 0;
         }
 
         private void BindOrdersByHourChart(DataTable dt)
@@ -411,13 +426,23 @@ namespace PBL3
             if (_chartOrdersByHour == null) return;
             var series = _chartOrdersByHour.Series[0];
             series.Points.Clear();
+            Dictionary<int, int> countByHour = new Dictionary<int, int>();
             foreach (DataRow row in dt.Rows)
             {
                 int hour = row["Gio"] == DBNull.Value ? 0 : Convert.ToInt32(row["Gio"]);
                 int count = row["SoDon"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoDon"]);
+                countByHour[hour] = count;
+            }
+            for (int hour = 0; hour <= 23; hour++)
+            {
+                countByHour.TryGetValue(hour, out int count);
                 series.Points.AddXY(hour, count);
             }
             _chartOrdersByHour.ChartAreas[0].AxisX.Interval = 1;
+            _chartOrdersByHour.ChartAreas[0].AxisX.Minimum = 0;
+            _chartOrdersByHour.ChartAreas[0].AxisX.Maximum = 23;
+            _chartOrdersByHour.ChartAreas[0].AxisY.Interval = 1;
+            _chartOrdersByHour.ChartAreas[0].AxisY.Minimum = 0;
             _chartOrdersByHour.ChartAreas[0].AxisY.LabelStyle.Format = "N0";
         }
 

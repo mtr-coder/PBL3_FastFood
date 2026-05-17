@@ -28,6 +28,8 @@ namespace PBL3
             pnlRight = new Panel();
             _btnTuChoi = new PBL3.UI.RoundedPanel();
             label1 = new Label();
+            _btnThoat = new PBL3.UI.RoundedPanel();
+            lblBtnThoat = new Label();
             _btnDuyet = new PBL3.UI.RoundedPanel();
             lblBtnThem = new Label();
             _txtPhanHoi = new TextBox();
@@ -57,6 +59,7 @@ namespace PBL3
             roundedPanel2.SuspendLayout();
             pnlRight.SuspendLayout();
             _btnTuChoi.SuspendLayout();
+            _btnThoat.SuspendLayout();
             _btnDuyet.SuspendLayout();
             roundedPanel1.SuspendLayout();
             _btnXoa.SuspendLayout();
@@ -162,14 +165,13 @@ namespace PBL3
             // pnlRight
             // 
             pnlRight.BackColor = Color.Bisque;
-            pnlRight.Controls.Add(_btnTuChoi);
             pnlRight.Controls.Add(_btnDuyet);
             pnlRight.Controls.Add(_txtPhanHoi);
             pnlRight.Controls.Add(roundedPanel1);
             pnlRight.Dock = DockStyle.Fill;
             pnlRight.Location = new Point(0, 0);
             pnlRight.Name = "pnlRight";
-            pnlRight.Padding = new Padding(12, 12, 12, 12);
+            pnlRight.Padding = new Padding(12);
             pnlRight.Size = new Size(738, 488);
             pnlRight.TabIndex = 0;
             // 
@@ -178,7 +180,7 @@ namespace PBL3
             _btnTuChoi.BackColor = Color.LightCoral;
             _btnTuChoi.Controls.Add(label1);
             _btnTuChoi.CornerRadius = 10;
-            _btnTuChoi.Location = new Point(501, 436);
+            _btnTuChoi.Location = new Point(444, 424);
             _btnTuChoi.Margin = new Padding(3, 2, 3, 2);
             _btnTuChoi.Name = "_btnTuChoi";
             _btnTuChoi.Size = new Size(75, 24);
@@ -195,12 +197,34 @@ namespace PBL3
             label1.TabIndex = 0;
             label1.Text = "Từ chối";
             // 
+            // _btnThoat
+            // 
+            _btnThoat.BackColor = Color.Silver;
+            _btnThoat.Controls.Add(lblBtnThoat);
+            _btnThoat.CornerRadius = 10;
+            _btnThoat.Location = new Point(616, 424);
+            _btnThoat.Margin = new Padding(3, 2, 3, 2);
+            _btnThoat.Name = "_btnThoat";
+            _btnThoat.Size = new Size(75, 24);
+            _btnThoat.TabIndex = 19;
+            // 
+            // lblBtnThoat
+            // 
+            lblBtnThoat.AutoSize = true;
+            lblBtnThoat.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblBtnThoat.ForeColor = Color.Black;
+            lblBtnThoat.Location = new Point(12, 3);
+            lblBtnThoat.Name = "lblBtnThoat";
+            lblBtnThoat.Size = new Size(47, 19);
+            lblBtnThoat.TabIndex = 0;
+            lblBtnThoat.Text = "Thoát";
+            // 
             // _btnDuyet
             // 
             _btnDuyet.BackColor = Color.OliveDrab;
             _btnDuyet.Controls.Add(lblBtnThem);
             _btnDuyet.CornerRadius = 10;
-            _btnDuyet.Location = new Point(421, 436);
+            _btnDuyet.Location = new Point(375, 436);
             _btnDuyet.Margin = new Padding(3, 2, 3, 2);
             _btnDuyet.Name = "_btnDuyet";
             _btnDuyet.Size = new Size(75, 24);
@@ -229,7 +253,9 @@ namespace PBL3
             // roundedPanel1
             // 
             roundedPanel1.BackColor = Color.Linen;
+            roundedPanel1.Controls.Add(_btnTuChoi);
             roundedPanel1.Controls.Add(_lblTitle);
+            roundedPanel1.Controls.Add(_btnThoat);
             roundedPanel1.Controls.Add(_btnXoa);
             roundedPanel1.Controls.Add(_lstHistory);
             roundedPanel1.Controls.Add(_txtNoiDung);
@@ -268,7 +294,7 @@ namespace PBL3
             _btnXoa.BackColor = Color.DimGray;
             _btnXoa.Controls.Add(label2);
             _btnXoa.CornerRadius = 10;
-            _btnXoa.Location = new Point(615, 424);
+            _btnXoa.Location = new Point(535, 424);
             _btnXoa.Margin = new Padding(3, 2, 3, 2);
             _btnXoa.Name = "_btnXoa";
             _btnXoa.Size = new Size(75, 24);
@@ -458,6 +484,8 @@ namespace PBL3
             pnlRight.PerformLayout();
             _btnTuChoi.ResumeLayout(false);
             _btnTuChoi.PerformLayout();
+            _btnThoat.ResumeLayout(false);
+            _btnThoat.PerformLayout();
             _btnDuyet.ResumeLayout(false);
             _btnDuyet.PerformLayout();
             roundedPanel1.ResumeLayout(false);
@@ -498,6 +526,8 @@ namespace PBL3
         private Label lblBtnThem;
         private UI.RoundedPanel _btnTuChoi;
         private Label label1;
+        private UI.RoundedPanel _btnThoat;
+        private Label lblBtnThoat;
         private UI.RoundedPanel _btnXoa;
         private Label label2;
         private UI.RoundedPanel roundedPanel1;

@@ -19,9 +19,11 @@ namespace PBL3
             _btnDuyet.Click += (_, __) => ApproveSelected();
             _btnTuChoi.Click += (_, __) => RejectSelected();
             _btnXoa.Click += (_, __) => DeleteSelected();
+            _btnThoat.Click += (_, __) => Close();
             lblBtnThem.Click += (_, __) => ApproveSelected();
             label1.Click += (_, __) => RejectSelected();
             label2.Click += (_, __) => DeleteSelected();
+            lblBtnThoat.Click += (_, __) => Close();
 
             Load += (_, __) => LoadRequests();
         }

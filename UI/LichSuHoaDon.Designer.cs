@@ -53,6 +53,8 @@ namespace PBL3
             pnlBoLoc = new RoundedPanel();
             _btnHoaDonBan = new Button();
             _btnHoaDonNhap = new Button();
+            pnlChoDuyetHuy = new RoundedPanel();
+            lblChoDuyetHuyTitle = new Label();
             pnlCard3 = new RoundedPanel();
             lblCard3Title = new Label();
             _lblSoDonHuyValue = new Label();
@@ -98,6 +100,7 @@ namespace PBL3
             ((System.ComponentModel.ISupportInitialize)pb_LSHD).BeginInit();
             hcnt_Khung.SuspendLayout();
             pnlBoLoc.SuspendLayout();
+            pnlChoDuyetHuy.SuspendLayout();
             pnlCard3.SuspendLayout();
             pnlTimMa.SuspendLayout();
             pnlDanhSachHoaDon.SuspendLayout();
@@ -452,6 +455,7 @@ namespace PBL3
             pnlBoLoc.BackColor = Color.FromArgb(248, 242, 235);
             pnlBoLoc.Controls.Add(_btnHoaDonBan);
             pnlBoLoc.Controls.Add(_btnHoaDonNhap);
+            pnlBoLoc.Controls.Add(pnlChoDuyetHuy);
             pnlBoLoc.Controls.Add(pnlCard3);
             pnlBoLoc.Controls.Add(pnlTimMa);
             pnlBoLoc.Controls.Add(lblTuNgay);
@@ -489,15 +493,39 @@ namespace PBL3
             _btnHoaDonNhap.Text = "Hóa đơn nhập";
             _btnHoaDonNhap.UseVisualStyleBackColor = false;
             // 
+            // pnlChoDuyetHuy
+            // 
+            pnlChoDuyetHuy.BackColor = Color.Peru;
+            pnlChoDuyetHuy.Controls.Add(lblChoDuyetHuyTitle);
+            pnlChoDuyetHuy.CornerRadius = 10;
+            pnlChoDuyetHuy.Location = new Point(633, 108);
+            pnlChoDuyetHuy.Name = "pnlChoDuyetHuy";
+            pnlChoDuyetHuy.Size = new Size(181, 32);
+            pnlChoDuyetHuy.TabIndex = 10;
+            pnlChoDuyetHuy.Visible = false;
+            pnlChoDuyetHuy.Click += pnlChoDuyetHuy_Click;
+            // 
+            // lblChoDuyetHuyTitle
+            // 
+            lblChoDuyetHuyTitle.AutoSize = true;
+            lblChoDuyetHuyTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblChoDuyetHuyTitle.ForeColor = Color.White;
+            lblChoDuyetHuyTitle.Location = new Point(9, 3);
+            lblChoDuyetHuyTitle.Name = "lblChoDuyetHuyTitle";
+            lblChoDuyetHuyTitle.Size = new Size(156, 23);
+            lblChoDuyetHuyTitle.TabIndex = 0;
+            lblChoDuyetHuyTitle.Text = "Đơn chờ duyệt (0)";
+            lblChoDuyetHuyTitle.Click += pnlChoDuyetHuy_Click;
+            // 
             // pnlCard3
             // 
             pnlCard3.BackColor = Color.FromArgb(248, 242, 235);
             pnlCard3.Controls.Add(lblCard3Title);
             pnlCard3.Controls.Add(_lblSoDonHuyValue);
             pnlCard3.CornerRadius = 10;
-            pnlCard3.Location = new Point(533, 77);
+            pnlCard3.Location = new Point(427, 71);
             pnlCard3.Name = "pnlCard3";
-            pnlCard3.Size = new Size(270, 69);
+            pnlCard3.Size = new Size(186, 69);
             pnlCard3.TabIndex = 4;
             // 
             // lblCard3Title
@@ -515,7 +543,7 @@ namespace PBL3
             _lblSoDonHuyValue.AutoSize = true;
             _lblSoDonHuyValue.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             _lblSoDonHuyValue.ForeColor = Color.IndianRed;
-            _lblSoDonHuyValue.Location = new Point(18, 31);
+            _lblSoDonHuyValue.Location = new Point(15, 32);
             _lblSoDonHuyValue.Name = "_lblSoDonHuyValue";
             _lblSoDonHuyValue.Size = new Size(28, 32);
             _lblSoDonHuyValue.TabIndex = 1;
@@ -535,7 +563,7 @@ namespace PBL3
             // 
             _txtTimMaHD.BackColor = Color.Bisque;
             _txtTimMaHD.BorderStyle = BorderStyle.None;
-            _txtTimMaHD.Location = new Point(9, 6);
+            _txtTimMaHD.Location = new Point(9, 5);
             _txtTimMaHD.Name = "_txtTimMaHD";
             _txtTimMaHD.PlaceholderText = "Tìm kiếm";
             _txtTimMaHD.Size = new Size(309, 20);
@@ -817,6 +845,8 @@ namespace PBL3
             hcnt_Khung.PerformLayout();
             pnlBoLoc.ResumeLayout(false);
             pnlBoLoc.PerformLayout();
+            pnlChoDuyetHuy.ResumeLayout(false);
+            pnlChoDuyetHuy.PerformLayout();
             pnlCard3.ResumeLayout(false);
             pnlCard3.PerformLayout();
             pnlTimMa.ResumeLayout(false);
@@ -882,6 +912,8 @@ namespace PBL3
         private RoundedPanel pnlCard3;
         private Label lblCard3Title;
         private Label _lblSoDonHuyValue;
+        private RoundedPanel pnlChoDuyetHuy;
+        private Label lblChoDuyetHuyTitle;
         private RoundedPanel pnlDanhSachHoaDon;
         private Label lblMaster;
         private DataGridView _dgvHoaDonMaster;

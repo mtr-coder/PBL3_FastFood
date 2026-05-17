@@ -87,8 +87,23 @@ WHERE NgayAny IS NOT NULL";
             return (tuNgay, denNgay);
         }
 
+        public void EnsureCancelRequestColumn()
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+            const string sql = @"
+IF COL_LENGTH('dbo.HOA_DON_BAN', 'LyDoHuy') IS NULL
+BEGIN
+    ALTER TABLE dbo.HOA_DON_BAN
+    ADD LyDoHuy NVARCHAR(500) NULL;
+END";
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+        }
+
         public DataTable GetMasterData(string invoiceType, DateTime fromDate, DateTime toDate, bool isAdmin, string? maNvDangNhap, LichSuHoaDonSchemaInfo schema)
         {
+            EnsureCancelRequestColumn();
             string statusExpr = invoiceType == "BAN"
                 ? BuildTrangThaiExpression("h", schema.HasTrangThaiHdb, schema.TrangThaiHdbType)
                 : BuildTrangThaiExpression("h", schema.HasTrangThaiHdn, schema.TrangThaiHdnType);
@@ -123,9 +138,7 @@ WHERE h.NgayBan >= @FromDate AND h.NgayBan < @ToDate";
 
                 if (schema.HasTrangThaiHdb)
                 {
-                    sql += schema.TrangThaiHdbType == "bit"
-                        ? " AND ISNULL(h.TrangThai, 1) = 1"
-                        : " AND CAST(h.TrangThai AS NVARCHAR(50)) NOT LIKE N'%hủy%'";
+                    sql += " AND h.LyDoHuy IS NULL AND ISNULL(h.TrangThai, 1) = 1";
                 }
 
                 if (!isAdmin && !string.IsNullOrWhiteSpace(maNvDangNhap))
@@ -301,13 +314,16 @@ WHERE ct.MaHDB = @MaHD";
 
         public int GetCanceledCount(DateTime fromDate, DateTime toDate, LichSuHoaDonSchemaInfo schema)
         {
+            EnsureCancelRequestColumn();
             int soDonHuy = 0;
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
 
             if (schema.HasTrangThaiHdb)
             {
-                string where = schema.TrangThaiHdbType == "bit" ? "ISNULL(TrangThai,1)=0" : "CAST(TrangThai AS NVARCHAR(50)) LIKE N'%hủy%'";
+                string where = schema.TrangThaiHdbType == "bit"
+                    ? "ISNULL(TrangThai,1)=1 AND LyDoHuy IS NOT NULL"
+                    : "CAST(TrangThai AS NVARCHAR(50)) LIKE N'%hủy%'";
                 using SqlCommand cmd = new SqlCommand($"SELECT COUNT(1) FROM dbo.HOA_DON_BAN WHERE NgayBan >= @FromDate AND NgayBan < @ToDate AND {where}", conn);
                 cmd.Parameters.Add("@FromDate", SqlDbType.DateTime).Value = fromDate.Date;
                 cmd.Parameters.Add("@ToDate", SqlDbType.DateTime).Value = toDate.Date.AddDays(1);
@@ -326,8 +342,73 @@ WHERE ct.MaHDB = @MaHD";
             return soDonHuy;
         }
 
+        public int GetPendingCancelCount(DateTime fromDate, DateTime toDate, LichSuHoaDonSchemaInfo schema)
+        {
+            EnsureCancelRequestColumn();
+            if (!schema.HasTrangThaiHdb)
+            {
+                return 0;
+            }
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+            string where = schema.TrangThaiHdbType == "bit" ? "ISNULL(TrangThai,1)=0" : "CAST(TrangThai AS NVARCHAR(50)) NOT LIKE N'%hủy%'";
+            using SqlCommand cmd = new SqlCommand($@"SELECT COUNT(1) FROM dbo.HOA_DON_BAN
+WHERE NgayBan >= @FromDate AND NgayBan < @ToDate
+  AND LyDoHuy IS NOT NULL
+  AND {where}", conn);
+            cmd.Parameters.Add("@FromDate", SqlDbType.DateTime).Value = fromDate.Date;
+            cmd.Parameters.Add("@ToDate", SqlDbType.DateTime).Value = toDate.Date.AddDays(1);
+            return Convert.ToInt32(cmd.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+        }
+
+        public DataTable GetPendingCancelList(DateTime fromDate, DateTime toDate, LichSuHoaDonSchemaInfo schema)
+        {
+            EnsureCancelRequestColumn();
+            if (!schema.HasTrangThaiHdb)
+            {
+                return new DataTable();
+            }
+
+            string where = schema.TrangThaiHdbType == "bit" ? "ISNULL(h.TrangThai,1)=0" : "CAST(h.TrangThai AS NVARCHAR(50)) NOT LIKE N'%hủy%'";
+            string sql = $@"
+SELECT h.MaHDB AS MaHD,
+       h.NgayBan AS ThoiGian,
+       ISNULL(nv.HoTen, N'') AS NhanVien,
+       ISNULL(kh.SDT, N'Kh' + NCHAR(225) + N'ch l' + NCHAR(7867)) AS DoiTac,
+       ISNULL(h.TongTien, 0) AS TongTien,
+       h.LyDoHuy
+FROM dbo.HOA_DON_BAN h
+LEFT JOIN dbo.NHAN_VIEN nv ON nv.MaNV = h.MaNV
+LEFT JOIN dbo.KHACH_HANG kh ON kh.MaKH = h.MaKH
+WHERE h.NgayBan >= @FromDate AND h.NgayBan < @ToDate
+  AND h.LyDoHuy IS NOT NULL
+  AND {where}
+ORDER BY h.NgayBan DESC";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@FromDate", SqlDbType.DateTime).Value = fromDate.Date;
+            cmd.Parameters.Add("@ToDate", SqlDbType.DateTime).Value = toDate.Date.AddDays(1);
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+
+        public void RejectCancelRequest(string maHd)
+        {
+            EnsureCancelRequestColumn();
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand("UPDATE dbo.HOA_DON_BAN SET LyDoHuy = NULL WHERE MaHDB = @MaHD", conn);
+            cmd.Parameters.Add("@MaHD", SqlDbType.VarChar, 20).Value = maHd;
+            conn.Open();
+            cmd.ExecuteNonQuery();
+        }
+
         public void CancelInvoice(string invoiceType, string maHd, LichSuHoaDonSchemaInfo schema)
         {
+            EnsureCancelRequestColumn();
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
             using SqlTransaction tran = conn.BeginTransaction();
@@ -397,9 +478,17 @@ WHERE ct.MaHDN = @MaHD";
 
         private static void EnsureNotCanceled(SqlConnection conn, SqlTransaction tran, string tableName, string idColumn, string maHd, string statusType)
         {
-            string sql = statusType == "bit"
-                ? $"SELECT CASE WHEN ISNULL(TrangThai,1)=0 THEN 1 ELSE 0 END FROM dbo.{tableName} WHERE {idColumn} = @MaHD"
-                : $"SELECT CASE WHEN CAST(TrangThai AS NVARCHAR(50)) LIKE N'%hủy%' THEN 1 ELSE 0 END FROM dbo.{tableName} WHERE {idColumn} = @MaHD";
+            string sql;
+            if (statusType == "bit" && TableColumnExists(conn, tran, tableName, "LyDoHuy"))
+            {
+                sql = $"SELECT CASE WHEN ISNULL(TrangThai,1)=1 AND LyDoHuy IS NOT NULL THEN 1 ELSE 0 END FROM dbo.{tableName} WHERE {idColumn} = @MaHD";
+            }
+            else
+            {
+                sql = statusType == "bit"
+                    ? $"SELECT CASE WHEN ISNULL(TrangThai,1)=0 THEN 1 ELSE 0 END FROM dbo.{tableName} WHERE {idColumn} = @MaHD"
+                    : $"SELECT CASE WHEN CAST(TrangThai AS NVARCHAR(50)) LIKE N'%hủy%' THEN 1 ELSE 0 END FROM dbo.{tableName} WHERE {idColumn} = @MaHD";
+            }
 
             using SqlCommand cmd = new SqlCommand(sql, conn, tran);
             cmd.Parameters.Add("@MaHD", SqlDbType.VarChar, 20).Value = maHd;
@@ -417,7 +506,7 @@ WHERE ct.MaHDN = @MaHD";
             cmd.Parameters.Add("@MaHD", SqlDbType.VarChar, 20).Value = maHd;
             if (statusType == "bit")
             {
-                cmd.Parameters.Add("@TrangThai", SqlDbType.Bit).Value = false;
+                cmd.Parameters.Add("@TrangThai", SqlDbType.Bit).Value = true;
             }
             else
             {
@@ -462,6 +551,18 @@ WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName AND COLUMN_NAME=@ColumnName
             return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture) == 1;
         }
 
+        private static bool TableColumnExists(SqlConnection conn, SqlTransaction tran, string tableName, string columnName)
+        {
+            using SqlCommand cmd = new SqlCommand(@"SELECT CASE WHEN EXISTS (
+SELECT 1
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName AND COLUMN_NAME=@ColumnName
+) THEN 1 ELSE 0 END", conn, tran);
+            cmd.Parameters.Add("@TableName", SqlDbType.VarChar, 128).Value = tableName;
+            cmd.Parameters.Add("@ColumnName", SqlDbType.VarChar, 128).Value = columnName;
+            return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture) == 1;
+        }
+
         private static string GetColumnDataType(SqlConnection conn, string tableName, string columnName)
         {
             using SqlCommand cmd = new SqlCommand(@"SELECT DATA_TYPE
@@ -494,7 +595,8 @@ WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME=@TableName AND COLUMN_NAME=@ColumnName",
 
             if (dataType == "bit")
             {
-                return $"CASE WHEN ISNULL({alias}.TrangThai, 1) = 1 THEN N'Đã thanh toán' ELSE N'Đã hủy' END";
+                return $"CASE WHEN ISNULL({alias}.TrangThai, 1) = 1 AND {alias}.LyDoHuy IS NOT NULL THEN N'Đã hủy' " +
+                       $"WHEN ISNULL({alias}.TrangThai, 1) = 0 THEN N'Chờ duyệt' ELSE N'Đã thanh toán' END";
             }
 
             return $"CASE WHEN CAST({alias}.TrangThai AS NVARCHAR(50)) LIKE N'%hủy%' THEN N'Đã hủy' ELSE ISNULL(CAST({alias}.TrangThai AS NVARCHAR(50)), N'Đã thanh toán') END";

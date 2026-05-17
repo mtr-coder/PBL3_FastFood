@@ -247,13 +247,22 @@ WHERE h.NgayBan BETWEEN @from AND @to
 
             string dataType = GetColumnDataType(conn, "HOA_DON_BAN", "TrangThai");
             string prefix = string.IsNullOrWhiteSpace(alias) ? string.Empty : $"{alias}.";
-
-            if (dataType == "bit")
+            string trangThaiCondition;
+            if (dataType is "bit" or "int" or "bigint" or "smallint" or "tinyint" or "decimal" or "numeric")
             {
-                return $"ISNULL({prefix}TrangThai, 1) = 1";
+                trangThaiCondition = $"ISNULL({prefix}TrangThai, 1) = 1";
+            }
+            else
+            {
+                trangThaiCondition = $"CAST({prefix}TrangThai AS NVARCHAR(50)) NOT LIKE N'%hủy%'";
             }
 
-            return $"CAST({prefix}TrangThai AS NVARCHAR(50)) NOT LIKE N'%hủy%'";
+            if (ColumnExists(conn, "HOA_DON_BAN", "LyDoHuy"))
+            {
+                return $"{trangThaiCondition} AND {prefix}LyDoHuy IS NULL";
+            }
+
+            return trangThaiCondition;
         }
     }
 }
