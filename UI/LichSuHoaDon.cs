@@ -427,6 +427,12 @@ namespace PBL3
         private void ShowPendingCancelPopup()
         {
             DataTable pending = _lichSuHoaDonService.GetPendingCancelList(_dtpTuNgay.Value.Date, _dtpDenNgay.Value.Date, _schemaInfo);
+            if (pending.Rows.Count == 0)
+            {
+                MessageBox.Show("Không có đơn chờ duyệt hủy.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                pnlChoDuyetHuy.Visible = false;
+                return;
+            }
 
             using Form popup = new Form
             {
@@ -443,7 +449,7 @@ namespace PBL3
             Panel leftPanel = new Panel { Dock = DockStyle.Left, Width = 560, Padding = new Padding(10) };
             Panel rightPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10) };
 
-            Label lblLeft = new Label { Text = $"Danh sách đơn chờ ({pending.Rows.Count})", Dock = DockStyle.Top, Height = 26, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
+            Label lblLeft = new Label { Text = "Danh sách đơn chờ", Dock = DockStyle.Top, Height = 26, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
             DataGridView dgvPending = new DataGridView
             {
                 Dock = DockStyle.Fill,

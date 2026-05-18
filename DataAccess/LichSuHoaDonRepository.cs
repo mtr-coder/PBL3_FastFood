@@ -115,7 +115,7 @@ END";
 SELECT h.MaHDB AS MaHD,
        h.NgayBan AS ThoiGian,
        ISNULL(nv.HoTen, N'') AS NguoiThucHien,
-       ISNULL(kh.SDT, N'Kh' + NCHAR(225) + N'ch l' + NCHAR(7867)) AS DoiTac,
+       COALESCE(NULLIF(CAST(kh.SDT AS NVARCHAR(50)), N''), N'Khách lẻ') AS DoiTac,
        ISNULL(kh.SDT, N'') AS SDTKhach,
        ISNULL(h.TongTien, 0) AS TongTien,
        ISNULL(hv.TenHang, N'') AS TenHang,

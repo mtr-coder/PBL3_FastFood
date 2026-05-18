@@ -19,7 +19,7 @@ namespace PBL3.DataAccess
             }
 
             string sql = loaiHoaDon == "ban"
-                ? @"SELECT hdb.MaHDB AS MaHD, hdb.NgayBan AS ThoiGian, ISNULL(kh.SDT, N'Kh' + NCHAR(225) + N'ch l' + NCHAR(7867)) AS DoiTac,
+                ? @"SELECT hdb.MaHDB AS MaHD, hdb.NgayBan AS ThoiGian, COALESCE(NULLIF(CAST(kh.SDT AS NVARCHAR(50)), N''), N'Khách lẻ') AS DoiTac,
                           ISNULL(kh.SDT, N'') AS SDT, ISNULL(hdb.TongTien,0) AS TongTien, ISNULL(nv.HoTen, N'-') AS NhanVien,
                           ISNULL(hv.TenHang, N'') AS TenHang, ISNULL(hv.PhanTramGiam, 0) AS PhanTramGiam,
                           ISNULL(kh.DiemTichLuy, 0) AS DiemTichLuy
