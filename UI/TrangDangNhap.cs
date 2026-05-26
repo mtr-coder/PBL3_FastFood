@@ -107,6 +107,8 @@ namespace PBL3
             try
             {
                 _authService.CheckDatabaseConnection();
+                ActiveControl = txt_TaiKhoan;
+                txt_TaiKhoan.Focus();
             }
             catch (Exception ex)
             {

@@ -2,8 +2,8 @@
 {
     internal class PhanCongCa
     {
-        public string MaNV { get; set; }
-        public string MaCa { get; set; }
+        public int MaNV { get; set; }
+        public int MaCa { get; set; }
         public DateTime NgayLam { get; set; }
     }
 }

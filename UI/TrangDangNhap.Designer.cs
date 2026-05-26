@@ -163,7 +163,7 @@ namespace PBL3
             txt_MatKhau.Margin = new Padding(3, 4, 3, 4);
             txt_MatKhau.Name = "txt_MatKhau";
             txt_MatKhau.Size = new Size(422, 27);
-            txt_MatKhau.TabIndex = 0;
+            txt_MatKhau.TabIndex = 1;
             // 
             // btn_DangNhap
             // 

@@ -2,12 +2,12 @@
 {
     internal class HoaDonNhap
     {
-        public string MaHDN { get; set; }
-        public DateTime NgayNhap { get; set; }
-        public string MaNV { get; set; }
-        public string MaNCC { get; set; }
-        public decimal TongTien { get; set; }
+        public int MaHDN { get; set; }
+        public DateTime? NgayNhap { get; set; }
+        public int? MaNV { get; set; }
+        public int? MaNCC { get; set; }
+        public decimal? TongTien { get; set; }
         public bool TrangThai { get; set; }
-        public string LyDoHuy { get; set; }
+        public string? LyDoHuy { get; set; }
     }
 }

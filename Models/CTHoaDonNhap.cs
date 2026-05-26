@@ -2,9 +2,9 @@
 {
     internal class CTHoaDonNhap
     {
-        public string MaHDN { get; set; }
-        public string MaNL { get; set; }
-        public decimal SoLuong { get; set; }
-        public decimal DonGia { get; set; }
+        public int MaHDN { get; set; }
+        public int MaNL { get; set; }
+        public double? SoLuong { get; set; }
+        public decimal? DonGia { get; set; }
     }
 }

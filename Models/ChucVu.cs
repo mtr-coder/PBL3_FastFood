@@ -2,8 +2,8 @@
 {
     internal class ChucVu
     {
-        public string MaCV { get; set; }
+        public int MaCV { get; set; }
         public string TenCV { get; set; }
-        public long LuongCoBan { get; set; }
+        public decimal LuongCoBan { get; set; }
     }
 }

@@ -230,7 +230,7 @@ namespace PBL3
             dgvKhachHang.RowHeadersVisible = false;
             dgvKhachHang.RowHeadersWidth = 51;
             dgvKhachHang.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvKhachHang.Size = new Size(719, 443);
+            dgvKhachHang.Size = new Size(719, 415);
             dgvKhachHang.TabIndex = 0;
             // 
             // hcnt_KhungMenuAD
@@ -438,7 +438,7 @@ namespace PBL3
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = Properties.Resources.mt;
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(1082, 628);
+            ClientSize = new Size(1101, 628);
             Controls.Add(roundedPanel1);
             DoubleBuffered = true;
             Margin = new Padding(3, 2, 3, 2);

@@ -430,7 +430,6 @@ namespace PBL3
             if (pending.Rows.Count == 0)
             {
                 MessageBox.Show("Không có đơn chờ duyệt hủy.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                pnlChoDuyetHuy.Visible = false;
                 return;
             }
 

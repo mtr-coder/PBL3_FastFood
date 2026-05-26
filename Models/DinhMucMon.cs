@@ -2,9 +2,9 @@
 {
     internal class DinhMucMon
     {
-        public string MaMon { get; set; }
-        public string MaDVPV { get; set; }
-        public string MaNL { get; set; }
-        public decimal SoLuongSuDung { get; set; }
+        public int MaMon { get; set; }
+        public int MaDVPV { get; set; }
+        public int MaNL { get; set; }
+        public double? SoLuongSuDung { get; set; }
     }
 }

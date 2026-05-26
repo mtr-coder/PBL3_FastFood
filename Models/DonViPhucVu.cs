@@ -2,8 +2,7 @@
 {
     internal class DonViPhucVu
     {
-        public string MaDVPV { get; set; }
-        public string TenDVPV { get; set; }
-        public string MoTa { get; set; }
+        public int MaDVPV { get; set; }
+        public string? TenDVPV { get; set; }
     }
 }

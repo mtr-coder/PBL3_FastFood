@@ -25,7 +25,9 @@ namespace PBL3.Business
                 return LoginResult.Fail("Sai số điện thoại hoặc mật khẩu!");
             }
 
-            bool laAdmin = nhanVien.MaCV == "6" || nhanVien.MaCV.Equals("CV06", StringComparison.OrdinalIgnoreCase);
+            bool laAdmin = nhanVien.MaCV == "1" || nhanVien.MaCV == "2" ||
+                nhanVien.MaCV.Equals("CV01", StringComparison.OrdinalIgnoreCase) ||
+                nhanVien.MaCV.Equals("CV02", StringComparison.OrdinalIgnoreCase);
             return LoginResult.Success(nhanVien.MaNV, laAdmin);
         }
 

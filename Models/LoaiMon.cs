@@ -2,7 +2,7 @@
 {
     internal class LoaiMon
     {
-        public string MaLoai { get; set; }
-        public string TenLoai { get; set; }
+        public int MaLoai { get; set; }
+        public string? TenLoai { get; set; }
     }
 }

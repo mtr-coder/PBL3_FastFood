@@ -2,9 +2,9 @@
 {
     internal class MonDonViPhucVu
     {
-        public string MaMon { get; set; }
-        public string MaDVPV { get; set; }
-        public decimal DonGia { get; set; }
-        public string TrangThai { get; set; }
+        public int MaMon { get; set; }
+        public int MaDVPV { get; set; }
+        public decimal? GiaBan { get; set; }
+        public string? TrangThai { get; set; }
     }
 }
