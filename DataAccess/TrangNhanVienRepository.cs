@@ -310,16 +310,28 @@ ORDER BY MaCa";
             using SqlConnection conn = DbHelper.GetConnection();
             conn.Open();
 
-            string newShiftName = string.Empty;
-            using (SqlCommand cmdShift = new SqlCommand("SELECT TenCa FROM dbo.CA_TRUC WHERE MaCa = @MaCa", conn))
+            TimeSpan? newStart = null;
+            TimeSpan? newEnd = null;
+            using (SqlCommand cmdShift = new SqlCommand("SELECT GioBatDau, GioKetThuc FROM dbo.CA_TRUC WHERE MaCa = @MaCa", conn))
             {
                 cmdShift.Parameters.Add("@MaCa", SqlDbType.VarChar, 20).Value = maCa;
-                newShiftName = Convert.ToString(cmdShift.ExecuteScalar()) ?? string.Empty;
+                using SqlDataReader rd = cmdShift.ExecuteReader();
+                if (rd.Read())
+                {
+                    if (rd[0] != DBNull.Value)
+                    {
+                        newStart = (TimeSpan)rd[0];
+                    }
+                    if (rd[1] != DBNull.Value)
+                    {
+                        newEnd = (TimeSpan)rd[1];
+                    }
+                }
             }
 
-            List<(string MaCa, string TenCa)> existing = new();
+            List<(string MaCa, TimeSpan? Start, TimeSpan? End)> existing = new();
             using (SqlCommand cmdExisting = new SqlCommand(@"
-SELECT ct.MaCa, ct.TenCa
+ SELECT ct.MaCa, ct.GioBatDau, ct.GioKetThuc
 FROM dbo.PHAN_CONG_CA pc
 INNER JOIN dbo.CA_TRUC ct ON ct.MaCa = pc.MaCa
 WHERE pc.MaNV = @MaNV AND pc.NgayLam = @NgayLam", conn))
@@ -329,32 +341,26 @@ WHERE pc.MaNV = @MaNV AND pc.NgayLam = @NgayLam", conn))
                 using SqlDataReader rd = cmdExisting.ExecuteReader();
                 while (rd.Read())
                 {
-                    existing.Add((Convert.ToString(rd[0]) ?? string.Empty, Convert.ToString(rd[1]) ?? string.Empty));
+                    TimeSpan? start = rd[1] == DBNull.Value ? null : (TimeSpan)rd[1];
+                    TimeSpan? end = rd[2] == DBNull.Value ? null : (TimeSpan)rd[2];
+                    existing.Add((Convert.ToString(rd[0]) ?? string.Empty, start, end));
                 }
             }
 
-            bool IsShift(string name, string keyword)
-                => name.Contains(keyword, StringComparison.OrdinalIgnoreCase);
-
-            bool newIsFull = IsShift(newShiftName, "Full");
-            bool newIsSang = IsShift(newShiftName, "Sáng") || IsShift(newShiftName, "Sang");
-            bool newIsChieu = IsShift(newShiftName, "Chiều") || IsShift(newShiftName, "Chieu");
-
-            foreach (var (existingMaCa, existingName) in existing)
+            foreach (var (existingMaCa, existingStart, existingEnd) in existing)
             {
                 if (string.Equals(existingMaCa, maCa, StringComparison.OrdinalIgnoreCase))
                 {
                     return 0;
                 }
 
-                bool existingIsFull = IsShift(existingName, "Full");
-                bool existingIsSang = IsShift(existingName, "Sáng") || IsShift(existingName, "Sang");
-                bool existingIsChieu = IsShift(existingName, "Chiều") || IsShift(existingName, "Chieu");
-
-                if ((newIsFull && (existingIsSang || existingIsChieu))
-                    || (existingIsFull && (newIsSang || newIsChieu)))
+                if (newStart.HasValue && newEnd.HasValue && existingStart.HasValue && existingEnd.HasValue)
                 {
-                    return 0;
+                    bool overlaps = newStart.Value < existingEnd.Value && existingStart.Value < newEnd.Value;
+                    if (overlaps)
+                    {
+                        return -1;
+                    }
                 }
             }
 

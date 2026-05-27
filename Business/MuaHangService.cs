@@ -17,9 +17,14 @@ namespace PBL3.Business
             return _repository.GetNguyenLieu();
         }
 
-        public DataTable GetNhaCungCap(string? maNl)
+        public DataTable GetNhaCungCap()
         {
-            return _repository.GetNhaCungCap(maNl);
+            return _repository.GetNhaCungCap();
+        }
+
+        public string? GetSuggestedNhaCungCap(string maNl)
+        {
+            return _repository.GetSuggestedNhaCungCap(maNl);
         }
 
         public DataTable GetDonViTinh()

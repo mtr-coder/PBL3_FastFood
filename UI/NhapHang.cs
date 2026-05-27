@@ -66,6 +66,7 @@ namespace PBL3
         {
             _gioNhapTable.Columns.Add("MaNL", typeof(string));
             _gioNhapTable.Columns.Add("TenNL", typeof(string));
+            _gioNhapTable.Columns.Add("DonViTinh", typeof(string));
             _gioNhapTable.Columns.Add("SoLuong", typeof(decimal));
             _gioNhapTable.Columns.Add("DonGia", typeof(decimal));
             _gioNhapTable.Columns.Add("ThanhTien", typeof(decimal), "SoLuong * DonGia");
@@ -73,6 +74,7 @@ namespace PBL3
             _dgvGioHang.AutoGenerateColumns = false;
             _dgvGioHang.Columns.Clear();
             _dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TenNL", HeaderText = "Tên nguyên liệu", FillWeight = 40 });
+            _dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "DonViTinh", HeaderText = "ĐVT", FillWeight = 12 });
             _dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuong", HeaderText = "Số lượng", FillWeight = 18 });
             _dgvGioHang.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -201,14 +203,20 @@ namespace PBL3
 
             string maNl = Convert.ToString(_cboNguyenLieu.SelectedValue) ?? string.Empty;
             string tenNl = (_cboNguyenLieu.Text ?? string.Empty).Trim();
+            string dvt = string.Empty;
+            if (_cboNguyenLieu.SelectedItem is DataRowView drv && drv.Row.Table.Columns.Contains("DonViTinh"))
+            {
+                dvt = Convert.ToString(drv["DonViTinh"]) ?? string.Empty;
+            }
 
             DataRow? existed = _gioNhapTable.AsEnumerable().FirstOrDefault(r => string.Equals(Convert.ToString(r["MaNL"]), maNl, StringComparison.OrdinalIgnoreCase));
             if (existed is null)
             {
-                _gioNhapTable.Rows.Add(maNl, tenNl, soLuong, donGia);
+                _gioNhapTable.Rows.Add(maNl, tenNl, dvt, soLuong, donGia);
             }
             else
             {
+                existed["DonViTinh"] = dvt;
                 existed["SoLuong"] = Convert.ToDecimal(existed["SoLuong"], CultureInfo.InvariantCulture) + soLuong;
                 existed["DonGia"] = donGia;
             }
@@ -383,19 +391,22 @@ namespace PBL3
                 e.Graphics.DrawLine(Pens.Gray, left, y, right, y);
                 y += 4f;
 
+                float dvtW = 40f;
                 float qtyW = 24f;
                 float priceW = 52f;
                 float totalW = 62f;
                 const float colGap = 4f;
-                float nameW = width - qtyW - priceW - totalW - (colGap * 2f);
+                float nameW = width - dvtW - qtyW - priceW - totalW - (colGap * 3f);
 
                 RectangleF nameRect = new RectangleF(left, y, nameW, 16f);
-                RectangleF qtyRect = new RectangleF(nameRect.Right + colGap, y, qtyW, 16f);
+                RectangleF dvtRect = new RectangleF(nameRect.Right + colGap, y, dvtW, 16f);
+                RectangleF qtyRect = new RectangleF(dvtRect.Right + colGap, y, qtyW, 16f);
                 RectangleF priceRect = new RectangleF(qtyRect.Right + colGap, y, priceW, 16f);
                 RectangleF totalRect = new RectangleF(priceRect.Right, y, totalW, 16f);
                 using StringFormat rightFormat = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Near };
 
                 e.Graphics.DrawString("Tên hàng", monoFont, Brushes.Black, nameRect);
+                e.Graphics.DrawString("ĐVT", monoFont, Brushes.Black, dvtRect);
                 e.Graphics.DrawString("SL", monoFont, Brushes.Black, qtyRect, rightFormat);
                 e.Graphics.DrawString("Đơn giá", monoFont, Brushes.Black, priceRect, rightFormat);
                 e.Graphics.DrawString("T.Tiền", monoFont, Brushes.Black, totalRect, rightFormat);
@@ -407,16 +418,19 @@ namespace PBL3
                 foreach (DataRow row in _gioNhapTable.Rows)
                 {
                     string ten = Convert.ToString(row["TenNL"]) ?? string.Empty;
+                    string dvt = Convert.ToString(row["DonViTinh"]) ?? string.Empty;
                     string sl = Convert.ToDecimal(row["SoLuong"], CultureInfo.InvariantCulture).ToString("0.##", CultureInfo.InvariantCulture);
                     decimal dg = Convert.ToDecimal(row["DonGia"], CultureInfo.InvariantCulture);
                     decimal tt = Convert.ToDecimal(row["ThanhTien"], CultureInfo.InvariantCulture);
 
                     nameRect = new RectangleF(left, y, nameW, 14f);
-                    qtyRect = new RectangleF(nameRect.Right + colGap, y, qtyW, 14f);
+                    dvtRect = new RectangleF(nameRect.Right + colGap, y, dvtW, 14f);
+                    qtyRect = new RectangleF(dvtRect.Right + colGap, y, qtyW, 14f);
                     priceRect = new RectangleF(qtyRect.Right + colGap, y, priceW, 14f);
                     totalRect = new RectangleF(priceRect.Right, y, totalW, 14f);
 
                     e.Graphics.DrawString(ten, monoFont, Brushes.Black, nameRect);
+                    e.Graphics.DrawString(dvt, monoFont, Brushes.Black, dvtRect);
                     e.Graphics.DrawString(sl, monoFont, Brushes.Black, qtyRect, rightFormat);
                     e.Graphics.DrawString($"{dg:N0}", monoFont, Brushes.Black, priceRect, rightFormat);
                     e.Graphics.DrawString($"{tt:N0}", monoFont, Brushes.Black, totalRect, rightFormat);
@@ -454,7 +468,8 @@ namespace PBL3
             {
                 Document = doc,
                 Width = 900,
-                Height = 700
+                Height = 700,
+                StartPosition = FormStartPosition.CenterParent
             };
 
             preview.ShowDialog(this);

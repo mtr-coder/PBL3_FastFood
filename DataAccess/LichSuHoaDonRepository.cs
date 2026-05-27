@@ -248,14 +248,15 @@ WHERE ct.MaHDB = @MaHD";
             else
             {
                 sql = @"
-SELECT ISNULL(nl.TenNL, CONVERT(NVARCHAR(100), ct.MaNL)) AS TenHang,
-       ISNULL(ct.SoLuong, 0) AS SoLuong,
-       ISNULL(ct.DonGia, 0) AS DonGia,
-       ISNULL(ct.SoLuong, 0) * ISNULL(ct.DonGia, 0) AS ThanhTien,
-       CAST(NULL AS NVARCHAR(300)) AS GhiChu
-FROM dbo.CT_HOA_DON_NHAP ct
-LEFT JOIN dbo.NGUYEN_LIEU nl ON nl.MaNL = ct.MaNL
-WHERE ct.MaHDN = @MaHD";
+ SELECT ISNULL(nl.TenNL, CONVERT(NVARCHAR(100), ct.MaNL)) AS TenHang,
+        ISNULL(nl.DonViTinh, N'') AS DonViTinh,
+        ISNULL(ct.SoLuong, 0) AS SoLuong,
+        ISNULL(ct.DonGia, 0) AS DonGia,
+        ISNULL(ct.SoLuong, 0) * ISNULL(ct.DonGia, 0) AS ThanhTien,
+        CAST(NULL AS NVARCHAR(300)) AS GhiChu
+ FROM dbo.CT_HOA_DON_NHAP ct
+ LEFT JOIN dbo.NGUYEN_LIEU nl ON nl.MaNL = ct.MaNL
+ WHERE ct.MaHDN = @MaHD";
             }
 
             using SqlCommand cmd = new SqlCommand(sql, conn);

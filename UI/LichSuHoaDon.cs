@@ -817,7 +817,8 @@ namespace PBL3
             {
                 Document = doc,
                 Width = 900,
-                Height = 700
+                Height = 700,
+                StartPosition = FormStartPosition.CenterParent
             };
 
             preview.ShowDialog(this);

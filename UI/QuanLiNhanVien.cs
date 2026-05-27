@@ -1050,7 +1050,8 @@ namespace PBL3
                     };
 
                     DateTime today = DateTime.Today;
-                    DateTime monthEnd = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+                    DateTime selectedDate = DateTime.Today;
+                    DateTime monthEnd = new DateTime(selectedDate.Year, selectedDate.Month, DateTime.DaysInMonth(selectedDate.Year, selectedDate.Month));
 
                     Label lblShift = new Label { Text = "Chọn ca:", Left = 12, Top = 45, AutoSize = true };
                     ComboBox cboShift = new ComboBox
@@ -1104,7 +1105,7 @@ namespace PBL3
 
                     Label lblNote = new Label
                     {
-                        Text = $"Chọn các thứ để thêm lịch (từ hôm nay đến ngày {monthEnd:dd/MM/yyyy}):",
+                        Text = $"Chọn các thứ để thêm lịch (từ ngày {selectedDate:dd/MM/yyyy} đến ngày {monthEnd:dd/MM/yyyy}):",
                         Left = 12,
                         Top = 120,
                         AutoSize = true,
@@ -1203,8 +1204,20 @@ namespace PBL3
                         lblStaffing.Text = $"Ca này hiện có {thucTe}/{toiThieu} người (Còn thiếu {thieu})";
                     }
 
+                    void UpdateMonthRangeLabel()
+                    {
+                        selectedDate = dtpNgayLam.Value.Date;
+                        monthEnd = new DateTime(selectedDate.Year, selectedDate.Month, DateTime.DaysInMonth(selectedDate.Year, selectedDate.Month));
+                        lblNote.Text = $"Chọn các thứ để thêm lịch (từ ngày {selectedDate:dd/MM/yyyy} đến ngày {monthEnd:dd/MM/yyyy}):";
+                    }
+
                     cboShift.SelectedIndexChanged += (_, __) => KiemTraDinhBien();
-                    dtpNgayLam.ValueChanged += (_, __) => KiemTraDinhBien();
+                    dtpNgayLam.ValueChanged += (_, __) =>
+                    {
+                        UpdateMonthRangeLabel();
+                        KiemTraDinhBien();
+                    };
+                    UpdateMonthRangeLabel();
                     KiemTraDinhBien();
 
                     if (addShiftForm.ShowDialog(null) == DialogResult.OK)
@@ -1236,8 +1249,9 @@ namespace PBL3
                         {
                             int addedCount = 0;
                             int duplicateCount = 0;
+                            int overlapCount = 0;
 
-                            for (DateTime date = today; date <= monthEnd; date = date.AddDays(1))
+                            for (DateTime date = selectedDate; date <= monthEnd; date = date.AddDays(1))
                             {
                                 int dayOfWeek = (int)date.DayOfWeek;
                                 int arrayIndex = dayOfWeek == 0 ? 6 : dayOfWeek - 1;
@@ -1249,6 +1263,10 @@ namespace PBL3
                                     {
                                         addedCount++;
                                     }
+                                    else if (result == -1)
+                                    {
+                                        overlapCount++;
+                                    }
                                     else
                                     {
                                         duplicateCount++;
@@ -1256,7 +1274,11 @@ namespace PBL3
                                 }
                             }
 
-                            if (duplicateCount > 0)
+                            if (overlapCount > 0)
+                            {
+                                MessageBox.Show($"Đã thêm {addedCount} lịch. ({overlapCount} lịch bị trùng giờ)", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else if (duplicateCount > 0)
                             {
                                 MessageBox.Show($"Đã thêm {addedCount} lịch. ({duplicateCount} lịch bị trùng lặp)", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }

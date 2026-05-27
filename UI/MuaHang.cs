@@ -231,6 +231,11 @@ namespace PBL3
             SetNguyenLieuHeaderText("GiaNhap", "Giá nhập");
             SetNguyenLieuHeaderText("SoLuongTon", "Số lượng tồn");
 
+            if (dgvNguyenLieu.Columns.Contains("MaNL"))
+            {
+                dgvNguyenLieu.Columns["MaNL"].Visible = false;
+            }
+
             if (dgvNguyenLieu.Columns.Contains("GiaNhap"))
             {
                 dgvNguyenLieu.Columns["GiaNhap"].DefaultCellStyle.Format = "N0";
@@ -241,6 +246,7 @@ namespace PBL3
                 dgvNguyenLieu.Rows[0].Selected = true;
                 SyncInputFromSelectedNguyenLieu();
             }
+
         }
 
         private void SetNguyenLieuHeaderText(string columnName, string headerText)
@@ -251,9 +257,9 @@ namespace PBL3
             }
         }
 
-        private void LoadNhaCungCap(string? maNl = null)
+        private void LoadNhaCungCap()
         {
-            DataTable dt = _muaHangService.GetNhaCungCap(maNl);
+            DataTable dt = _muaHangService.GetNhaCungCap();
 
             cboNhaCungCap.DataSource = dt;
             cboNhaCungCap.DisplayMember = "TenNCC";
@@ -286,7 +292,19 @@ namespace PBL3
             string donViTinh = Convert.ToString(row.Cells["DonViTinh"].Value) ?? string.Empty;
             decimal giaNhap = row.Cells["GiaNhap"].Value is null ? 0m : Convert.ToDecimal(row.Cells["GiaNhap"].Value);
 
-            LoadNhaCungCap(maNl);
+            LoadNhaCungCap();
+
+            string? suggestedMaNcc = _muaHangService.GetSuggestedNhaCungCap(maNl);
+            if (!string.IsNullOrWhiteSpace(suggestedMaNcc) && cboNhaCungCap.DataSource is not null)
+            {
+                try
+                {
+                    cboNhaCungCap.SelectedValue = suggestedMaNcc;
+                }
+                catch
+                {
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(donViTinh) && cboDonViTinh.Items.Count > 0)
             {
@@ -575,7 +593,8 @@ namespace PBL3
             {
                 Document = doc,
                 Width = 900,
-                Height = 700
+                Height = 700,
+                StartPosition = FormStartPosition.CenterParent
             };
             preview.ShowDialog(this);
 

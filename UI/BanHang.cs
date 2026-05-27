@@ -1528,14 +1528,47 @@ namespace PBL3
 
                 ShowPaymentPreview(maHdb, printTable, tongSauGiam);
 
-                _hoaDonTable.Clear();
-                UpdateTongTienData();
-                LoadKhachHangOptionsData();
+                ResetBanHangAfterPayment();
                 MessageBox.Show($"Thanh toán thành công. Tổng thanh toán: {tongSauGiam:N0} đ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Thanh toán thất bại.\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ResetBanHangAfterPayment()
+        {
+            _hoaDonTable.Clear();
+            UpdateTongTienData();
+            LoadKhachHangOptionsData();
+
+            if (_bhChkKhongLienKetKhach is not null)
+            {
+                _bhChkKhongLienKetKhach.Checked = true;
+            }
+
+            UpdateKhachHangUiStateData();
+
+            if (_bhNudSoLuong is not null)
+            {
+                _bhNudSoLuong.Value = 1;
+            }
+
+            if (_bhCboLoaiMon is not null && _bhCboLoaiMon.Items.Count > 0)
+            {
+                _bhCboLoaiMon.SelectedIndex = 0;
+            }
+
+            if (_bhDgvMenu is not null && _bhDgvMenu.Rows.Count > 0)
+            {
+                _bhDgvMenu.ClearSelection();
+                _bhDgvMenu.Rows[0].Selected = true;
+                if (_bhDgvMenu.Columns.Contains("TenMon"))
+                {
+                    _bhDgvMenu.CurrentCell = _bhDgvMenu.Rows[0].Cells["TenMon"];
+                }
+                LoadSizeForSelectedMonData();
             }
         }
 
@@ -1556,7 +1589,15 @@ namespace PBL3
             int diemTichLuy = 0;
             if (_bhChkKhongLienKetKhach?.Checked == false && _bhCboKhachHang?.SelectedItem is DataRowView rv)
             {
-                khachHang = (_bhCboKhachHang.Text ?? "").Trim();
+                string tenKh = Convert.ToString(rv["TenKH"]) ?? string.Empty;
+                string sdt = Convert.ToString(rv["SDT"]) ?? string.Empty;
+                khachHang = string.IsNullOrWhiteSpace(sdt) || string.Equals(tenKh, sdt, StringComparison.OrdinalIgnoreCase)
+                    ? tenKh
+                    : $"{tenKh} - {sdt}";
+                if (string.IsNullOrWhiteSpace(khachHang))
+                {
+                    khachHang = (_bhCboKhachHang.Text ?? "").Trim();
+                }
                 tenHang = Convert.ToString(rv["TenHang"]) ?? string.Empty;
                 phanTramGiam = Convert.ToInt32(rv["PhanTramGiam"] ?? 0);
                 diemTichLuy = Convert.ToInt32(rv["DiemTichLuy"] ?? 0);

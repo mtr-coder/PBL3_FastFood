@@ -20,35 +20,37 @@ ORDER BY MaNL";
             return dt;
         }
 
-        public DataTable GetNhaCungCap(string? maNl)
+        public DataTable GetNhaCungCap()
         {
             using SqlConnection conn = DbHelper.GetConnection();
-            string sql = string.IsNullOrWhiteSpace(maNl)
-                ? "SELECT MaNCC, TenNCC FROM dbo.NHA_CUNG_CAP ORDER BY MaNCC"
-                : @"SELECT DISTINCT ncc.MaNCC, ncc.TenNCC
-FROM dbo.NHA_CUNG_CAP ncc
-INNER JOIN dbo.HOA_DON_NHAP hdn ON hdn.MaNCC = ncc.MaNCC
-INNER JOIN dbo.CT_HOA_DON_NHAP ctn ON ctn.MaHDN = hdn.MaHDN
-WHERE ctn.MaNL = @MaNL
-ORDER BY ncc.MaNCC";
+            string sql = "SELECT MaNCC, TenNCC FROM dbo.NHA_CUNG_CAP ORDER BY MaNCC";
 
             using SqlDataAdapter da = new SqlDataAdapter(sql, conn);
-            if (!string.IsNullOrWhiteSpace(maNl))
-            {
-                da.SelectCommand.Parameters.Add("@MaNL", SqlDbType.VarChar, 20).Value = maNl;
-            }
-
             DataTable dt = new DataTable();
             da.Fill(dt);
 
-            if (dt.Rows.Count == 0 && !string.IsNullOrWhiteSpace(maNl))
+            return dt;
+        }
+
+        public string? GetSuggestedNhaCungCap(string maNl)
+        {
+            if (string.IsNullOrWhiteSpace(maNl))
             {
-                using SqlDataAdapter daAll = new SqlDataAdapter("SELECT MaNCC, TenNCC FROM dbo.NHA_CUNG_CAP ORDER BY MaNCC", conn);
-                dt = new DataTable();
-                daAll.Fill(dt);
+                return null;
             }
 
-            return dt;
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+            const string sql = @"SELECT TOP 1 hdn.MaNCC
+FROM dbo.HOA_DON_NHAP hdn
+INNER JOIN dbo.CT_HOA_DON_NHAP ctn ON ctn.MaHDN = hdn.MaHDN
+WHERE ctn.MaNL = @MaNL
+ORDER BY hdn.NgayNhap DESC, hdn.MaHDN DESC";
+
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaNL", SqlDbType.VarChar, 20).Value = maNl;
+            object? result = cmd.ExecuteScalar();
+            return result is null || result == DBNull.Value ? null : Convert.ToString(result);
         }
 
         public DataTable GetDonViTinh()
