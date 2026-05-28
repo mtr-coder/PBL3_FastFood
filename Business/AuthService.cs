@@ -25,7 +25,7 @@ namespace PBL3.Business
                 return LoginResult.Fail("Sai số điện thoại hoặc mật khẩu!");
             }
 
-            bool laAdmin = nhanVien.MaCV == "1";
+            bool laAdmin = nhanVien.MaCV == AppConstants.MaCvAdmin;
             SessionManager.Login(nhanVien.MaNV, nhanVien.MaCV, laAdmin, nhanVien.HoTen);
             return LoginResult.Success(nhanVien.MaNV, laAdmin);
         }
