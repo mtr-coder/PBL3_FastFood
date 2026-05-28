@@ -1,4 +1,4 @@
-﻿using PBL3.Business;
+using PBL3.Business;
 using PBL3.UI;
 using System.Data;
 
@@ -1037,7 +1037,7 @@ namespace PBL3
                         StartPosition = FormStartPosition.CenterParent,
                         MinimizeBox = false,
                         MaximizeBox = false,
-                        ClientSize = new Size(420, 350)
+                        ClientSize = new Size(440, 400)
                     };
 
                     Label lblEmployee = new Label
@@ -1049,70 +1049,106 @@ namespace PBL3
                         Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                     };
 
-                    DateTime today = DateTime.Today;
-                    DateTime selectedDate = DateTime.Today;
-                    DateTime monthEnd = new DateTime(selectedDate.Year, selectedDate.Month, DateTime.DaysInMonth(selectedDate.Year, selectedDate.Month));
-
+                    // --- ComboBox chọn ca ---
                     Label lblShift = new Label { Text = "Chọn ca:", Left = 12, Top = 45, AutoSize = true };
                     ComboBox cboShift = new ComboBox
                     {
-                        Left = 80,
+                        Left = 90,
                         Top = 42,
-                        Width = 320,
+                        Width = 330,
                         DropDownStyle = ComboBoxStyle.DropDownList
                     };
 
-                    DateTimePicker dtpNgayLam = new DateTimePicker
+                    DataTable caTrucTable = _trangNhanVienService.GetCaTruc();
+
+                    // --- ComboBox chọn tuần (số tuần reset theo tháng) ---
+                    Label lblTuan = new Label { Text = "Chọn tuần:", Left = 12, Top = 75, AutoSize = true };
+                    ComboBox cboTuan = new ComboBox
                     {
-                        Left = 80,
-                        Top = 70,
-                        Width = 140,
-                        Format = DateTimePickerFormat.Custom,
-                        CustomFormat = "dd/MM/yyyy",
-                        MinDate = DateTime.Today,
-                        Value = DateTime.Today
+                        Left = 90,
+                        Top = 72,
+                        Width = 330,
+                        DropDownStyle = ComboBoxStyle.DropDownList
                     };
 
-                    Label lblNgayLam = new Label { Text = "Lịch:", Left = 12, Top = 73, AutoSize = true };
+                    // Tạo danh sách tuần: tháng hiện tại + tháng sau, số tuần reset theo tháng
+                    DateTime today = DateTime.Today;
+                    var weekItems = new List<(string display, DateTime monday, DateTime sunday)>();
 
-                    DataTable caTrucTable = _trangNhanVienService.GetCaTruc();
-                    
-                    addShiftForm.Controls.Add(lblShift);
-                    addShiftForm.Controls.Add(cboShift);
-                    addShiftForm.Controls.Add(lblNgayLam);
-                    addShiftForm.Controls.Add(dtpNgayLam);
-                    
-                    // Use BindingSource for proper data binding
-                    var bindingSource = new BindingSource(caTrucTable, null);
-                    cboShift.DataSource = bindingSource;
-                    cboShift.DisplayMember = "TenCa";
-                    cboShift.ValueMember = "MaCa";
-                    if (caTrucTable.Rows.Count > 0)
+                    for (int monthOffset = 0; monthOffset <= 1; monthOffset++)
                     {
-                        cboShift.SelectedIndex = 0;
+                        DateTime targetMonth = today.AddMonths(monthOffset);
+                        int year = targetMonth.Year;
+                        int month = targetMonth.Month;
+                        DateTime firstDay = new DateTime(year, month, 1);
+                        DateTime lastDay = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+
+                        // Tìm Thứ 2 đầu tiên >= ngày 1 của tháng
+                        DateTime monday = firstDay;
+                        while (monday.DayOfWeek != DayOfWeek.Monday)
+                        {
+                            monday = monday.AddDays(1);
+                        }
+
+                        // Nếu tháng bắt đầu không phải Thứ 2, thêm tuần đầu tiên (bắt đầu từ ngày 1)
+                        if (firstDay.DayOfWeek != DayOfWeek.Monday)
+                        {
+                            DateTime firstSunday = monday.AddDays(-1);
+                            if (firstSunday > lastDay) firstSunday = lastDay;
+                            weekItems.Add(($"Tuần 1 (Từ {firstDay:dd/MM} đến {firstSunday:dd/MM})", firstDay, firstSunday));
+                        }
+
+                        int weekNum = firstDay.DayOfWeek == DayOfWeek.Monday ? 1 : 2;
+                        while (monday <= lastDay)
+                        {
+                            DateTime sunday = monday.AddDays(6);
+                            if (sunday > lastDay) sunday = lastDay;
+                            weekItems.Add(($"Tuần {weekNum} (Từ {monday:dd/MM} đến {sunday:dd/MM})", monday, sunday));
+                            weekNum++;
+                            monday = monday.AddDays(7);
+                        }
                     }
 
-                    Label lblStaffing = new Label
+                    foreach (var item in weekItems)
                     {
-                        Left = 12,
-                        Top = 100,
-                        AutoSize = true,
-                        ForeColor = Color.DarkSlateBlue,
-                        Font = new Font("Segoe UI", 8.5F, FontStyle.Italic),
-                        Text = ""
-                    };
-                    addShiftForm.Controls.Add(lblStaffing);
+                        cboTuan.Items.Add(item.display);
+                    }
 
+                    // Mặc định chọn tuần chứa ngày hôm nay
+                    int defaultIndex = 0;
+                    for (int i = 0; i < weekItems.Count; i++)
+                    {
+                        if (today >= weekItems[i].monday && today <= weekItems[i].sunday)
+                        {
+                            defaultIndex = i;
+                            break;
+                        }
+                    }
+                    if (cboTuan.Items.Count > 0)
+                    {
+                        cboTuan.SelectedIndex = defaultIndex;
+                    }
+
+                    // --- Hướng dẫn ---
                     Label lblNote = new Label
                     {
-                        Text = $"Chọn các thứ để thêm lịch (từ ngày {selectedDate:dd/MM/yyyy} đến ngày {monthEnd:dd/MM/yyyy}):",
+                        Text = "(*) Click vào từng thứ để xem số lượng người:",
                         Left = 12,
-                        Top = 120,
+                        Top = 105,
                         AutoSize = true,
-                        Font = new Font("Segoe UI", 8F)
+                        Font = new Font("Segoe UI", 8F, FontStyle.Italic)
                     };
 
-                    Panel pnlDays = new Panel { Left = 12, Top = 145, Width = 388, Height = 120, BorderStyle = BorderStyle.FixedSingle };
+                    // --- Panel chứa CheckBox các thứ ---
+                    Panel pnlDays = new Panel
+                    {
+                        Left = 12,
+                        Top = 128,
+                        Width = 408,
+                        Height = 180,
+                        BorderStyle = BorderStyle.FixedSingle,
+                        AutoScroll = false
+                    };
 
                     string[] dayNames = { "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật" };
                     CheckBox[] chkDays = new CheckBox[7];
@@ -1122,104 +1158,177 @@ namespace PBL3
                         chkDays[i] = new CheckBox
                         {
                             Text = dayNames[i],
-                            Left = (i % 4) * 95,
-                            Top = (i / 4) * 25,
-                            AutoSize = true
+                            Left = 10,
+                            Top = 4 + i * 24,
+                            Width = 380,
+                            AutoSize = false,
+                            Height = 22
                         };
                         pnlDays.Controls.Add(chkDays[i]);
                     }
 
+                    // --- Label sức chứa real-time ---
+                    Label lblStaffing = new Label
+                    {
+                        Left = 12,
+                        Top = 315,
+                        Width = 408,
+                        AutoSize = false,
+                        Height = 20,
+                        ForeColor = Color.DarkSlateBlue,
+                        Font = new Font("Segoe UI", 8.5F, FontStyle.Italic),
+                        Text = ""
+                    };
+
+                    // --- Nút Thêm / Thoát ---
                     Button btnOk = new Button
                     {
                         Text = "Thêm",
-                        Left = 232,
-                        Top = 275,
+                        Left = 260,
+                        Top = 345,
                         Width = 75,
-                        Height = 24,
+                        Height = 28,
                         DialogResult = DialogResult.OK
                     };
 
                     Button btnCancel = new Button
                     {
                         Text = "Thoát",
-                        Left = 312,
-                        Top = 275,
+                        Left = 345,
+                        Top = 345,
                         Width = 75,
-                        Height = 24,
+                        Height = 28,
                         DialogResult = DialogResult.Cancel
                     };
 
                     addShiftForm.Controls.Add(lblEmployee);
+                    addShiftForm.Controls.Add(lblShift);
+                    addShiftForm.Controls.Add(cboShift);
+                    addShiftForm.Controls.Add(lblTuan);
+                    addShiftForm.Controls.Add(cboTuan);
                     addShiftForm.Controls.Add(lblNote);
                     addShiftForm.Controls.Add(pnlDays);
+                    addShiftForm.Controls.Add(lblStaffing);
                     addShiftForm.Controls.Add(btnOk);
                     addShiftForm.Controls.Add(btnCancel);
                     addShiftForm.AcceptButton = btnOk;
                     addShiftForm.CancelButton = btnCancel;
 
-                    void KiemTraDinhBien()
+                    // Bind dữ liệu ca trực SAU KHI controls đã được thêm vào form
+                    cboShift.DataSource = caTrucTable;
+                    cboShift.DisplayMember = "TenCa";
+                    cboShift.ValueMember = "MaCa";
+                    if (caTrucTable.Rows.Count > 0)
                     {
-                        if (cboShift.SelectedValue is null)
-                        {
-                            lblStaffing.Text = string.Empty;
-                            return;
-                        }
+                        cboShift.SelectedIndex = 0;
+                    }
 
-                        string maCaCheck = cboShift.SelectedValue.ToString() ?? string.Empty;
-                        DateTime ngay = dtpNgayLam.Value.Date;
-                        DataTable counts = _trangNhanVienService.GetStaffingCounts(ngay, ngay);
-                        int sang = 0;
-                        int chieu = 0;
-                        int toi = 0;
-                        int full = 0;
-                        if (counts.Rows.Count > 0)
-                        {
-                            DataRow row = counts.Rows[0];
-                            sang = row["SoSang"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoSang"]);
-                            chieu = row["SoChieu"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoChieu"]);
-                            toi = row["SoToi"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoToi"]);
-                            full = row["SoFull"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoFull"]);
-                        }
+                    // === Hàm cập nhật text checkbox theo tuần đang chọn ===
+                    void UpdateCheckBoxDates()
+                    {
+                        int idx = cboTuan.SelectedIndex;
+                        if (idx < 0 || idx >= weekItems.Count) return;
 
-                        int thucTe = maCaCheck switch
-                        {
-                            "1" => sang + full,
-                            "2" => chieu + full,
-                            "3" => toi,
-                            "4" => full,
-                            _ => 0
-                        };
+                        DateTime weekStart = weekItems[idx].monday;
+                        DateTime weekEnd = weekItems[idx].sunday;
 
-                        int toiThieu = 0;
-                        if (caTrucTable.Rows.Count > 0)
+                        for (int i = 0; i < 7; i++)
                         {
-                            DataRow? row = caTrucTable.AsEnumerable().FirstOrDefault(r => Convert.ToString(r["MaCa"]) == maCaCheck);
-                            if (row is not null && row["SoNguoiToiThieu"] != DBNull.Value)
+                            // Tính ngày cụ thể cho thứ i (Thứ 2 = 0, ..., Chủ nhật = 6)
+                            DateTime dayDate;
+                            if (weekStart.DayOfWeek == DayOfWeek.Monday)
                             {
-                                toiThieu = Convert.ToInt32(row["SoNguoiToiThieu"]);
+                                dayDate = weekStart.AddDays(i);
+                            }
+                            else
+                            {
+                                // Tuần lẻ đầu tháng (bắt đầu không phải Thứ 2)
+                                // Tính từ ngày Thứ 2 trước weekStart
+                                int offset = ((int)weekStart.DayOfWeek - 1 + 7) % 7;
+                                DateTime virtualMonday = weekStart.AddDays(-offset);
+                                dayDate = virtualMonday.AddDays(i);
+                            }
+
+                            bool isInRange = dayDate >= weekStart && dayDate <= weekEnd;
+                            chkDays[i].Text = isInRange
+                                ? $"{dayNames[i]} ({dayDate:dd/MM})"
+                                : $"{dayNames[i]}";
+                            chkDays[i].Enabled = isInRange && dayDate >= today;
+                            chkDays[i].Tag = isInRange ? dayDate : (object?)null;
+
+                            if (!isInRange || dayDate < today)
+                            {
+                                chkDays[i].Checked = false;
                             }
                         }
 
-                        int thieu = Math.Max(0, toiThieu - thucTe);
-                        lblStaffing.Text = $"Ca này hiện có {thucTe}/{toiThieu} người (Còn thiếu {thieu})";
+                        lblStaffing.Text = "";
                     }
 
-                    void UpdateMonthRangeLabel()
+                    // === Hàm kiểm tra sức chứa real-time cho 1 ngày cụ thể ===
+                    void KiemTraDinhBienChoNgay(DateTime ngay)
                     {
-                        selectedDate = dtpNgayLam.Value.Date;
-                        monthEnd = new DateTime(selectedDate.Year, selectedDate.Month, DateTime.DaysInMonth(selectedDate.Year, selectedDate.Month));
-                        lblNote.Text = $"Chọn các thứ để thêm lịch (từ ngày {selectedDate:dd/MM/yyyy} đến ngày {monthEnd:dd/MM/yyyy}):";
+                        if (cboShift.SelectedValue is null) return;
+                        string maCaCheck = cboShift.SelectedValue.ToString() ?? string.Empty;
+
+                        try
+                        {
+                            var (thucTe, toiThieu) = _trangNhanVienService.GetStaffingCountForDateAndShift(ngay, maCaCheck);
+                            string warning = "";
+                            if (toiThieu > 0 && thucTe >= toiThieu)
+                            {
+                                warning = " (Đã đầy!)";
+                                lblStaffing.ForeColor = Color.OrangeRed;
+                            }
+                            else if (toiThieu > 0 && thucTe >= toiThieu - 1)
+                            {
+                                warning = " (Sắp đầy!)";
+                                lblStaffing.ForeColor = Color.DarkOrange;
+                            }
+                            else
+                            {
+                                lblStaffing.ForeColor = Color.DarkSlateBlue;
+                            }
+
+                            lblStaffing.Text = $"Ngày {ngay:dd/MM/yyyy} → Ca này hiện có {thucTe}/{toiThieu} người{warning}";
+                        }
+                        catch
+                        {
+                            lblStaffing.Text = "";
+                        }
                     }
 
-                    cboShift.SelectedIndexChanged += (_, __) => KiemTraDinhBien();
-                    dtpNgayLam.ValueChanged += (_, __) =>
+                    // === Đăng ký sự kiện ===
+                    cboTuan.SelectedIndexChanged += (_, __) => UpdateCheckBoxDates();
+
+                    cboShift.SelectedIndexChanged += (_, __) =>
                     {
-                        UpdateMonthRangeLabel();
-                        KiemTraDinhBien();
+                        UpdateCheckBoxDates();
                     };
-                    UpdateMonthRangeLabel();
-                    KiemTraDinhBien();
 
+                    for (int i = 0; i < 7; i++)
+                    {
+                        int capturedIndex = i;
+                        chkDays[i].MouseEnter += (_, __) =>
+                        {
+                            if (chkDays[capturedIndex].Tag is DateTime d)
+                            {
+                                KiemTraDinhBienChoNgay(d);
+                            }
+                        };
+                        chkDays[i].CheckedChanged += (_, __) =>
+                        {
+                            if (chkDays[capturedIndex].Tag is DateTime d)
+                            {
+                                KiemTraDinhBienChoNgay(d);
+                            }
+                        };
+                    }
+
+                    // Khởi tạo ban đầu
+                    UpdateCheckBoxDates();
+
+                    // === Xử lý nút Thêm ===
                     if (addShiftForm.ShowDialog(null) == DialogResult.OK)
                     {
                         string? maCa = cboShift.SelectedValue?.ToString();
@@ -1241,7 +1350,7 @@ namespace PBL3
 
                         if (!anyDaySelected)
                         {
-                            MessageBox.Show("Vui lòng chọn ít nhất một thứ.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("Vui lòng chọn ít nhất một ngày.", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 
@@ -1251,14 +1360,11 @@ namespace PBL3
                             int duplicateCount = 0;
                             int overlapCount = 0;
 
-                            for (DateTime date = selectedDate; date <= monthEnd; date = date.AddDays(1))
+                            for (int i = 0; i < 7; i++)
                             {
-                                int dayOfWeek = (int)date.DayOfWeek;
-                                int arrayIndex = dayOfWeek == 0 ? 6 : dayOfWeek - 1;
-
-                                if (arrayIndex >= 0 && arrayIndex < 7 && chkDays[arrayIndex].Checked)
+                                if (chkDays[i].Checked && chkDays[i].Tag is DateTime ngayCuThe)
                                 {
-                                    int result = _trangNhanVienService.AddPhanCongCa(maNv, maCa, date);
+                                    int result = _trangNhanVienService.AddPhanCongCa(maNv, maCa, ngayCuThe);
                                     if (result > 0)
                                     {
                                         addedCount++;

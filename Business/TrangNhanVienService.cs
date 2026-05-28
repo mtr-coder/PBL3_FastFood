@@ -126,6 +126,11 @@ namespace PBL3.Business
             return _repository.GetLuongCoBanNhanVien(maNv.Trim());
         }
 
+        public (int thucTe, int toiThieu) GetStaffingCountForDateAndShift(DateTime ngay, string maCa)
+        {
+            return _repository.GetStaffingCountForDateAndShift(ngay, maCa.Trim());
+        }
+
         public int GetPendingYeuCauCount()
         {
             return _repository.GetPendingYeuCauCount();

@@ -494,6 +494,31 @@ WHERE nv.MaNV = @MaNV";
             return result is null || result == DBNull.Value ? 0m : Convert.ToDecimal(result, CultureInfo.InvariantCulture);
         }
 
+        public (int thucTe, int toiThieu) GetStaffingCountForDateAndShift(DateTime ngay, string maCa)
+        {
+            using SqlConnection conn = DbHelper.GetConnection();
+            conn.Open();
+
+            // Đếm số người đã đăng ký cho ngày + ca cụ thể
+            int thucTe = 0;
+            using (SqlCommand cmdCount = new SqlCommand("SELECT COUNT(*) FROM dbo.PHAN_CONG_CA WHERE NgayLam = @NgayLam AND MaCa = @MaCa", conn))
+            {
+                cmdCount.Parameters.Add("@NgayLam", SqlDbType.Date).Value = ngay.Date;
+                cmdCount.Parameters.Add("@MaCa", SqlDbType.VarChar, 20).Value = maCa;
+                thucTe = Convert.ToInt32(cmdCount.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+            }
+
+            // Lấy sức chứa tối thiểu của ca
+            int toiThieu = 0;
+            using (SqlCommand cmdMin = new SqlCommand("SELECT ISNULL(SoNguoiToiThieu, 0) FROM dbo.CA_TRUC WHERE MaCa = @MaCa", conn))
+            {
+                cmdMin.Parameters.Add("@MaCa", SqlDbType.VarChar, 20).Value = maCa;
+                toiThieu = Convert.ToInt32(cmdMin.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+            }
+
+            return (thucTe, toiThieu);
+        }
+
         public int GetPendingYeuCauCount()
         {
             using SqlConnection conn = DbHelper.GetConnection();
