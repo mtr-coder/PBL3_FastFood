@@ -26,6 +26,7 @@ namespace PBL3.Business
             }
 
             bool laAdmin = nhanVien.MaCV == "1";
+            SessionManager.Login(nhanVien.MaNV, nhanVien.MaCV, laAdmin, nhanVien.HoTen);
             return LoginResult.Success(nhanVien.MaNV, laAdmin);
         }
 

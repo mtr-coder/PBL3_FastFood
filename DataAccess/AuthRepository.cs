@@ -3,6 +3,7 @@ using PBL3.Models;
 using PBL3.Business;
 using System.Data.SqlClient;
 using BCrypt.Net;
+using System.Linq;
 
 namespace PBL3.DataAccess
 {
@@ -17,7 +18,7 @@ namespace PBL3.DataAccess
         public NhanVienDangNhapInfo? GetByPhoneAndPassword(string soDienThoai, string matKhau)
         {
             const string query = @"
-SELECT nv.MaNV, nv.MaCV, nv.MatKhau
+SELECT nv.MaNV, nv.MaCV, nv.HoTen, nv.MatKhau
 FROM dbo.NHAN_VIEN nv
 WHERE nv.SDT = @sdt";
 
@@ -37,7 +38,8 @@ WHERE nv.SDT = @sdt";
             return new NhanVienDangNhapInfo
             {
                 MaNV = reader["MaNV"]?.ToString()?.Trim() ?? string.Empty,
-                MaCV = reader["MaCV"]?.ToString()?.Trim() ?? string.Empty
+                MaCV = reader["MaCV"]?.ToString()?.Trim() ?? string.Empty,
+                HoTen = reader["HoTen"]?.ToString()?.Trim() ?? string.Empty
             };
         }
     }

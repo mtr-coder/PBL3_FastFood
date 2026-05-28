@@ -196,7 +196,7 @@ namespace PBL3
                 return;
             }
 
-            string keyword = _txtTimKiem.Text.Trim().Replace("'", "''");
+            string keyword = EscapeRowFilterValue(_txtTimKiem.Text.Trim());
             string selectedChucVu = _cboTimTheo.Text.Trim();
             if (string.IsNullOrEmpty(selectedChucVu))
             {
@@ -210,7 +210,7 @@ namespace PBL3
             }
             if (selectedChucVu != "Tất cả")
             {
-                filterConditions.Add($"TenCV = '{selectedChucVu.Replace("'", "''")}'");
+                filterConditions.Add($"TenCV = '{EscapeRowFilterValue(selectedChucVu)}'");
             }
             if (filterConditions.Count > 0)
             {
@@ -220,6 +220,17 @@ namespace PBL3
             {
                 _nhanVienTable.DefaultView.RowFilter = string.Empty;
             }
+        }
+
+        private static string EscapeRowFilterValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+
+            string escaped = value.Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]").Replace("*", "[*]");
+            return escaped.Replace("]", "[]]");
         }
 
         private void SetColumnWidth(string columnName, int width)

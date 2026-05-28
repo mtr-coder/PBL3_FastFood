@@ -4,5 +4,6 @@ namespace PBL3.Models
     {
         public string MaNV { get; set; } = string.Empty;
         public string MaCV { get; set; } = string.Empty;
+        public string HoTen { get; set; } = string.Empty;
     }
 }

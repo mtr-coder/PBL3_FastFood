@@ -258,7 +258,7 @@ namespace PBL3
                 return;
             }
 
-            string keyword = _txtTimKiem.Text.Trim().Replace("'", "''");
+            string keyword = EscapeRowFilterValue(_txtTimKiem.Text.Trim());
             if (string.IsNullOrWhiteSpace(keyword))
             {
                 _nhanVienTable.DefaultView.RowFilter = string.Empty;
@@ -278,6 +278,17 @@ namespace PBL3
             };
 
             _nhanVienTable.DefaultView.RowFilter = filter;
+        }
+
+        private static string EscapeRowFilterValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+
+            string escaped = value.Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]").Replace("*", "[*]");
+            return escaped.Replace("]", "[]]");
         }
 
         private void SetColumnWidth(string columnName, int width)
