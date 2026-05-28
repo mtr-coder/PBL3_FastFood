@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -48,6 +48,24 @@ namespace PBL3.DataBase
             }
         }
 
+        /// <summary>
+        /// ExecuteQuery an toan voi parameters, chong SQL injection.
+        /// Dung: DbHelper.ExecuteQuery("SELECT * FROM NV WHERE SDT = @sdt", new SqlParameter("@sdt", value));
+        /// </summary>
+        public static DataTable ExecuteQuery(string sql, params SqlParameter[] parameters)
+        {
+            using SqlConnection conn = GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            if (parameters != null)
+            {
+                cmd.Parameters.AddRange(parameters);
+            }
+            using SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+
         public static int ExecuteNonQuery(string sql)
         {
             using (SqlConnection conn = GetConnection())
@@ -56,6 +74,38 @@ namespace PBL3.DataBase
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 return cmd.ExecuteNonQuery();
             }
+        }
+
+        /// <summary>
+        /// ExecuteNonQuery an toan voi parameters, chong SQL injection.
+        /// Dung: DbHelper.ExecuteNonQuery("DELETE FROM NV WHERE MaNV = @ma", new SqlParameter("@ma", value));
+        /// </summary>
+        public static int ExecuteNonQuery(string sql, params SqlParameter[] parameters)
+        {
+            using SqlConnection conn = GetConnection();
+            conn.Open();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            if (parameters != null)
+            {
+                cmd.Parameters.AddRange(parameters);
+            }
+            return cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Tra ve gia tri dau tien (dong 1, cot 1) cua ket qua query.
+        /// Dung cho COUNT, MAX, SELECT TOP 1...
+        /// </summary>
+        public static object? ExecuteScalar(string sql, params SqlParameter[] parameters)
+        {
+            using SqlConnection conn = GetConnection();
+            conn.Open();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            if (parameters != null)
+            {
+                cmd.Parameters.AddRange(parameters);
+            }
+            return cmd.ExecuteScalar();
         }
     }
 }
