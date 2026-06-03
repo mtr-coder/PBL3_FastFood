@@ -255,39 +255,44 @@ namespace PBL3
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 RowHeadersVisible = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
-                DataSource = data
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
+
+            dialog.Controls.Add(grid);
+            dialog.Controls.Add(topBar);
+
+            grid.DataSource = data;
 
             if (grid.Columns.Contains("MaLS"))
             {
-                grid.Columns["MaLS"].HeaderText = "Mã LS";
-                grid.Columns["MaLS"].Width = 60;
-            }
-            if (grid.Columns.Contains("SoDiem"))
-            {
-                grid.Columns["SoDiem"].HeaderText = "Số điểm";
-                grid.Columns["SoDiem"].Width = 70;
-            }
-            if (grid.Columns.Contains("LoaiGD"))
-            {
-                grid.Columns["LoaiGD"].HeaderText = "Loại GD";
-                grid.Columns["LoaiGD"].Width = 85;
-            }
-            if (grid.Columns.Contains("NoiDung"))
-            {
-                grid.Columns["NoiDung"].HeaderText = "Nội dung";
-                grid.Columns["NoiDung"].Width = 335;
+                grid.Columns["MaLS"].Visible = false;
             }
             if (grid.Columns.Contains("NgayGD"))
             {
                 grid.Columns["NgayGD"].HeaderText = "Ngày GD";
-                grid.Columns["NgayGD"].Width = 145;
-                grid.Columns["NgayGD"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+                grid.Columns["NgayGD"].DisplayIndex = 0;
+                grid.Columns["NgayGD"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                grid.Columns["NgayGD"].DefaultCellStyle.Format = "HH:mm dd/MM/yyyy";
+            }
+            if (grid.Columns.Contains("SoDiem"))
+            {
+                grid.Columns["SoDiem"].HeaderText = "Số điểm";
+                grid.Columns["SoDiem"].DisplayIndex = 1;
+                grid.Columns["SoDiem"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
+            if (grid.Columns.Contains("LoaiGD"))
+            {
+                grid.Columns["LoaiGD"].HeaderText = "Loại GD";
+                grid.Columns["LoaiGD"].DisplayIndex = 2;
+                grid.Columns["LoaiGD"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
+            if (grid.Columns.Contains("NoiDung"))
+            {
+                grid.Columns["NoiDung"].HeaderText = "Nội dung";
+                grid.Columns["NoiDung"].DisplayIndex = 3;
+                grid.Columns["NoiDung"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
 
-            dialog.Controls.Add(grid);
-            dialog.Controls.Add(topBar);
             dialog.ShowDialog(this);
         }
 

@@ -526,5 +526,51 @@ WHERE nv.MaNV = @MaNV";
             conn.Open();
             return Convert.ToInt32(cmd.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
         }
+
+        /// <summary>
+        /// Tổng hợp số ngày phép nhân viên đã sử dụng (TrangThai=1) hoặc đang chờ duyệt (TrangThai=0)
+        /// trong tháng chỉ định (loại "Nghỉ phép").
+        /// </summary>
+        public int GetUsedAndPendingLeaveCountForMonth(int maNv, DateTime month)
+        {
+            const string sql = @"
+SELECT COALESCE(SUM(DATEDIFF(DAY, COALESCE(TuNgay, NgayGui), COALESCE(DenNgay, NgayGui)) + 1), 0)
+FROM dbo.YEU_CAU
+WHERE MaNV = @MaNV
+  AND TrangThai IN (0, 1)
+  AND YEAR(COALESCE(TuNgay, NgayGui)) = @Year
+  AND MONTH(COALESCE(TuNgay, NgayGui)) = @Month
+  AND LoaiYeuCau = N'Nghỉ phép'";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaNV", SqlDbType.Int).Value = maNv;
+            cmd.Parameters.Add("@Year", SqlDbType.Int).Value = month.Year;
+            cmd.Parameters.Add("@Month", SqlDbType.Int).Value = month.Month;
+            conn.Open();
+            return Convert.ToInt32(cmd.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Đếm số ca trực (PHAN_CONG_CA) của nhân viên trong khoảng thời gian [tuNgay, denNgay].
+        /// Trả về 0 nếu nhân viên không có ca nào được xếp trong khoảng đó.
+        /// </summary>
+        public int CountLichTrucInRange(string maNv, DateTime tuNgay, DateTime denNgay)
+        {
+            const string sql = @"
+SELECT COUNT(*)
+FROM dbo.PHAN_CONG_CA
+WHERE MaNV = @MaNV
+  AND NgayLam >= @TuNgay
+  AND NgayLam <= @DenNgay";
+
+            using SqlConnection conn = DbHelper.GetConnection();
+            using SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.Add("@MaNV", SqlDbType.VarChar, 20).Value = maNv;
+            cmd.Parameters.Add("@TuNgay", SqlDbType.Date).Value = tuNgay.Date;
+            cmd.Parameters.Add("@DenNgay", SqlDbType.Date).Value = denNgay.Date;
+            conn.Open();
+            return Convert.ToInt32(cmd.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+        }
     }
 }

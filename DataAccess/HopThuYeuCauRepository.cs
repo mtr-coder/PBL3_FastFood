@@ -101,12 +101,13 @@ ORDER BY NgayGui DESC";
         public int GetApprovedLeaveCountForMonth(int maNv, DateTime month)
         {
             const string sql = @"
-SELECT COUNT(1)
+SELECT COALESCE(SUM(DATEDIFF(DAY, COALESCE(TuNgay, NgayGui), COALESCE(DenNgay, NgayGui)) + 1), 0)
 FROM dbo.YEU_CAU
 WHERE MaNV = @MaNV
-  AND TrangThai = 1
+  AND TrangThai IN (0, 1)
   AND YEAR(COALESCE(TuNgay, NgayGui)) = @Year
-  AND MONTH(COALESCE(TuNgay, NgayGui)) = @Month";
+  AND MONTH(COALESCE(TuNgay, NgayGui)) = @Month
+  AND LoaiYeuCau = N'Nghỉ phép'";
 
             using SqlConnection conn = DbHelper.GetConnection();
             using SqlCommand cmd = new SqlCommand(sql, conn);

@@ -1467,7 +1467,7 @@ namespace PBL3
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Items = { "Tất cả", "Tháng này", "Tháng trước", "Tháng sau", "Tuần này", "Tuần trước", "Tuần sau" }
                 };
-                cboFilter.SelectedIndex = 0;
+                cboFilter.SelectedIndex = 1;
                 cboFilter.SelectedIndexChanged += (_, _) =>
                 {
                     if (cboFilter.SelectedItem is string selected && selected != "Tất cả")
@@ -1486,7 +1486,12 @@ namespace PBL3
                 scheduleForm.Controls.Add(dgv);
                 scheduleForm.Controls.Add(pnlFilter);
                 scheduleForm.Controls.Add(pnlSummary);
+                
+                // Phải gọi ReloadSchedule trước để thiết lập header và ẩn cột MaCa
                 ReloadSchedule();
+                // Sau đó mới lọc mặc định theo Tháng này
+                FilterScheduleByPeriod("Tháng này");
+                
                 scheduleForm.ShowDialog(this);
             }
             catch (Exception ex)

@@ -689,18 +689,53 @@ namespace PBL3
                 return;
             }
 
-            // Check leave quota: only approved (TrangThai = 1) leaves count toward quota
-            int approvedLeaveCount = _trangNhanVienService.GetApprovedLeaveCountForMonth(maNvInt.Value, DateTime.Today);
-
-            if (loaiYeuCau == "Nghỉ phép" && approvedLeaveCount >= 3)
-            {
-                MessageBox.Show("Bạn đã hết lượt nghỉ phép trong tháng này (tối đa 3 ngày/tháng).", "Hết lượt nghỉ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             if (!TryPromptLeaveReason(loaiYeuCau, hasDateRange, out string lyDo, out DateTime? tuNgay, out DateTime? denNgay, out int tongNgayNghi))
             {
                 return;
+            }
+
+            // === Kiểm soát hạn mức nghỉ phép (tối đa 3 ngày/tháng) ===
+            if (loaiYeuCau == "Nghỉ phép" && tuNgay.HasValue)
+            {
+                // Truy vấn SUM tổng hợp số ngày phép đã sử dụng + đang chờ duyệt trong tháng
+                int daSD = _trangNhanVienService.GetUsedAndPendingLeaveCountForMonth(maNvInt.Value, tuNgay.Value);
+                int tongSauKhiGui = daSD + tongNgayNghi;
+
+                if (tongSauKhiGui > 3)
+                {
+                    int conLai = Math.Max(3 - daSD, 0);
+                    MessageBox.Show(
+                        $"Yêu cầu vượt quá định mức 3 ngày/tháng! " +
+                        $"Quỹ phép tháng {tuNgay.Value.Month}/{tuNgay.Value.Year} của bạn hiện chỉ còn {conLai} ngày, " +
+                        $"nhưng bạn đang xin nghỉ {tongNgayNghi} ngày.",
+                        "Vượt hạn mức nghỉ phép",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            // === Kiểm tra lịch trực trong khoảng thời gian xin nghỉ ===
+            if (loaiYeuCau == "Nghỉ phép" && tuNgay.HasValue && denNgay.HasValue)
+            {
+                string maNvStr = _selectedMaNvDbValue ?? _loggedInMaNV;
+                int soLichTruc = _trangNhanVienService.CountLichTrucInRange(maNvStr, tuNgay.Value, denNgay.Value);
+
+                if (soLichTruc == 0)
+                {
+                    // Kiểm tra xem là xin nghỉ 1 ngày hay 1 khoảng ngày để ra thông báo cho chuẩn UX
+                    string thoiGian = (tuNgay.Value.Date == denNgay.Value.Date) 
+                        ? $"trong ngày {tuNgay.Value:dd/MM/yyyy}" 
+                        : $"trong khoảng từ {tuNgay.Value:dd/MM/yyyy} đến {denNgay.Value:dd/MM/yyyy}";
+
+                    MessageBox.Show(
+                        $"Bạn không có lịch trực nào {thoiGian}.\nKhông thể gửi yêu cầu nghỉ phép cho những ngày không có ca làm việc.",
+                        "Thao tác không hợp lệ",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                        
+                    return;
+                }
             }
 
             DialogResult confirm = MessageBox.Show(
@@ -1136,7 +1171,7 @@ namespace PBL3
             int count = 0;
             try
             {
-                count = _trangNhanVienService.GetApprovedLeaveCountForMonth(maNvInt.Value, DateTime.Today);
+                count = _trangNhanVienService.GetUsedAndPendingLeaveCountForMonth(maNvInt.Value, DateTime.Today);
             }
             catch
             {
@@ -1144,9 +1179,9 @@ namespace PBL3
             }
 
             if (count < 0) count = 0;
-            if (count > 3) count = 3;
+            int conLai = Math.Max(3 - count, 0);
 
-            lblLeaveQuota.Text = $"Số ngày đã nghỉ tháng này: {count}/3";
+            lblLeaveQuota.Text = $"Số ngày đã nghỉ/chờ duyệt tháng này: {count}/3 (còn {conLai} ngày)";
             bool canRequest = count < 3;
             _btnYeuCauNghiPhep.Enabled = canRequest;
 
@@ -1196,74 +1231,20 @@ namespace PBL3
             }
 
             const decimal donGiaCaTruc = 176000m;
+            string maNv = _selectedMaNvDbValue ?? _txtMaNV.Text.Trim();
 
             try
             {
-                DataTable dt = _trangNhanVienService.GetLichTruc(_selectedMaNvDbValue ?? _txtMaNV.Text.Trim());
-
-                if (dt.Rows.Count == 0)
-                {
-                    MessageBox.Show("Nhân viên này chưa có lịch trực.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                decimal tongHeSo = dt.AsEnumerable().Sum(r => Convert.ToDecimal(r["HeSoLuong"]));
-                int tongSoCa = dt.Rows.Count;
-                decimal luongDuKien = tongHeSo * donGiaCaTruc;
-
                 using Form scheduleForm = new Form
                 {
                     Text = $"Lịch trực - NV {_txtMaNV.Text}",
                     StartPosition = FormStartPosition.CenterParent,
-                    Size = new Size(720, 420)
+                    Size = new Size(750, 480),
+                    MinimizeBox = false,
+                    MaximizeBox = false
                 };
 
-                DataGridView dgv = new DataGridView
-                {
-                    Dock = DockStyle.Fill,
-                    ReadOnly = true,
-                    AllowUserToAddRows = false,
-                    AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                    SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                    DataSource = dt
-                };
-                dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
-                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-
-                if (dgv.Columns["NgayLam"] is not null)
-                {
-                    dgv.Columns["NgayLam"].HeaderText = "Ngày làm";
-                    dgv.Columns["NgayLam"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                }
-
-                if (dgv.Columns["GioBatDau"] is not null)
-                {
-                    dgv.Columns["GioBatDau"].HeaderText = "Giờ bắt đầu";
-                    dgv.Columns["GioBatDau"].DefaultCellStyle.Format = "HH:mm";
-                }
-
-                if (dgv.Columns["GioKetThuc"] is not null)
-                {
-                    dgv.Columns["GioKetThuc"].HeaderText = "Giờ kết thúc";
-                    dgv.Columns["GioKetThuc"].DefaultCellStyle.Format = "HH:mm";
-                }
-
-                if (dgv.Columns["HeSoLuong"] is not null)
-                {
-                    dgv.Columns["HeSoLuong"].HeaderText = "Hệ số lương";
-                    dgv.Columns["HeSoLuong"].DefaultCellStyle.Format = "N2";
-                }
-
-                if (dgv.Columns["MaCa"] is not null)
-                {
-                    dgv.Columns["MaCa"].HeaderText = "Mã ca";
-                }
-
-                if (dgv.Columns["TenCa"] is not null)
-                {
-                    dgv.Columns["TenCa"].HeaderText = "Tên ca";
-                }
-
+                // === Panel tổng kết ===
                 Panel pnlSummary = new Panel
                 {
                     Dock = DockStyle.Bottom,
@@ -1275,32 +1256,217 @@ namespace PBL3
                 {
                     AutoSize = true,
                     Location = new Point(12, 17),
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    Text = $"Tổng số ca làm: {tongSoCa}"
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                 };
 
                 Label lblTongHeSo = new Label
                 {
                     AutoSize = true,
                     Location = new Point(210, 17),
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    Text = $"Tổng hệ số: {tongHeSo:N2}"
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                 };
 
                 Label lblLuongDuKien = new Label
                 {
                     AutoSize = true,
                     Location = new Point(380, 17),
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    Text = $"Tiền lương theo ca: {luongDuKien:N0} đ"
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                 };
 
                 pnlSummary.Controls.Add(lblTongSoCa);
                 pnlSummary.Controls.Add(lblTongHeSo);
                 pnlSummary.Controls.Add(lblLuongDuKien);
 
-                scheduleForm.Controls.Add(pnlSummary);
+                // === DataGridView ===
+                DataGridView dgv = new DataGridView
+                {
+                    Dock = DockStyle.Fill,
+                    ReadOnly = true,
+                    AllowUserToAddRows = false,
+                    AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                    SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                };
+                dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+
+                // Format giờ (TimeSpan → hh:mm) giống QuanLiNhanVien
+                dgv.CellFormatting += (_, args) =>
+                {
+                    if (dgv.Columns[args.ColumnIndex].Name is "GioBatDau" or "GioKetThuc")
+                    {
+                        if (args.Value is TimeSpan ts)
+                        {
+                            args.Value = ts.ToString(@"hh\:mm");
+                            args.FormattingApplied = true;
+                        }
+                        else if (args.Value is DateTime dt)
+                        {
+                            args.Value = dt.ToString("HH:mm");
+                            args.FormattingApplied = true;
+                        }
+                    }
+                };
+
+                // === Hàm cập nhật headers và ẩn cột ===
+                void ConfigureColumns()
+                {
+                    if (dgv.Columns["NgayLam"] is not null)
+                    {
+                        dgv.Columns["NgayLam"].HeaderText = "Ngày làm";
+                        dgv.Columns["NgayLam"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    }
+
+                    if (dgv.Columns["GioBatDau"] is not null)
+                    {
+                        dgv.Columns["GioBatDau"].HeaderText = "Giờ bắt đầu";
+                    }
+
+                    if (dgv.Columns["GioKetThuc"] is not null)
+                    {
+                        dgv.Columns["GioKetThuc"].HeaderText = "Giờ kết thúc";
+                    }
+
+                    if (dgv.Columns["HeSoLuong"] is not null)
+                    {
+                        dgv.Columns["HeSoLuong"].HeaderText = "Hệ số lương";
+                        dgv.Columns["HeSoLuong"].DefaultCellStyle.Format = "N2";
+                    }
+
+                    if (dgv.Columns["MaCa"] is not null)
+                    {
+                        dgv.Columns["MaCa"].Visible = false;
+                    }
+
+                    if (dgv.Columns["TenCa"] is not null)
+                    {
+                        dgv.Columns["TenCa"].HeaderText = "Tên ca";
+                    }
+                }
+
+                // === Hàm cập nhật summary ===
+                void UpdateSummary(DataTable data)
+                {
+                    decimal tongHeSo = data.Rows.Count > 0 ? data.AsEnumerable().Sum(r => Convert.ToDecimal(r["HeSoLuong"])) : 0m;
+                    int tongSoCa = data.Rows.Count;
+                    decimal luongDuKien = tongHeSo * donGiaCaTruc;
+
+                    lblTongSoCa.Text = $"Tổng số ca làm: {tongSoCa}";
+                    lblTongHeSo.Text = $"Tổng hệ số: {tongHeSo:N2}";
+                    lblLuongDuKien.Text = $"Tiền lương theo ca: {luongDuKien:N0} đ";
+                }
+
+                // === Hàm load toàn bộ ===
+                void ReloadSchedule()
+                {
+                    DataTable dt = _trangNhanVienService.GetLichTruc(maNv);
+                    dgv.DataSource = dt;
+                    ConfigureColumns();
+                    UpdateSummary(dt);
+                }
+
+                // === Hàm lọc theo khoảng thời gian ===
+                void FilterScheduleByPeriod(string filterType)
+                {
+                    DataTable dt = _trangNhanVienService.GetLichTruc(maNv);
+                    DateTime today = DateTime.Today;
+                    int todayDayOfWeek = (int)today.DayOfWeek;
+                    DateTime startOfWeek = today.AddDays(-todayDayOfWeek);
+                    DateTime startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                    DataView dv = dt.DefaultView;
+
+                    switch (filterType)
+                    {
+                        case "Tháng này":
+                            dv.RowFilter = $"NgayLam >= '{startOfMonth:yyyy-MM-dd}' AND NgayLam <= '{new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month)):yyyy-MM-dd}'";
+                            break;
+                        case "Tháng trước":
+                            DateTime lastMonth = today.AddMonths(-1);
+                            DateTime firstDayLastMonth = new DateTime(lastMonth.Year, lastMonth.Month, 1);
+                            DateTime lastDayLastMonth = new DateTime(lastMonth.Year, lastMonth.Month, DateTime.DaysInMonth(lastMonth.Year, lastMonth.Month));
+                            dv.RowFilter = $"NgayLam >= '{firstDayLastMonth:yyyy-MM-dd}' AND NgayLam <= '{lastDayLastMonth:yyyy-MM-dd}'";
+                            break;
+                        case "Tháng sau":
+                            DateTime nextMonth = today.AddMonths(1);
+                            DateTime firstDayNextMonth = new DateTime(nextMonth.Year, nextMonth.Month, 1);
+                            DateTime lastDayNextMonth = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                            dv.RowFilter = $"NgayLam >= '{firstDayNextMonth:yyyy-MM-dd}' AND NgayLam <= '{lastDayNextMonth:yyyy-MM-dd}'";
+                            break;
+                        case "Tuần này":
+                            DateTime endOfWeek = startOfWeek.AddDays(6);
+                            dv.RowFilter = $"NgayLam >= '{startOfWeek:yyyy-MM-dd}' AND NgayLam <= '{endOfWeek:yyyy-MM-dd}'";
+                            break;
+                        case "Tuần trước":
+                            DateTime startOfLastWeek = startOfWeek.AddDays(-7);
+                            DateTime endOfLastWeek = startOfLastWeek.AddDays(6);
+                            dv.RowFilter = $"NgayLam >= '{startOfLastWeek:yyyy-MM-dd}' AND NgayLam <= '{endOfLastWeek:yyyy-MM-dd}'";
+                            break;
+                        case "Tuần sau":
+                            DateTime startOfNextWeek = startOfWeek.AddDays(7);
+                            DateTime endOfNextWeek = startOfNextWeek.AddDays(6);
+                            dv.RowFilter = $"NgayLam >= '{startOfNextWeek:yyyy-MM-dd}' AND NgayLam <= '{endOfNextWeek:yyyy-MM-dd}'";
+                            break;
+                        default:
+                            dv.RowFilter = "";
+                            break;
+                    }
+
+                    DataTable filteredDt = dv.ToTable();
+                    dgv.DataSource = filteredDt;
+                    ConfigureColumns();
+                    UpdateSummary(filteredDt);
+                }
+
+                // === Panel bộ lọc ===
+                Panel pnlFilter = new Panel
+                {
+                    Dock = DockStyle.Top,
+                    Height = 35,
+                    BackColor = Color.FromArgb(248, 242, 235),
+                    Padding = new Padding(12, 5, 12, 5)
+                };
+
+                Label lblFilter = new Label
+                {
+                    Text = "Lọc:",
+                    AutoSize = true,
+                    Location = new Point(12, 8),
+                    Font = new Font("Segoe UI", 9F)
+                };
+
+                ComboBox cboFilter = new ComboBox
+                {
+                    Left = 50,
+                    Top = 5,
+                    Width = 180,
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Items = { "Tất cả", "Tháng này", "Tháng trước", "Tháng sau", "Tuần này", "Tuần trước", "Tuần sau" }
+                };
+                // Mặc định chọn "Tháng này"
+                cboFilter.SelectedIndex = 1;
+                cboFilter.SelectedIndexChanged += (_, _) =>
+                {
+                    if (cboFilter.SelectedItem is string selected && selected != "Tất cả")
+                    {
+                        FilterScheduleByPeriod(selected);
+                    }
+                    else
+                    {
+                        ReloadSchedule();
+                    }
+                };
+
+                pnlFilter.Controls.Add(lblFilter);
+                pnlFilter.Controls.Add(cboFilter);
+
+                // === Lắp ráp form ===
                 scheduleForm.Controls.Add(dgv);
+                scheduleForm.Controls.Add(pnlFilter);
+                scheduleForm.Controls.Add(pnlSummary);
+
+                // Load mặc định theo "Tháng này"
+                FilterScheduleByPeriod("Tháng này");
+
                 scheduleForm.ShowDialog(this);
             }
             catch (Exception ex)

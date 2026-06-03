@@ -135,5 +135,15 @@ namespace PBL3.Business
         {
             return _repository.GetPendingYeuCauCount();
         }
+
+        public int GetUsedAndPendingLeaveCountForMonth(int maNv, DateTime month)
+        {
+            return _repository.GetUsedAndPendingLeaveCountForMonth(maNv, month);
+        }
+
+        public int CountLichTrucInRange(string maNv, DateTime tuNgay, DateTime denNgay)
+        {
+            return _repository.CountLichTrucInRange(maNv.Trim(), tuNgay, denNgay);
+        }
     }
 }

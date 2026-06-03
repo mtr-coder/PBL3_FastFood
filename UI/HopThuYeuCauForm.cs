@@ -87,7 +87,7 @@ namespace PBL3
             var left = new Panel { Dock = DockStyle.Left, Width = 6, BackColor = GetTypeColor(item.LoaiYeuCau) };
             card.Controls.Add(left);
 
-            var lblName = new Label { Left = 12, Top = 8, AutoSize = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold), Text = $"{item.HoTen} (NV{item.MaNV})" };
+            var lblName = new Label { Left = 12, Top = 8, AutoSize = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold), Text = item.HoTen };
             var lblLoai = new Label { Left = 12, Top = 30, AutoSize = true, ForeColor = GetTypeColor(item.LoaiYeuCau), Text = NormalizeLoaiYeuCau(item.LoaiYeuCau) };
             var lblTime = new Label { Left = 12, Top = 50, AutoSize = true, ForeColor = Color.DimGray, Text = FormatTime(item.NgayGui) };
 
@@ -108,7 +108,7 @@ namespace PBL3
         private void SelectItem(HopThuYeuCauItem item)
         {
             _selected = item;
-            _lblNhanVien.Text = $"Nhân viên: {item.HoTen} (NV{item.MaNV})";
+            _lblNhanVien.Text = $"Nhân viên: {item.HoTen}";
             _lblChucVu.Text = $"Chức vụ: {item.TenCV}";
             _lblLoai.Text = $"Loại yêu cầu: {NormalizeLoaiYeuCau(item.LoaiYeuCau)}";
             _lblThoiGian.Text = $"Thời gian gửi: {FormatTime(item.NgayGui)}";

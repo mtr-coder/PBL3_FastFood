@@ -454,7 +454,7 @@ namespace PBL3
             lblLeaveQuota.ForeColor = Color.DimGray;
             lblLeaveQuota.Location = new Point(29, 190);
             lblLeaveQuota.Name = "lblLeaveQuota";
-            lblLeaveQuota.Size = new Size(260, 25);
+            lblLeaveQuota.Size = new Size(455, 25);
             lblLeaveQuota.TabIndex = 36;
             lblLeaveQuota.Text = "Số ngày đã nghỉ tháng này: 0/3";
             lblLeaveQuota.TextAlign = ContentAlignment.MiddleLeft;
