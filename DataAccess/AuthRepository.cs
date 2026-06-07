@@ -1,4 +1,4 @@
-using PBL3.DataBase;
+ï»¿using PBL3.DataBase;
 using PBL3.Models;
 using PBL3.Business;
 using System.Data.SqlClient;
@@ -31,7 +31,7 @@ WHERE nv.SDT = @sdt";
             using SqlDataReader reader = cmd.ExecuteReader();
             if (!reader.Read())
             {
-                System.Diagnostics.Debug.WriteLine($"[AUTH] Không tìm th?y user v?i SDT: {soDienThoai}");
+                System.Diagnostics.Debug.WriteLine($"[AUTH] KhÃ´ng tÃ¬m th?y user v?i SDT: {soDienThoai}");
                 return null;
             }
 
@@ -39,8 +39,10 @@ WHERE nv.SDT = @sdt";
             {
                 MaNV = reader["MaNV"]?.ToString()?.Trim() ?? string.Empty,
                 MaCV = reader["MaCV"]?.ToString()?.Trim() ?? string.Empty,
-                HoTen = reader["HoTen"]?.ToString()?.Trim() ?? string.Empty
+                HoTen = reader["HoTen"]?.ToString()?.Trim() ?? string.Empty,
+                MatKhau = reader["MatKhau"]?.ToString()?.Trim() ?? string.Empty
             };
         }
     }
 }
+
