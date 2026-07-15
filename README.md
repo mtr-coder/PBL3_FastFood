@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🍔 PBL3 — Fast Food Management System
+# PBL3 — Fast Food Management System
 
 **A full-featured desktop application for managing fast food restaurant operations**
 
